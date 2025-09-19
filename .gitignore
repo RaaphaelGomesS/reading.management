@@ -20,6 +20,8 @@ target/
 *.ipr
 *.properties
 *.env
+*.key
+*.pub
 
 ### NetBeans ###
 /nbproject/private/
