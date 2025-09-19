@@ -16,11 +16,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AdminGenerateConfig implements CommandLineRunner {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Value("${ADMIN_PASSWORD}")
+    @Value("${admin.password}")
     private String adminPassword;
 
     @Override
@@ -33,6 +33,7 @@ public class AdminGenerateConfig implements CommandLineRunner {
 
             User newAdmin = new User();
 
+            newAdmin.setEmail("admin");
             newAdmin.setUsername("admin");
             newAdmin.setPassword(bCryptPasswordEncoder.encode(adminPassword));
             newAdmin.setRole(RoleIndicator.ADMIN);

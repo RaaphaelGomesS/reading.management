@@ -42,7 +42,7 @@ public class AuthService {
                 new UserException("Não foi possível encontrar o usuário pelo identificador: " + identifier, HttpStatus.NOT_FOUND));
 
 
-        if (passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
             throw new UserException("A senha está incorreta.", HttpStatus.BAD_REQUEST);
         }
 
