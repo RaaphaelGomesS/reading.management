@@ -1,17 +1,7 @@
 package tech.gomes.reading.management.dto.library;
 
-import lombok.*;
+import lombok.Builder;
 
-@Getter
-@Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class LibraryResponseDTO {
-
-    private Long id;
-
-    private String name;
-
-    private String description;
+public record LibraryResponseDTO(Long id, String name, String description) {
 }

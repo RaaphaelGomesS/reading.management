@@ -10,10 +10,13 @@ import org.springframework.stereotype.Service;
 import tech.gomes.reading.management.builder.LibraryResponseDTOBuilder;
 import tech.gomes.reading.management.domain.Library;
 import tech.gomes.reading.management.domain.User;
+import tech.gomes.reading.management.dto.library.LibraryRequestDTO;
 import tech.gomes.reading.management.dto.library.LibraryResponseDTO;
 import tech.gomes.reading.management.dto.library.LibraryResponsePageDTO;
 import tech.gomes.reading.management.exception.LibraryException;
 import tech.gomes.reading.management.repository.LibraryRepository;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,11 +33,52 @@ public class LibraryService {
         return LibraryResponseDTOBuilder.fromPage(libraryPage);
     }
 
-    public LibraryResponseDTO getLibraryById(long id, User user) throws Exception {
-
-        Library library = libraryRepository.findByIdAndUserId(id, user.getId())
+    public Library getLibraryById(Long id, User user) throws Exception {
+        return libraryRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new LibraryException("A biblioteca não foi encontrada.", HttpStatus.NOT_FOUND));
+    }
+
+    public LibraryResponseDTO createLibrary(LibraryRequestDTO requestDTO, User user) throws Exception {
+
+        verifyIfLibraryAlreadyExist(requestDTO, user);
+
+        Library newLibrary = Library
+                .builder()
+                .name(requestDTO.getName())
+                .description(requestDTO.getDescription())
+                .user(user)
+                .build();
+
+        Library library = libraryRepository.save(newLibrary);
 
         return LibraryResponseDTOBuilder.from(library);
+    }
+
+    public LibraryResponseDTO updateLibrary(Long id, LibraryRequestDTO requestDTO, User user) throws Exception {
+
+        verifyIfLibraryAlreadyExist(requestDTO, user);
+
+        Library library = getLibraryById(id, user);
+
+        library.setName(requestDTO.getName());
+        library.setDescription(requestDTO.getDescription());
+
+        Library updatedLibrary = libraryRepository.save(library);
+
+        return LibraryResponseDTOBuilder.from(updatedLibrary);
+    }
+
+    public void deleteLibrary(Long id, User user) throws Exception {
+        Library library = getLibraryById(id, user);
+
+        libraryRepository.delete(library);
+    }
+
+    private void verifyIfLibraryAlreadyExist(LibraryRequestDTO requestDTO, User user) throws Exception {
+        Optional<Library> optionalLibrary = libraryRepository.findByNameAndUserId(requestDTO.getName(), user.getId());
+
+        if (optionalLibrary.isPresent()) {
+            throw new LibraryException("Já existe uma biblioteca com esse nome.", HttpStatus.BAD_REQUEST);
+        }
     }
 }

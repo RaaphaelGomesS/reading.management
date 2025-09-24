@@ -14,4 +14,6 @@ public interface LibraryRepository extends JpaRepository<Library, Long> {
     Page<Library> findByUserId(Long userId, Pageable pageable);
 
     Optional<Library> findByIdAndUserId(Long id, Long userId);
+
+    Optional<Library> findByNameAndUserId(String name, Long userId);
 }
