@@ -46,7 +46,7 @@ public class LibraryController {
 
         User user = authService.getUserByToken(token);
 
-        return ResponseEntity.ok(libraryService.createLibrary(requestDTO, user));
+        return new ResponseEntity<>(libraryService.createLibrary(requestDTO, user), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
