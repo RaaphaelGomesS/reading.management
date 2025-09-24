@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import tech.gomes.reading.management.builder.UserBuilder;
 import tech.gomes.reading.management.builder.UserResponseDTOBuilder;
@@ -38,21 +39,14 @@ public class AuthService {
 
         String identifier = requestDTO.getEmail() != null ? requestDTO.getEmail() : requestDTO.getUsername();
 
-        User user = userRepository.findByIdentifier(identifier).orElseThrow(() ->
-                new UserException("Não foi possível encontrar o usuário pelo identificador: " + identifier, HttpStatus.NOT_FOUND));
+        User user = userRepository.findByIdentifier(identifier).orElseThrow(() -> new UserException("Não foi possível encontrar o usuário pelo identificador: " + identifier, HttpStatus.NOT_FOUND));
 
 
         if (!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
             throw new UserException("A senha está incorreta.", HttpStatus.BAD_REQUEST);
         }
 
-        var claims = JwtClaimsSet.builder()
-                .issuer("reading.management")
-                .subject(user.getId().toString())
-                .expiresAt(getExpirationDate())
-                .issuedAt(Instant.now())
-                .claim("scope", user.getRole())
-                .build();
+        var claims = JwtClaimsSet.builder().issuer("reading.management").subject(user.getId().toString()).expiresAt(getExpirationDate()).issuedAt(Instant.now()).claim("scope", user.getRole()).build();
 
         var token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 
@@ -66,12 +60,17 @@ public class AuthService {
         Optional<User> optionalUser = userRepository.findByIdentifier(identifier);
 
         if (optionalUser.isPresent()) {
-           throw new UserException("Usuário já cadastrado com o identificador: " + identifier, HttpStatus.BAD_REQUEST);
+            throw new UserException("Usuário já cadastrado com o identificador: " + identifier, HttpStatus.BAD_REQUEST);
         }
 
         User user = userRepository.save(userBuilder.from(requestDTO));
 
         return UserResponseDTOBuilder.from(user);
+    }
+
+    public User getUserByToken(JwtAuthenticationToken token) throws Exception {
+        return userRepository.findById(Long.valueOf(token.getName()))
+                .orElseThrow(() -> new UserException("O usuário não foi encontrado.", HttpStatus.NOT_FOUND));
     }
 
     private Instant getExpirationDate() {
