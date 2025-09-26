@@ -18,6 +18,6 @@ public class BookController {
 
     @PostMapping("/")
     public ResponseEntity<BookResponseDTO> registerBookInLibrary() {
-
+        return ResponseEntity.ok(null);
     }
 }

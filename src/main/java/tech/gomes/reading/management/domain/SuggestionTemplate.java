@@ -22,16 +22,16 @@ public class SuggestionTemplate {
     @Column(name = "suggestion_template_id")
     private Long id;
 
-    @Column(name = "suggested_isbn", unique = true)
+    @Column(name = "suggested_isbn")
     private String suggestedISBN;
 
-    @Column(name = "suggested_tile", nullable = false)
+    @Column(name = "suggested_title")
     private String suggestedTitle;
 
-    @Column(name = "suggested_author", nullable = false)
+    @Column(name = "suggested_author")
     private String suggestedAuthor;
 
-    @Column(name = "suggested_publisher", nullable = false)
+    @Column(name = "suggested_publisher")
     private String suggestedPublisher;
 
     @Column(name = "suggested_edition")
@@ -66,6 +66,15 @@ public class SuggestionTemplate {
     @Column(name = "reviewed_at")
     private Instant reviewedAt;
 
-    @Column
-    private Set<Category> suggestedCategories;
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "TB_SUGGESTION_CATEGORY_NAMES",
+            joinColumns = @JoinColumn(name = "suggestion_template_id")
+    )
+    @Column(name = "name")
+    private Set<String> suggestedCategories;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
