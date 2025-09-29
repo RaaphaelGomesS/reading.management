@@ -60,7 +60,9 @@ public class BookTemplate {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @ManyToMany
-    @JoinTable(name = "TB_BOOK_TEMPLATE_CATEGORY", joinColumns = @JoinColumn(name = "book_template_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(name = "TB_BOOK_TEMPLATE_CATEGORY",
+            joinColumns = @JoinColumn(name = "book_template_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> categories;
 }

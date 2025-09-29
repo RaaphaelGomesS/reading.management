@@ -46,7 +46,13 @@ public class AuthService {
             throw new UserException("A senha está incorreta.", HttpStatus.BAD_REQUEST);
         }
 
-        var claims = JwtClaimsSet.builder().issuer("reading.management").subject(user.getId().toString()).expiresAt(getExpirationDate()).issuedAt(Instant.now()).claim("scope", user.getRole()).build();
+        var claims = JwtClaimsSet.builder()
+                .issuer("reading.management")
+                .subject(user.getId().toString())
+                .expiresAt(getExpirationDate())
+                .issuedAt(Instant.now())
+                .claim("scope", user.getRole())
+                .build();
 
         var token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 

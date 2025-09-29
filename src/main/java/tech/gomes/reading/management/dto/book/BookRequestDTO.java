@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import tech.gomes.reading.management.dto.suggestion.request.SuggestionRequestDTO;
 
 import java.util.Date;
 
@@ -27,5 +28,5 @@ public class BookRequestDTO {
 
     @NotNull
     @Valid
-    private BookTemplateRequestDTO template;
+    private SuggestionRequestDTO template;
 }

@@ -77,4 +77,8 @@ public class SuggestionTemplate {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_template_id")
+    private BookTemplate bookTemplate;
 }

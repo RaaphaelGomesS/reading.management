@@ -1,8 +1,12 @@
 package tech.gomes.reading.management.dto.suggestion.response;
 
-import java.util.List;
+import lombok.Builder;
 
-public record SuggestionResponseDTO(String isbn,
+import java.util.Set;
+
+@Builder
+public record SuggestionResponseDTO(long id,
+                                    String isbn,
                                     String title,
                                     String author,
                                     String publisher,
@@ -14,5 +18,5 @@ public record SuggestionResponseDTO(String isbn,
                                     String reason,
                                     String justification,
                                     String status,
-                                    List<String> categories) {
+                                    Set<String> categories) {
 }
