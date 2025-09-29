@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface BookTemplateRepository extends JpaRepository<BookTemplate, Long> {
 
-    @Query("SELECT b FROM bookTemplate b WHERE b.isbn = :identifier OR b.title_author = :identifier")
+    @Query("SELECT b FROM bookTemplate b WHERE b.isbn = :identifier OR b.titleAuthor = :identifier")
     Optional<BookTemplate> findByIdentifier(@Param("identifier") String identifier);
 }

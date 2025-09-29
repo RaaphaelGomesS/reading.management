@@ -4,11 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.suggestion.request.DeclineRequestDTO;
+import tech.gomes.reading.management.dto.suggestion.request.SuggestionRequestDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponseDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponsePageDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionUpdateResponseDTO;
+import tech.gomes.reading.management.service.AuthService;
 import tech.gomes.reading.management.service.SuggestionService;
 
 @RestController
@@ -17,6 +21,17 @@ import tech.gomes.reading.management.service.SuggestionService;
 public class SuggestionController {
 
     private final SuggestionService suggestionService;
+
+    private final AuthService authService;
+
+    @PostMapping("/")
+    public ResponseEntity<Void> createUpdateSuggestion(@RequestBody SuggestionRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+
+        User user = authService.getUserByToken(token);
+
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
 
     @GetMapping("/")
     @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
@@ -52,7 +67,7 @@ public class SuggestionController {
         return ResponseEntity.ok(suggestionService.findUpdateSuggestionWithTemplate(id));
     }
 
-    @GetMapping("/approve/{id}")
+    @PostMapping("/approve/{id}")
     @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<Void> approveSuggestion(@PathVariable long id) throws Exception {
 
@@ -61,7 +76,7 @@ public class SuggestionController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/decline/{id}")
+    @PostMapping("/decline/{id}")
     @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<Void> declineSuggestion(@RequestBody DeclineRequestDTO requestDTO) throws Exception {
 
