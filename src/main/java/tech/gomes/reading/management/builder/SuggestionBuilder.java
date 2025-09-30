@@ -5,7 +5,7 @@ import tech.gomes.reading.management.domain.SuggestionTemplate;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.suggestion.request.SuggestionRequestDTO;
 
-public class SuggestionTemplateBuilder {
+public class SuggestionBuilder {
 
     public static SuggestionTemplate from(SuggestionRequestDTO requestDTO, User user, BookTemplate template) {
         return SuggestionTemplate.builder()

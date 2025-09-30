@@ -8,17 +8,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import tech.gomes.reading.management.builder.SuggestionResponseDTOBuilder;
-import tech.gomes.reading.management.builder.SuggestionTemplateBuilder;
+import tech.gomes.reading.management.builder.SuggestionBuilder;
 import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.suggestion.request.DeclineRequestDTO;
 import tech.gomes.reading.management.dto.suggestion.request.SuggestionRequestDTO;
-import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponseDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponsePageDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionUpdateResponseDTO;
 import tech.gomes.reading.management.exception.SuggestionException;
-import tech.gomes.reading.management.indicator.SuggestionStatusIndicator;
+import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 import tech.gomes.reading.management.repository.SuggestionRepository;
 
 import java.util.Optional;
@@ -31,13 +30,19 @@ public class SuggestionService {
 
     private final BookTemplateService bookTemplateService;
 
-    public SuggestionResponsePageDTO findAllCreationSuggestion(int page, int pageSize, String direction, String status) {
+    public void createUpdateSuggestion(SuggestionRequestDTO requestDTO, User user) throws Exception {
 
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.valueOf(direction), "created_at");
+        BookTemplate bookTemplate = bookTemplateService.findTemplateById(requestDTO.templateId());
 
-        Page<SuggestionTemplate> suggestionPage = suggestionRepository.findByStatusAndBookTemplateIsNull(status, pageable);
+        Optional<SuggestionTemplate> existentSuggestion = suggestionRepository.findBySuggestedISBNAndStatus(requestDTO.suggestedISBN(), TemplateStatusIndicator.IN_ANALYZE);
 
-        return SuggestionResponseDTOBuilder.fromPage(suggestionPage);
+        if (existentSuggestion.isPresent()) {
+            throw new SuggestionException("Já existe sugestão de alteração para esse template em análise", HttpStatus.BAD_REQUEST);
+        }
+
+        SuggestionTemplate suggestion = SuggestionBuilder.from(requestDTO, user, bookTemplate);
+
+        suggestionRepository.save(suggestion);
     }
 
     public SuggestionResponsePageDTO findAllUpdateSuggestion(int page, int pageSize, String direction, String status) {
@@ -49,7 +54,7 @@ public class SuggestionService {
         return SuggestionResponseDTOBuilder.fromPage(suggestionPage);
     }
 
-    public SuggestionUpdateResponseDTO findUpdateSuggestionWithTemplate(long suggestionId) throws Exception {
+    public SuggestionUpdateResponseDTO findUpdateSuggestion(long suggestionId) throws Exception {
 
         SuggestionTemplate suggestion = suggestionRepository.findByIdAndBookTemplateIsNotNull(suggestionId)
                 .orElseThrow(() -> new SuggestionException("Não foi encontrado nenhuma sugestão com esse id", HttpStatus.NOT_FOUND));
@@ -57,26 +62,18 @@ public class SuggestionService {
         return SuggestionResponseDTOBuilder.toUpdate(suggestion, suggestion.getBookTemplate());
     }
 
-    public SuggestionResponseDTO findCreateSuggestionById(long suggestionId) throws Exception {
-
-        SuggestionTemplate suggestion = suggestionRepository.findByIdAndBookTemplateIsNull(suggestionId)
-                .orElseThrow(() -> new SuggestionException("Não foi encontrado nenhuma sugestão com esse id", HttpStatus.NOT_FOUND));
-
-        return SuggestionResponseDTOBuilder.fromSuggestion(suggestion);
-    }
-
     public void approveSuggestion(long id) throws Exception {
 
         SuggestionTemplate suggestion = suggestionRepository.findById(id)
                 .orElseThrow(() -> new SuggestionException("Não foi encontrado nenhuma sugestão com esse id", HttpStatus.NOT_FOUND));
 
-        if (suggestion.getBookTemplate() != null) {
-            bookTemplateService.updateBookTemplateBySuggestion(suggestion);
-        } else {
-            bookTemplateService.createBookTemplateBySuggestion(suggestion);
+        if (suggestion.getBookTemplate() == null) {
+            throw new SuggestionException("A sugestão de atualização precisa estar vinculada a um template", HttpStatus.BAD_REQUEST);
         }
 
-        suggestion.setStatus(SuggestionStatusIndicator.APPROVE);
+        bookTemplateService.updateBookTemplateBySuggestion(suggestion);
+
+        suggestion.setStatus(TemplateStatusIndicator.VERIFIED);
 
         suggestionRepository.save(suggestion);
     }
@@ -86,22 +83,7 @@ public class SuggestionService {
                 .orElseThrow(() -> new SuggestionException("Não foi encontrado nenhuma sugestão com esse id", HttpStatus.NOT_FOUND));
 
         suggestion.setJustification(requestDTO.justification());
-        suggestion.setStatus(SuggestionStatusIndicator.DECLINE);
-
-        suggestionRepository.save(suggestion);
-    }
-
-    public void createUpdateSuggestion(SuggestionRequestDTO requestDTO, User user) throws Exception {
-
-        BookTemplate bookTemplate = bookTemplateService.verifyTemplateExist(requestDTO.templateId());
-
-        Optional<SuggestionTemplate> existentSuggestion = suggestionRepository.findByIsbnAndStatus(requestDTO.suggestedISBN(), SuggestionStatusIndicator.IN_ANALYZE);
-
-        if (existentSuggestion.isPresent()) {
-            throw new SuggestionException("Já existe sugestão de alteração para esse template em análise", HttpStatus.BAD_REQUEST);
-        }
-
-        SuggestionTemplate suggestion = SuggestionTemplateBuilder.from(requestDTO, user, bookTemplate);
+        suggestion.setStatus(TemplateStatusIndicator.DECLINE);
 
         suggestionRepository.save(suggestion);
     }

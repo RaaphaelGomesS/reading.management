@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.suggestion.request.DeclineRequestDTO;
 import tech.gomes.reading.management.dto.suggestion.request.SuggestionRequestDTO;
-import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponseDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponsePageDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionUpdateResponseDTO;
 import tech.gomes.reading.management.service.AuthService;
@@ -36,36 +35,19 @@ public class SuggestionController {
 
     @GetMapping("/")
     @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
-    public ResponseEntity<SuggestionResponsePageDTO> getAllCreationSuggestion(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                                                              @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-                                                                              @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction,
-                                                                              @RequestParam(value = "status", required = false, defaultValue = "IN_ANALYZE") String status) {
-
-        return ResponseEntity.ok(suggestionService.findAllCreationSuggestion(page, pageSize, direction, status));
-    }
-
-    @GetMapping("/update")
-    @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
-    public ResponseEntity<SuggestionResponsePageDTO> getAllUpdateSuggestion(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                                                            @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-                                                                            @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction,
-                                                                            @RequestParam(value = "status", required = false, defaultValue = "IN_ANALYZE") String status) {
+    public ResponseEntity<SuggestionResponsePageDTO> getAllSuggestion(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                                      @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                                                      @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction,
+                                                                      @RequestParam(value = "status", required = false, defaultValue = "IN_ANALYZE") String status) {
 
         return ResponseEntity.ok(suggestionService.findAllUpdateSuggestion(page, pageSize, direction, status));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
-    public ResponseEntity<SuggestionResponseDTO> getCreateSuggestion(@PathVariable long id) throws Exception {
-
-        return ResponseEntity.ok(suggestionService.findCreateSuggestionById(id));
-    }
-
-    @GetMapping("/update/{id}")
-    @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<SuggestionUpdateResponseDTO> getUpdateSuggestionWithOriginalTemplate(@PathVariable long id) throws Exception {
 
-        return ResponseEntity.ok(suggestionService.findUpdateSuggestionWithTemplate(id));
+        return ResponseEntity.ok(suggestionService.findUpdateSuggestion(id));
     }
 
     @PostMapping("/approve/{id}")
@@ -74,7 +56,7 @@ public class SuggestionController {
 
         suggestionService.approveSuggestion(id);
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/decline/{id}")
@@ -83,6 +65,6 @@ public class SuggestionController {
 
         suggestionService.declineSuggestion(requestDTO);
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -37,12 +37,12 @@ public class AuthService {
 
     public LoginResponseDTO authenticateUser(LoginRequestDTO requestDTO) throws UserException {
 
-        String identifier = requestDTO.getEmail() != null ? requestDTO.getEmail() : requestDTO.getUsername();
+        String identifier = requestDTO.email() != null ? requestDTO.email() : requestDTO.username();
 
         User user = userRepository.findByIdentifier(identifier).orElseThrow(() -> new UserException("Não foi possível encontrar o usuário pelo identificador: " + identifier, HttpStatus.NOT_FOUND));
 
 
-        if (!passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(requestDTO.password(), user.getPassword())) {
             throw new UserException("A senha está incorreta.", HttpStatus.BAD_REQUEST);
         }
 
@@ -61,7 +61,7 @@ public class AuthService {
 
     public UserResponseDTO registerUser(UserRequestDTO requestDTO) throws UserException {
 
-        String identifier = requestDTO.getEmail() != null ? requestDTO.getEmail() : requestDTO.getUsername();
+        String identifier = requestDTO.email() != null ? requestDTO.email() : requestDTO.username();
 
         Optional<User> optionalUser = userRepository.findByIdentifier(identifier);
 

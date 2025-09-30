@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 
 import java.time.Instant;
 import java.util.Set;
@@ -59,6 +60,10 @@ public class BookTemplate {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Instant updatedAt;
+
+    @Column(name = "status")
+    @Enumerated(value = EnumType.STRING)
+    private TemplateStatusIndicator status;
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "TB_BOOK_TEMPLATE_CATEGORY",

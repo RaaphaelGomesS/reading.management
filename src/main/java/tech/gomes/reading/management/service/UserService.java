@@ -23,7 +23,7 @@ public class UserService {
 
     public UserResponseDTO updateUser(UserRequestDTO requestDTO, User userUpdated) throws UserException {
 
-        String identifier = requestDTO.getEmail() != null ? requestDTO.getEmail() : requestDTO.getUsername();
+        String identifier = requestDTO.email() != null ? requestDTO.email() : requestDTO.username();
 
         Optional<User> optionalUser = userRepository.findByIdentifier(identifier);
 
@@ -31,9 +31,9 @@ public class UserService {
             throw new UserException("Usuário já cadastrado com o identificador: " + identifier, HttpStatus.BAD_REQUEST);
         }
 
-        userUpdated.setEmail(requestDTO.getEmail());
-        userUpdated.setUsername(requestDTO.getUsername());
-        userUpdated.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
+        userUpdated.setEmail(requestDTO.email());
+        userUpdated.setUsername(requestDTO.username());
+        userUpdated.setPassword(passwordEncoder.encode(requestDTO.password()));
 
         User user = userRepository.save(userUpdated);
 

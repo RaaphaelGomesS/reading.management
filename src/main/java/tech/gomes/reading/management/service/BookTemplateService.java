@@ -1,13 +1,22 @@
 package tech.gomes.reading.management.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import tech.gomes.reading.management.builder.BookTemplateBuilder;
+import tech.gomes.reading.management.builder.BookTemplateResponseDTOBuilder;
 import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.Category;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
+import tech.gomes.reading.management.dto.book.BookTemplateRequestDTO;
+import tech.gomes.reading.management.dto.book.BookTemplateResponseDTO;
+import tech.gomes.reading.management.dto.book.BookTemplateResponsePageDTO;
 import tech.gomes.reading.management.exception.BookTemplateException;
+import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 import tech.gomes.reading.management.repository.BookTemplateRepository;
 import tech.gomes.reading.management.repository.CategoryRepository;
 
@@ -23,20 +32,41 @@ public class BookTemplateService {
 
     private final CategoryRepository categoryRepository;
 
-    public void createBookTemplateBySuggestion(SuggestionTemplate suggestion) throws Exception {
+    public BookTemplate createBookTemplate(BookTemplateRequestDTO requestDTO) throws Exception {
 
-        verifyBookTemplateAlreadyExist(suggestion);
+        verifyBookTemplateAlreadyExist(requestDTO.isbn(), requestDTO.title(), requestDTO.author());
 
-        Set<Category> categories = getCategoriesOrCreateIfNotExist(suggestion.getSuggestedCategories());
+        Set<Category> categories = getCategoriesOrCreateIfNotExist(requestDTO.categories());
 
-        BookTemplate template = BookTemplateBuilder.from(suggestion, categories);
+        BookTemplate template = BookTemplateBuilder.from(requestDTO, categories);
 
-        bookTemplateRepository.save(template);
+        return bookTemplateRepository.save(template);
+    }
+
+    public BookTemplateResponseDTO updateBookTemplateByAdminRequest(BookTemplateRequestDTO requestDTO) throws Exception {
+
+        BookTemplate bookTemplate = findTemplateById(requestDTO.templateId());
+
+        Set<Category> categories = getCategoriesOrCreateIfNotExist(requestDTO.categories());
+
+        BookTemplateBuilder.updateBookTemplate(bookTemplate, requestDTO, categories);
+
+        BookTemplate updateTemplate = bookTemplateRepository.save(bookTemplate);
+
+        return BookTemplateResponseDTOBuilder.from(updateTemplate);
+    }
+
+    public void inactiveInvalidTemplate(long id) throws Exception {
+        BookTemplate bookTemplate = findTemplateById(id);
+
+        bookTemplate.setStatus(TemplateStatusIndicator.INACTIVE);
+
+        bookTemplateRepository.save(bookTemplate);
     }
 
     public void updateBookTemplateBySuggestion(SuggestionTemplate suggestion) throws Exception {
 
-        verifyBookTemplateAlreadyExist(suggestion);
+        verifyBookTemplateAlreadyExist(suggestion.getSuggestedISBN(), suggestion.getSuggestedTitle(), suggestion.getSuggestedAuthor());
 
         Set<Category> categories = getCategoriesOrCreateIfNotExist(suggestion.getSuggestedCategories());
 
@@ -45,11 +75,19 @@ public class BookTemplateService {
         bookTemplateRepository.save(template);
     }
 
-    public BookTemplate verifyTemplateExist(long id) throws Exception {
-        return bookTemplateRepository.findById(id)
-                .orElseThrow(() -> new BookTemplateException("O template com o " + id + " não foi encontrado.", HttpStatus.NOT_FOUND));
+    public BookTemplateResponsePageDTO findAllTemplatesByStatus(int page, int pageSize, String direction, String status) {
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.valueOf(direction), "created_at");
+
+        Page<BookTemplate> bookTemplatePage = bookTemplateRepository.findByStatus(status, pageable);
+
+        return BookTemplateResponseDTOBuilder.fromPage(bookTemplatePage);
     }
 
+    public BookTemplate findTemplateById(long id) throws Exception {
+        return bookTemplateRepository.findByIdAndStatus(id, TemplateStatusIndicator.VERIFIED.name())
+                .orElseThrow(() -> new BookTemplateException("O template não foi encontrado.", HttpStatus.NOT_FOUND));
+    }
 
     private Set<Category> getCategoriesOrCreateIfNotExist(Set<String> categoriesName) {
         Set<Category> existentCategories = categoryRepository.findByNameIn(categoriesName);
@@ -68,12 +106,11 @@ public class BookTemplateService {
         return existentCategories;
     }
 
-    private void verifyBookTemplateAlreadyExist(SuggestionTemplate suggestion) throws Exception {
+    private void verifyBookTemplateAlreadyExist(String isbn, String title, String author) throws Exception {
 
-        String identifier = suggestion.getSuggestedISBN() != null ? suggestion.getSuggestedISBN() :
-                (suggestion.getSuggestedTitle() + suggestion.getSuggestedAuthor()).toLowerCase();
+        String identifier = isbn != null ? isbn : (title + author).toLowerCase();
 
-        Optional<BookTemplate> bookTemplate = bookTemplateRepository.findByIdentifier(identifier);
+        Optional<BookTemplate> bookTemplate = bookTemplateRepository.findByIdentifierAndStatus(identifier, TemplateStatusIndicator.VERIFIED.name());
 
         if (bookTemplate.isPresent()) {
             throw new BookTemplateException("Já existe um template com esse ISBN ou combinação de titulo + autor", HttpStatus.BAD_REQUEST);

@@ -47,7 +47,7 @@ public class SuggestionResponseDTOBuilder {
                 .img(suggestion.getSuggestedImg())
                 .reason(suggestion.getReason() == null ? "" : suggestion.getReason())
                 .justification(suggestion.getJustification() == null ? "" : suggestion.getJustification())
-                .status(suggestion.getSuggestedISBN())
+                .status(suggestion.getStatus().name())
                 .categories(suggestion.getSuggestedCategories())
                 .build();
     }

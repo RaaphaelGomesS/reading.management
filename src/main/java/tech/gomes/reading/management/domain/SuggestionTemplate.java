@@ -3,7 +3,7 @@ package tech.gomes.reading.management.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import tech.gomes.reading.management.indicator.SuggestionStatusIndicator;
+import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 
 import java.time.Instant;
 import java.util.Set;
@@ -57,7 +57,7 @@ public class SuggestionTemplate {
 
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
-    private SuggestionStatusIndicator status;
+    private TemplateStatusIndicator status;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

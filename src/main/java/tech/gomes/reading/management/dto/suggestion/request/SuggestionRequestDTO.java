@@ -1,8 +1,12 @@
 package tech.gomes.reading.management.dto.suggestion.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Builder;
 
 import java.util.List;
 
+@Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record SuggestionRequestDTO(Long templateId,
                                    String suggestedISBN,
                                    String suggestedTitle,
