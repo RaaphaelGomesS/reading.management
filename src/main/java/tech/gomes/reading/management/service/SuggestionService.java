@@ -8,14 +8,20 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import tech.gomes.reading.management.builder.SuggestionResponseDTOBuilder;
+import tech.gomes.reading.management.builder.SuggestionTemplateBuilder;
+import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
+import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.suggestion.request.DeclineRequestDTO;
+import tech.gomes.reading.management.dto.suggestion.request.SuggestionRequestDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponseDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponsePageDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionUpdateResponseDTO;
 import tech.gomes.reading.management.exception.SuggestionException;
 import tech.gomes.reading.management.indicator.SuggestionStatusIndicator;
 import tech.gomes.reading.management.repository.SuggestionRepository;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -81,6 +87,21 @@ public class SuggestionService {
 
         suggestion.setJustification(requestDTO.justification());
         suggestion.setStatus(SuggestionStatusIndicator.DECLINE);
+
+        suggestionRepository.save(suggestion);
+    }
+
+    public void createUpdateSuggestion(SuggestionRequestDTO requestDTO, User user) throws Exception {
+
+        BookTemplate bookTemplate = bookTemplateService.verifyTemplateExist(requestDTO.templateId());
+
+        Optional<SuggestionTemplate> existentSuggestion = suggestionRepository.findByIsbnAndStatus(requestDTO.suggestedISBN(), SuggestionStatusIndicator.IN_ANALYZE);
+
+        if (existentSuggestion.isPresent()) {
+            throw new SuggestionException("Já existe sugestão de alteração para esse template em análise", HttpStatus.BAD_REQUEST);
+        }
+
+        SuggestionTemplate suggestion = SuggestionTemplateBuilder.from(requestDTO, user, bookTemplate);
 
         suggestionRepository.save(suggestion);
     }

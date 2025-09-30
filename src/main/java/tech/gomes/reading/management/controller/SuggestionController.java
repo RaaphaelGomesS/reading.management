@@ -29,6 +29,7 @@ public class SuggestionController {
 
         User user = authService.getUserByToken(token);
 
+        suggestionService.createUpdateSuggestion(requestDTO, user);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

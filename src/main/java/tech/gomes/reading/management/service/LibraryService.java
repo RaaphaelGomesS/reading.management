@@ -44,8 +44,8 @@ public class LibraryService {
 
         Library newLibrary = Library
                 .builder()
-                .name(requestDTO.getName())
-                .description(requestDTO.getDescription())
+                .name(requestDTO.name())
+                .description(requestDTO.description())
                 .user(user)
                 .build();
 
@@ -60,8 +60,8 @@ public class LibraryService {
 
         Library library = getLibraryById(id, user);
 
-        library.setName(requestDTO.getName());
-        library.setDescription(requestDTO.getDescription());
+        library.setName(requestDTO.name());
+        library.setDescription(requestDTO.description());
 
         Library updatedLibrary = libraryRepository.save(library);
 
@@ -75,7 +75,7 @@ public class LibraryService {
     }
 
     private void verifyIfLibraryAlreadyExist(LibraryRequestDTO requestDTO, User user) throws Exception {
-        Optional<Library> optionalLibrary = libraryRepository.findByNameAndUserId(requestDTO.getName(), user.getId());
+        Optional<Library> optionalLibrary = libraryRepository.findByNameAndUserId(requestDTO.name(), user.getId());
 
         if (optionalLibrary.isPresent()) {
             throw new LibraryException("Já existe uma biblioteca com esse nome.", HttpStatus.BAD_REQUEST);

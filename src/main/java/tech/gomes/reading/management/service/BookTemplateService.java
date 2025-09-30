@@ -45,6 +45,11 @@ public class BookTemplateService {
         bookTemplateRepository.save(template);
     }
 
+    public BookTemplate verifyTemplateExist(long id) throws Exception {
+        return bookTemplateRepository.findById(id)
+                .orElseThrow(() -> new BookTemplateException("O template com o " + id + " não foi encontrado.", HttpStatus.NOT_FOUND));
+    }
+
 
     private Set<Category> getCategoriesOrCreateIfNotExist(Set<String> categoriesName) {
         Set<Category> existentCategories = categoryRepository.findByNameIn(categoriesName);

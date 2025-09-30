@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
+import tech.gomes.reading.management.indicator.SuggestionStatusIndicator;
 
 import java.util.Optional;
 
@@ -18,4 +19,6 @@ public interface SuggestionRepository extends JpaRepository<SuggestionTemplate, 
     Optional<SuggestionTemplate> findByIdAndBookTemplateIsNotNull(long id);
 
     Optional<SuggestionTemplate> findByIdAndBookTemplateIsNull(long id);
+
+    Optional<SuggestionTemplate> findByIsbnAndStatus(String isbn, SuggestionStatusIndicator status);
 }
