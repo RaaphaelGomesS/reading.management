@@ -33,7 +33,7 @@ public class BookTemplateService {
 
     private final CategoryRepository categoryRepository;
 
-    public BookTemplate getOrcreateBookTemplate(BookTemplateRequestDTO requestDTO) throws Exception {
+    public BookTemplate getOrcreateBookTemplate(BookTemplateRequestDTO requestDTO) {
 
         String identifier = ConvertUtils.getIdentifierByRequestDTO(requestDTO);
 
