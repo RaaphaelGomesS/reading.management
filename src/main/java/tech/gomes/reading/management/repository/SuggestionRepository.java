@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface SuggestionRepository extends JpaRepository<SuggestionTemplate, Long> {
 
-    Page<SuggestionTemplate> findByStatusAndBookTemplateIsNotNull(String status, Pageable pageable);
+    Page<SuggestionTemplate> findByStatusAndBookTemplateIsNotNull(TemplateStatusIndicator status, Pageable pageable);
 
     Optional<SuggestionTemplate> findByIdAndBookTemplateIsNotNull(long id);
 

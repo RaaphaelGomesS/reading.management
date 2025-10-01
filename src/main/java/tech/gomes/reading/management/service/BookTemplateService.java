@@ -19,6 +19,7 @@ import tech.gomes.reading.management.exception.BookTemplateException;
 import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 import tech.gomes.reading.management.repository.BookTemplateRepository;
 import tech.gomes.reading.management.repository.CategoryRepository;
+import tech.gomes.reading.management.utils.ConvertUtils;
 
 import java.util.Optional;
 import java.util.Set;
@@ -32,9 +33,15 @@ public class BookTemplateService {
 
     private final CategoryRepository categoryRepository;
 
-    public BookTemplate createBookTemplate(BookTemplateRequestDTO requestDTO) throws Exception {
+    public BookTemplate getOrcreateBookTemplate(BookTemplateRequestDTO requestDTO) throws Exception {
 
-        verifyBookTemplateAlreadyExist(requestDTO.isbn(), requestDTO.title(), requestDTO.author());
+        String identifier = ConvertUtils.getIdentifierByRequestDTO(requestDTO);
+
+        Optional<BookTemplate> existentTemplate = bookTemplateRepository.findByIdentifierAndStatus(identifier, TemplateStatusIndicator.VERIFIED.name());
+
+        if (existentTemplate.isPresent()) {
+            return existentTemplate.get();
+        }
 
         Set<Category> categories = getCategoriesOrCreateIfNotExist(requestDTO.categories());
 
@@ -66,7 +73,9 @@ public class BookTemplateService {
 
     public void updateBookTemplateBySuggestion(SuggestionTemplate suggestion) throws Exception {
 
-        verifyBookTemplateAlreadyExist(suggestion.getSuggestedISBN(), suggestion.getSuggestedTitle(), suggestion.getSuggestedAuthor());
+        String identifier = ConvertUtils.getIdentifierBySuggestion(suggestion);
+
+        verifyBookTemplateAlreadyExist(identifier);
 
         Set<Category> categories = getCategoriesOrCreateIfNotExist(suggestion.getSuggestedCategories());
 
@@ -77,7 +86,7 @@ public class BookTemplateService {
 
     public BookTemplateResponsePageDTO findAllTemplatesByStatus(int page, int pageSize, String direction, String status) {
 
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.valueOf(direction), "created_at");
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.valueOf(direction), "createdAt");
 
         Page<BookTemplate> bookTemplatePage = bookTemplateRepository.findByStatus(status, pageable);
 
@@ -106,9 +115,7 @@ public class BookTemplateService {
         return existentCategories;
     }
 
-    private void verifyBookTemplateAlreadyExist(String isbn, String title, String author) throws Exception {
-
-        String identifier = isbn != null ? isbn : (title + author).toLowerCase();
+    private void verifyBookTemplateAlreadyExist(String identifier) throws Exception {
 
         Optional<BookTemplate> bookTemplate = bookTemplateRepository.findByIdentifierAndStatus(identifier, TemplateStatusIndicator.VERIFIED.name());
 

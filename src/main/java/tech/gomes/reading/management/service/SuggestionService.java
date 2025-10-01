@@ -47,9 +47,9 @@ public class SuggestionService {
 
     public SuggestionResponsePageDTO findAllUpdateSuggestion(int page, int pageSize, String direction, String status) {
 
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.valueOf(direction), "created_at");
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.valueOf(direction), "createdAt");
 
-        Page<SuggestionTemplate> suggestionPage = suggestionRepository.findByStatusAndBookTemplateIsNotNull(status, pageable);
+        Page<SuggestionTemplate> suggestionPage = suggestionRepository.findByStatusAndBookTemplateIsNotNull(TemplateStatusIndicator.valueOf(status), pageable);
 
         return SuggestionResponseDTOBuilder.fromPage(suggestionPage);
     }

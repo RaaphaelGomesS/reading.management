@@ -26,7 +26,7 @@ public class LibraryService {
 
     public LibraryResponsePageDTO getALlLibraries(User user, int page, int pageSize, String direction) {
 
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.valueOf(direction), "updated_at");
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.valueOf(direction), "updatedAt");
 
         Page<Library> libraryPage = libraryRepository.findByUserId(user.getId(), pageable);
 

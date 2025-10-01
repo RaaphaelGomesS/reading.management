@@ -24,7 +24,10 @@ public class LibraryController {
     private final AuthService authService;
 
     @GetMapping("/")
-    public ResponseEntity<LibraryResponsePageDTO> getAllLibrariesByUserId(@RequestParam(value = "page", required = false, defaultValue = "0") int page, @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize, @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<LibraryResponsePageDTO> getAllLibrariesByUserId(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                                          @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                                                          @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction,
+                                                                          JwtAuthenticationToken token) throws Exception {
 
         User user = authService.getUserByToken(token);
 

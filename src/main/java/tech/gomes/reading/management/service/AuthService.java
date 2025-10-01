@@ -51,7 +51,7 @@ public class AuthService {
                 .subject(user.getId().toString())
                 .expiresAt(getExpirationDate())
                 .issuedAt(Instant.now())
-                .claim("scope", user.getRole())
+                .claim("SCOPE", user.getRole().name())
                 .build();
 
         var token = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
