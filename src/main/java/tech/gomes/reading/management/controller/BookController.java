@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.book.BookRequestDTO;
 import tech.gomes.reading.management.dto.book.BookResponseDTO;
@@ -24,7 +25,7 @@ public class BookController {
 
 
     @PostMapping("/")
-    public ResponseEntity<BookResponseDTO> registerBookInLibrary(@RequestBody BookRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<BookResponseDTO> registerBookInLibrary(@RequestPart("book") BookRequestDTO requestDTO, @RequestPart("coverImg") MultipartFile file, JwtAuthenticationToken token) throws Exception {
 
         User user = authService.getUserByToken(token);
 

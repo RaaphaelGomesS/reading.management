@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.builder.BookTemplateResponseDTOBuilder;
 import tech.gomes.reading.management.dto.book.BookTemplateRequestDTO;
 import tech.gomes.reading.management.dto.book.BookTemplateResponseDTO;
@@ -37,9 +38,9 @@ public class BookTemplateController {
 
     @PostMapping("/fix")
     @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
-    public ResponseEntity<BookTemplateResponseDTO> updateBookTemplate(@PathVariable BookTemplateRequestDTO requestDTO) throws Exception {
+    public ResponseEntity<BookTemplateResponseDTO> updateBookTemplate(@RequestPart("template") BookTemplateRequestDTO requestDTO, @RequestPart("coverImg") MultipartFile file) throws Exception {
 
-        BookTemplateResponseDTO responseDTO = templateService.updateBookTemplateByAdminRequest(requestDTO);
+        BookTemplateResponseDTO responseDTO = templateService.updateBookTemplateByAdminRequest(requestDTO, file);
 
         return ResponseEntity.ok(responseDTO);
     }

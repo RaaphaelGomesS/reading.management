@@ -7,6 +7,7 @@ import tech.gomes.reading.management.domain.SuggestionTemplate;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponseDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponsePageDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionUpdateResponseDTO;
+import tech.gomes.reading.management.utils.ConvertUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,7 +45,7 @@ public class SuggestionResponseDTOBuilder {
                 .description(suggestion.getSuggestedDescription())
                 .year(suggestion.getSuggestedYear())
                 .pages(suggestion.getSuggestedPages())
-                .img(suggestion.getSuggestedImg())
+                .img(ConvertUtils.uriCoverImg(suggestion.getSuggestedImg()))
                 .reason(suggestion.getReason() == null ? "" : suggestion.getReason())
                 .justification(suggestion.getJustification() == null ? "" : suggestion.getJustification())
                 .status(suggestion.getStatus().name())
@@ -62,7 +63,7 @@ public class SuggestionResponseDTOBuilder {
                 .description(template.getDescription())
                 .year(template.getYearPublication())
                 .pages(template.getPages())
-                .img(template.getImg())
+                .img(ConvertUtils.uriCoverImg(template.getImg()))
                 .categories(template.getCategories().stream().map(Category::getName).collect(Collectors.toSet()))
                 .build();
     }

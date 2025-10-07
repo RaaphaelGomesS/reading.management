@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.suggestion.request.DeclineRequestDTO;
 import tech.gomes.reading.management.dto.suggestion.request.SuggestionRequestDTO;
@@ -24,7 +25,7 @@ public class SuggestionController {
     private final AuthService authService;
 
     @PostMapping("/")
-    public ResponseEntity<Void> createUpdateSuggestion(@RequestBody SuggestionRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<Void> createUpdateSuggestion(@RequestPart("suggestion") SuggestionRequestDTO requestDTO, @RequestPart("coverImg") MultipartFile file, JwtAuthenticationToken token) throws Exception {
 
         User user = authService.getUserByToken(token);
 

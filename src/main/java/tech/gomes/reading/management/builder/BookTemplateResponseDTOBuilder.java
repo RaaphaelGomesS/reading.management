@@ -3,9 +3,9 @@ package tech.gomes.reading.management.builder;
 import org.springframework.data.domain.Page;
 import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.Category;
-import tech.gomes.reading.management.dto.book.BookTemplateRequestDTO;
 import tech.gomes.reading.management.dto.book.BookTemplateResponseDTO;
 import tech.gomes.reading.management.dto.book.BookTemplateResponsePageDTO;
+import tech.gomes.reading.management.utils.ConvertUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,7 +36,7 @@ public class BookTemplateResponseDTOBuilder {
                 .description(template.getDescription())
                 .year(template.getYearPublication())
                 .pages(template.getPages())
-                .img(template.getImg())
+                .img(ConvertUtils.uriCoverImg(template.getImg()))
                 .status(template.getStatus().name())
                 .categories(template.getCategories().stream().map(Category::getName).collect(Collectors.toSet()))
                 .build();
