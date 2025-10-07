@@ -29,7 +29,7 @@ public class SuggestionController {
 
         User user = authService.getUserByToken(token);
 
-        suggestionService.createUpdateSuggestion(requestDTO, user);
+        suggestionService.createUpdateSuggestion(requestDTO, user, file);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

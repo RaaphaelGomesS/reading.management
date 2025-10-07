@@ -26,7 +26,7 @@ public class BookTemplateBuilder {
                 .build();
     }
 
-    public static BookTemplate from(BookTemplateRequestDTO requestDTO, Set<Category> categories) {
+    public static BookTemplate from(BookTemplateRequestDTO requestDTO, Set<Category> categories, String coverImg) {
         return BookTemplate.builder()
                 .id(requestDTO.templateId())
                 .ISBN(requestDTO.isbn())
@@ -37,12 +37,12 @@ public class BookTemplateBuilder {
                 .description(requestDTO.description())
                 .yearPublication(requestDTO.year())
                 .pages(requestDTO.pages())
-                .img("")
+                .img(coverImg)
                 .categories(categories)
                 .build();
     }
 
-    public static void updateBookTemplate(BookTemplate bookTemplate, BookTemplateRequestDTO requestDTO, Set<Category> categories) {
+    public static void updateBookTemplate(BookTemplate bookTemplate, BookTemplateRequestDTO requestDTO, Set<Category> categories, String coverImg) {
         bookTemplate.setISBN(requestDTO.isbn());
         bookTemplate.setTitle(requestDTO.title());
         bookTemplate.setAuthor(requestDTO.author());
@@ -50,7 +50,7 @@ public class BookTemplateBuilder {
         bookTemplate.setEdition(requestDTO.edition());
         bookTemplate.setDescription(requestDTO.description());
         bookTemplate.setPages(requestDTO.pages());
-        bookTemplate.setImg("");
+        bookTemplate.setImg(coverImg);
         bookTemplate.setCategories(categories);
         bookTemplate.setStatus(TemplateStatusIndicator.VERIFIED);
     }

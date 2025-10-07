@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.builder.SuggestionResponseDTOBuilder;
 import tech.gomes.reading.management.builder.SuggestionBuilder;
 import tech.gomes.reading.management.domain.BookTemplate;
@@ -30,7 +31,9 @@ public class SuggestionService {
 
     private final BookTemplateService bookTemplateService;
 
-    public void createUpdateSuggestion(SuggestionRequestDTO requestDTO, User user) throws Exception {
+    private final UploadService uploadService;
+
+    public void createUpdateSuggestion(SuggestionRequestDTO requestDTO, User user, MultipartFile file) throws Exception {
 
         BookTemplate bookTemplate = bookTemplateService.findTemplateById(requestDTO.templateId());
 
@@ -40,7 +43,9 @@ public class SuggestionService {
             throw new SuggestionException("Já existe sugestão de alteração para esse template em análise", HttpStatus.BAD_REQUEST);
         }
 
-        SuggestionTemplate suggestion = SuggestionBuilder.from(requestDTO, user, bookTemplate);
+        String coverImg = uploadService.uploadCoverImg(file);
+
+        SuggestionTemplate suggestion = SuggestionBuilder.from(requestDTO, user, bookTemplate, coverImg);
 
         suggestionRepository.save(suggestion);
     }

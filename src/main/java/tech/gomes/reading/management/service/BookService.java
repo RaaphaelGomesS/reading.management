@@ -3,6 +3,7 @@ package tech.gomes.reading.management.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.builder.BookBuilder;
 import tech.gomes.reading.management.builder.BookResponseDTOBuilder;
 import tech.gomes.reading.management.domain.Book;
@@ -26,13 +27,13 @@ public class BookService {
 
     private final BookTemplateService templateService;
 
-    public BookResponseDTO createBook(BookRequestDTO requestDTO, User user) throws Exception {
+    public BookResponseDTO createBook(BookRequestDTO requestDTO, User user, MultipartFile file) throws Exception {
 
         verifyBookAlreadyRegister(requestDTO, user);
 
         Library library = libraryService.getLibraryById(requestDTO.libraryId(), user);
 
-        BookTemplate template = templateService.getOrcreateBookTemplate(requestDTO.template());
+        BookTemplate template = templateService.getOrcreateBookTemplate(requestDTO.template(), file);
 
         Book newBook = BookBuilder.from(requestDTO, template, library);
 

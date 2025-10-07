@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.builder.BookTemplateBuilder;
 import tech.gomes.reading.management.builder.BookTemplateResponseDTOBuilder;
 import tech.gomes.reading.management.domain.BookTemplate;
@@ -33,7 +34,9 @@ public class BookTemplateService {
 
     private final CategoryRepository categoryRepository;
 
-    public BookTemplate getOrcreateBookTemplate(BookTemplateRequestDTO requestDTO) {
+    private final UploadService uploadService;
+
+    public BookTemplate getOrcreateBookTemplate(BookTemplateRequestDTO requestDTO, MultipartFile file) {
 
         String identifier = ConvertUtils.getIdentifierByRequestDTO(requestDTO);
 
@@ -45,18 +48,22 @@ public class BookTemplateService {
 
         Set<Category> categories = getCategoriesOrCreateIfNotExist(requestDTO.categories());
 
-        BookTemplate template = BookTemplateBuilder.from(requestDTO, categories);
+        String coverImg = uploadService.uploadCoverImg(file);
+
+        BookTemplate template = BookTemplateBuilder.from(requestDTO, categories, coverImg);
 
         return bookTemplateRepository.save(template);
     }
 
-    public BookTemplateResponseDTO updateBookTemplateByAdminRequest(BookTemplateRequestDTO requestDTO) throws Exception {
+    public BookTemplateResponseDTO updateBookTemplateByAdminRequest(BookTemplateRequestDTO requestDTO, MultipartFile file) throws Exception {
 
         BookTemplate bookTemplate = findTemplateById(requestDTO.templateId());
 
         Set<Category> categories = getCategoriesOrCreateIfNotExist(requestDTO.categories());
 
-        BookTemplateBuilder.updateBookTemplate(bookTemplate, requestDTO, categories);
+        String coverImg = uploadService.uploadCoverImg(file);
+
+        BookTemplateBuilder.updateBookTemplate(bookTemplate, requestDTO, categories, coverImg);
 
         BookTemplate updateTemplate = bookTemplateRepository.save(bookTemplate);
 

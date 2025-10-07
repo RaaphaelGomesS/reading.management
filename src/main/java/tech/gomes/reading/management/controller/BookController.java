@@ -29,7 +29,7 @@ public class BookController {
 
         User user = authService.getUserByToken(token);
 
-        BookResponseDTO responseDTO = bookService.createBook(requestDTO, user);
+        BookResponseDTO responseDTO = bookService.createBook(requestDTO, user, file);
 
         return ResponseEntity.ok(responseDTO);
     }

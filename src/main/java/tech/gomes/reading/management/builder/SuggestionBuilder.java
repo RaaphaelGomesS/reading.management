@@ -7,18 +7,18 @@ import tech.gomes.reading.management.dto.suggestion.request.SuggestionRequestDTO
 
 public class SuggestionBuilder {
 
-    public static SuggestionTemplate from(SuggestionRequestDTO requestDTO, User user, BookTemplate template) {
+    public static SuggestionTemplate from(SuggestionRequestDTO requestDTO, User user, BookTemplate template, String coverImg) {
         return SuggestionTemplate.builder()
-                .suggestedISBN(requestDTO.suggestedISBN())
-                .suggestedTitle(requestDTO.suggestedTitle())
-                .suggestedAuthor(requestDTO.suggestedAuthor())
-                .suggestedPublisher(requestDTO.suggestedPublisher())
-                .suggestedEdition(requestDTO.suggestedEdition())
-                .suggestedDescription(requestDTO.suggestedDescription())
-                .suggestedYear(requestDTO.suggestedYear())
-                .suggestedPages(requestDTO.suggestedPages())
-                .suggestedImg(requestDTO.suggestedReason())
-                .reason(requestDTO.suggestedReason())
+                .suggestedISBN(requestDTO.suggestedISBN() != null ? requestDTO.suggestedISBN() : template.getISBN())
+                .suggestedTitle(requestDTO.suggestedTitle() != null ? requestDTO.suggestedTitle() : template.getTitle())
+                .suggestedAuthor(requestDTO.suggestedAuthor() != null ? requestDTO.suggestedAuthor() : template.getAuthor())
+                .suggestedPublisher(requestDTO.suggestedPublisher() != null ? requestDTO.suggestedPublisher() : template.getPublisher())
+                .suggestedEdition(requestDTO.suggestedEdition() != null ? requestDTO.suggestedEdition() : template.getEdition())
+                .suggestedDescription(requestDTO.suggestedDescription() != null ? requestDTO.suggestedDescription() : template.getDescription())
+                .suggestedYear(requestDTO.suggestedYear() != null ? requestDTO.suggestedYear() : template.getYearPublication())
+                .suggestedPages(requestDTO.suggestedPages() != null ? requestDTO.suggestedPages() : template.getPages())
+                .suggestedImg(coverImg != null ? coverImg : template.getImg())
+                .reason(requestDTO.suggestedReason() != null ? requestDTO.suggestedISBN() : template.getISBN())
                 .user(user)
                 .bookTemplate(template)
                 .build();
