@@ -49,7 +49,7 @@ public class BookController {
 
         User user = authService.getUserByToken(token);
 
-        BookResponseDTO responseDTO = bookService.updateBookPages(requestDTO, user);
+        BookResponseDTO responseDTO = bookService.updateReadPages(requestDTO, user);
 
         return ResponseEntity.ok(responseDTO);
     }
@@ -79,7 +79,9 @@ public class BookController {
 
         User user = authService.getUserByToken(token);
 
-        return ResponseEntity.ok(null);
+        BookResponseDTO responseDTO = bookService.changeBookFromLibrary(requestDTO, user);
+
+        return ResponseEntity.ok(responseDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -87,6 +89,8 @@ public class BookController {
 
         User user = authService.getUserByToken(token);
 
-        return ResponseEntity.ok(null);
+        bookService.deleteBook(id, user);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

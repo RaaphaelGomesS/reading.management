@@ -11,14 +11,13 @@ import tech.gomes.reading.management.domain.Book;
 import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.Library;
 import tech.gomes.reading.management.domain.User;
-import tech.gomes.reading.management.dto.book.request.BookCreateRequestDTO;
-import tech.gomes.reading.management.dto.book.request.BookRequestDTO;
-import tech.gomes.reading.management.dto.book.request.BookTemplateRequestDTO;
+import tech.gomes.reading.management.dto.book.request.*;
 import tech.gomes.reading.management.dto.book.response.BookResponseDTO;
 import tech.gomes.reading.management.dto.book.response.BookTemplateResponseDTO;
 import tech.gomes.reading.management.dto.book.response.FullBookResponseDTO;
 import tech.gomes.reading.management.exception.BookException;
 import tech.gomes.reading.management.exception.BookTemplateException;
+import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 import tech.gomes.reading.management.repository.BookRepository;
 
 import java.util.Optional;
@@ -56,6 +55,37 @@ public class BookService {
         return BookResponseDTOBuilder.from(updatedBook);
     }
 
+    public BookResponseDTO updateReadPages(PagesUpdateRequestDTO requestDTO, User user) throws Exception {
+
+        Book book = findBookById(requestDTO.bookId(), user.getId());
+
+        if (requestDTO.pages() > book.getBookTemplate().getPages()) {
+            throw new BookException("A quantidade de páginas é inválida.", HttpStatus.BAD_REQUEST);
+        }
+
+        ReadingStatusIndicator status = requestDTO.pages() == book.getBookTemplate().getPages() ? ReadingStatusIndicator.READ : ReadingStatusIndicator.READING;
+
+        book.setReadPages(requestDTO.pages());
+        book.setStatus(status);
+
+        Book updatedBook = bookRepository.save(book);
+
+        return BookResponseDTOBuilder.from(updatedBook);
+    }
+
+    public BookResponseDTO finishBook(FinishBookRequestDTO requestDTO, User user) throws Exception {
+
+        Book book = findBookById(requestDTO.bookId(), user.getId());
+
+        book.setRating(requestDTO.rating());
+        book.setStatus(ReadingStatusIndicator.READ);
+        book.setReadPages(book.getBookTemplate().getPages());
+
+        Book updatedBook = bookRepository.save(book);
+
+        return BookResponseDTOBuilder.from(updatedBook);
+    }
+
     public FullBookResponseDTO getFullBookById(long id, User user) throws Exception {
         Book book = findBookById(id, user.getId());
 
@@ -66,6 +96,25 @@ public class BookService {
                 .book(bookResponse)
                 .template(templateResponse)
                 .build();
+    }
+
+    public BookResponseDTO changeBookFromLibrary(ChangeLibRequestDTO requestDTO, User user) throws Exception {
+
+        Library library = libraryService.getLibraryById(requestDTO.libraryId(), user);
+
+        Book book = findBookById(requestDTO.bookId(), user.getId());
+
+        book.setLibrary(library);
+
+        Book updatedBook = bookRepository.save(book);
+
+        return BookResponseDTOBuilder.from(updatedBook);
+    }
+
+    public void deleteBook(long id, User user) throws Exception {
+        Book book = findBookById(id, user.getId());
+
+        bookRepository.delete(book);
     }
 
     private Book findBookById(long id, long userId) throws Exception {
