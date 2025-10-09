@@ -1,7 +1,7 @@
 package tech.gomes.reading.management.builder;
 
 import tech.gomes.reading.management.domain.Book;
-import tech.gomes.reading.management.dto.book.BookResponseDTO;
+import tech.gomes.reading.management.dto.book.response.BookResponseDTO;
 
 import java.util.Date;
 

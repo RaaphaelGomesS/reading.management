@@ -3,7 +3,7 @@ package tech.gomes.reading.management.builder;
 import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.Category;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
-import tech.gomes.reading.management.dto.book.BookTemplateRequestDTO;
+import tech.gomes.reading.management.dto.book.request.BookTemplateRequestDTO;
 import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 
 import java.util.Set;

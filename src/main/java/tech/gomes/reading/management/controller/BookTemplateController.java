@@ -7,9 +7,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.builder.BookTemplateResponseDTOBuilder;
-import tech.gomes.reading.management.dto.book.BookTemplateRequestDTO;
-import tech.gomes.reading.management.dto.book.BookTemplateResponseDTO;
-import tech.gomes.reading.management.dto.book.BookTemplateResponsePageDTO;
+import tech.gomes.reading.management.dto.book.request.BookTemplateRequestDTO;
+import tech.gomes.reading.management.dto.book.response.BookTemplateResponseDTO;
+import tech.gomes.reading.management.dto.book.response.BookTemplateResponsePageDTO;
 import tech.gomes.reading.management.service.BookTemplateService;
 
 @RestController

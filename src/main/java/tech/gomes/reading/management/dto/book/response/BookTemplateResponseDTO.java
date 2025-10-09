@@ -1,4 +1,4 @@
-package tech.gomes.reading.management.dto.book;
+package tech.gomes.reading.management.dto.book.response;
 
 import lombok.Builder;
 

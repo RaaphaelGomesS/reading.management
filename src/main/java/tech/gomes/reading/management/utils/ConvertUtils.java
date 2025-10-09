@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
-import tech.gomes.reading.management.dto.book.BookTemplateRequestDTO;
+import tech.gomes.reading.management.dto.book.request.BookTemplateRequestDTO;
 
 @Component
 public class ConvertUtils {
