@@ -74,7 +74,7 @@ public class BookController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/update/library")
     public ResponseEntity<BookResponseDTO> changeBookFromLibrary(@RequestBody ChangeLibRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
 
         User user = authService.getUserByToken(token);

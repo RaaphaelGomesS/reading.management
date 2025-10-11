@@ -15,7 +15,7 @@ public record SuggestionRequestDTO(Long templateId,
                                    String suggestedEdition,
                                    String suggestedReason,
                                    String suggestedDescription,
-                                   int suggestedYear,
-                                   int suggestedPages,
+                                   Integer suggestedYear,
+                                   Integer suggestedPages,
                                    List<String> suggestedCategories) {
 }

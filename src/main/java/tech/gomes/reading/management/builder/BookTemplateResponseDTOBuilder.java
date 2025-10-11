@@ -2,7 +2,7 @@ package tech.gomes.reading.management.builder;
 
 import org.springframework.data.domain.Page;
 import tech.gomes.reading.management.domain.BookTemplate;
-import tech.gomes.reading.management.domain.Category;
+import tech.gomes.reading.management.domain.BookCategory;
 import tech.gomes.reading.management.dto.book.response.BookTemplateResponseDTO;
 import tech.gomes.reading.management.dto.book.response.BookTemplateResponsePageDTO;
 import tech.gomes.reading.management.utils.ConvertUtils;
@@ -38,7 +38,7 @@ public class BookTemplateResponseDTOBuilder {
                 .pages(template.getPages())
                 .img(ConvertUtils.uriCoverImg(template.getImg()))
                 .status(template.getStatus().name())
-                .categories(template.getCategories().stream().map(Category::getName).collect(Collectors.toSet()))
+                .categories(template.getCategories().stream().map(BookCategory::getName).collect(Collectors.toSet()))
                 .build();
     }
 }

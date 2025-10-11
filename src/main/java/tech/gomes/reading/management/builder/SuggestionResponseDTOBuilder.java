@@ -2,7 +2,7 @@ package tech.gomes.reading.management.builder;
 
 import org.springframework.data.domain.Page;
 import tech.gomes.reading.management.domain.BookTemplate;
-import tech.gomes.reading.management.domain.Category;
+import tech.gomes.reading.management.domain.BookCategory;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponseDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponsePageDTO;
@@ -64,7 +64,7 @@ public class SuggestionResponseDTOBuilder {
                 .year(template.getYearPublication())
                 .pages(template.getPages())
                 .img(ConvertUtils.uriCoverImg(template.getImg()))
-                .categories(template.getCategories().stream().map(Category::getName).collect(Collectors.toSet()))
+                .categories(template.getCategories().stream().map(BookCategory::getName).collect(Collectors.toSet()))
                 .build();
     }
 }

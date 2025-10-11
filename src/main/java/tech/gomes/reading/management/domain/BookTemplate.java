@@ -69,5 +69,5 @@ public class BookTemplate {
     @JoinTable(name = "TB_BOOK_TEMPLATE_CATEGORY",
             joinColumns = @JoinColumn(name = "book_template_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> categories;
+    private Set<BookCategory> categories;
 }

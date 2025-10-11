@@ -23,9 +23,9 @@ public class BookBuilder {
 
     public static void updateBookFromRequest(Book book, BookRequestDTO requestDTO) {
         book.setStatus(ReadingStatusIndicator.valueOf(requestDTO.status()));
-        book.setReadPages(requestDTO.status());
-        book.setRating(requestDTO.status());
-        book.setStartedAt(requestDTO.status());
-        book.setFinishedAt(requestDTO.status());
+        book.setReadPages(requestDTO.pages());
+        book.setRating(requestDTO.rating());
+        book.setStartedAt(requestDTO.startedDate().toInstant());
+        book.setFinishedAt(requestDTO.finishedDate().toInstant());
     }
 }

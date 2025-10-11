@@ -1,7 +1,7 @@
 package tech.gomes.reading.management.builder;
 
 import tech.gomes.reading.management.domain.BookTemplate;
-import tech.gomes.reading.management.domain.Category;
+import tech.gomes.reading.management.domain.BookCategory;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
 import tech.gomes.reading.management.dto.book.request.BookTemplateRequestDTO;
 import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class BookTemplateBuilder {
 
-    public static BookTemplate from(SuggestionTemplate suggestion, Set<Category> categories) {
+    public static BookTemplate from(SuggestionTemplate suggestion, Set<BookCategory> categories) {
         return BookTemplate.builder()
                 .id(suggestion.getBookTemplate() != null ? suggestion.getBookTemplate().getId() : null)
                 .ISBN(suggestion.getSuggestedISBN())
@@ -26,7 +26,7 @@ public class BookTemplateBuilder {
                 .build();
     }
 
-    public static BookTemplate from(BookTemplateRequestDTO requestDTO, Set<Category> categories, String coverImg) {
+    public static BookTemplate from(BookTemplateRequestDTO requestDTO, Set<BookCategory> categories, String coverImg) {
         return BookTemplate.builder()
                 .id(requestDTO.templateId())
                 .ISBN(requestDTO.isbn())
@@ -42,7 +42,7 @@ public class BookTemplateBuilder {
                 .build();
     }
 
-    public static void updateBookTemplate(BookTemplate bookTemplate, BookTemplateRequestDTO requestDTO, Set<Category> categories, String coverImg) {
+    public static void updateBookTemplate(BookTemplate bookTemplate, BookTemplateRequestDTO requestDTO, Set<BookCategory> categories, String coverImg) {
         bookTemplate.setISBN(requestDTO.isbn());
         bookTemplate.setTitle(requestDTO.title());
         bookTemplate.setAuthor(requestDTO.author());

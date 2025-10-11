@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.builder.BookTemplateBuilder;
 import tech.gomes.reading.management.builder.BookTemplateResponseDTOBuilder;
 import tech.gomes.reading.management.domain.BookTemplate;
-import tech.gomes.reading.management.domain.Category;
+import tech.gomes.reading.management.domain.BookCategory;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
 import tech.gomes.reading.management.dto.book.request.BookTemplateRequestDTO;
 import tech.gomes.reading.management.dto.book.response.BookTemplateResponseDTO;
@@ -19,7 +19,7 @@ import tech.gomes.reading.management.dto.book.response.BookTemplateResponsePageD
 import tech.gomes.reading.management.exception.BookTemplateException;
 import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 import tech.gomes.reading.management.repository.BookTemplateRepository;
-import tech.gomes.reading.management.repository.CategoryRepository;
+import tech.gomes.reading.management.repository.BookCategoryRepository;
 import tech.gomes.reading.management.utils.ConvertUtils;
 
 import java.util.Optional;
@@ -32,7 +32,7 @@ public class BookTemplateService {
 
     private final BookTemplateRepository bookTemplateRepository;
 
-    private final CategoryRepository categoryRepository;
+    private final BookCategoryRepository bookCategoryRepository;
 
     private final UploadService uploadService;
 
@@ -46,7 +46,7 @@ public class BookTemplateService {
             return existentTemplate.get();
         }
 
-        Set<Category> categories = getCategoriesOrCreateIfNotExist(requestDTO.categories());
+        Set<BookCategory> categories = getCategoriesOrCreateIfNotExist(requestDTO.categories());
 
         String coverImg = uploadService.uploadCoverImg(file);
 
@@ -59,7 +59,7 @@ public class BookTemplateService {
 
         BookTemplate bookTemplate = findTemplateById(requestDTO.templateId());
 
-        Set<Category> categories = getCategoriesOrCreateIfNotExist(requestDTO.categories());
+        Set<BookCategory> categories = getCategoriesOrCreateIfNotExist(requestDTO.categories());
 
         String coverImg = uploadService.uploadCoverImg(file);
 
@@ -84,7 +84,7 @@ public class BookTemplateService {
 
         verifyBookTemplateAlreadyExist(identifier);
 
-        Set<Category> categories = getCategoriesOrCreateIfNotExist(suggestion.getSuggestedCategories());
+        Set<BookCategory> categories = getCategoriesOrCreateIfNotExist(suggestion.getSuggestedCategories());
 
         BookTemplate template = BookTemplateBuilder.from(suggestion, categories);
 
@@ -105,17 +105,17 @@ public class BookTemplateService {
                 .orElseThrow(() -> new BookTemplateException("O template não foi encontrado.", HttpStatus.NOT_FOUND));
     }
 
-    private Set<Category> getCategoriesOrCreateIfNotExist(Set<String> categoriesName) {
-        Set<Category> existentCategories = categoryRepository.findByNameIn(categoriesName);
+    private Set<BookCategory> getCategoriesOrCreateIfNotExist(Set<String> categoriesName) {
+        Set<BookCategory> existentCategories = bookCategoryRepository.findByNameIn(categoriesName);
 
-        Set<String> existentCategoriesNames = existentCategories.stream().map(Category::getName).collect(Collectors.toSet());
+        Set<String> existentCategoriesNames = existentCategories.stream().map(BookCategory::getName).collect(Collectors.toSet());
 
-        Set<Category> newCategories = categoriesName.stream().filter(category -> !existentCategoriesNames.contains(category))
-                .map(category -> Category.builder().name(category).build())
+        Set<BookCategory> newCategories = categoriesName.stream().filter(category -> !existentCategoriesNames.contains(category))
+                .map(category -> BookCategory.builder().name(category).build())
                 .collect(Collectors.toSet());
 
         if (!newCategories.isEmpty()) {
-            categoryRepository.saveAll(newCategories);
+            bookCategoryRepository.saveAll(newCategories);
             existentCategories.addAll(newCategories);
         }
 
