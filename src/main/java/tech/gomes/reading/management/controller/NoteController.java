@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.note.NoteFullResponseDTO;
 import tech.gomes.reading.management.dto.note.NoteRequestDTO;
+import tech.gomes.reading.management.dto.note.NoteResponseDTO;
 import tech.gomes.reading.management.dto.note.NoteResponsePageDTO;
 import tech.gomes.reading.management.service.AuthService;
 import tech.gomes.reading.management.service.NoteService;
@@ -52,14 +53,21 @@ public class NoteController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> createOrUpdateNote(@RequestBody NoteRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<NoteResponseDTO> createNote(@RequestBody NoteRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
         User user = authService.getUserByToken(token);
 
-        if (requestDTO.id() == null) {
-            return new ResponseEntity<>(null, HttpStatus.CREATED);
-        }
+        NoteResponseDTO responseDTO = noteService.createNoteAndSetLinks(requestDTO, user);
 
-        return ResponseEntity.ok(null);
+        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/")
+    public ResponseEntity<NoteResponseDTO> updateNote(@RequestBody NoteRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+        User user = authService.getUserByToken(token);
+
+        NoteResponseDTO responseDTO = noteService.updateNoteAndLinks(requestDTO, user);
+
+        return ResponseEntity.ok(responseDTO);
     }
 
     @DeleteMapping("/{id}")

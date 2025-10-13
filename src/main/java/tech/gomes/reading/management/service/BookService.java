@@ -117,7 +117,7 @@ public class BookService {
         bookRepository.delete(book);
     }
 
-    private Book findBookById(long id, long userId) throws Exception {
+    public Book findBookById(long id, long userId) throws Exception {
         return bookRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new BookException("Não foi encontrado o livro.", HttpStatus.NOT_FOUND));
     }

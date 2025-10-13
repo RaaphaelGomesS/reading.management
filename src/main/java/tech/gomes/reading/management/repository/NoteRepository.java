@@ -9,6 +9,7 @@ import tech.gomes.reading.management.dto.note.NoteSummaryDTO;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface NoteRepository extends JpaRepository<Note, Long> {
@@ -17,7 +18,9 @@ public interface NoteRepository extends JpaRepository<Note, Long> {
 
     Optional<Note> findByIdAndUserId(long id, long userId);
 
-    List<Note> findAllByTitleInAndUserId(List<String> titles, long id);
+    List<Note> findAllByTitleInAndUserId(Set<String> titles, long id);
+
+    boolean existsByTitleAndUserId(String title, long id);
 
     @Query("SELECT new tech.gomes.reading.management.dto.note.NoteSummaryDTO(n.id, n.title) FROM note n INNER JOIN noteLink l ON n.id = :sourceNoteId")
     List<NoteSummaryDTO> findAllLinkedNotes(@Param("sourceNoteId") long id);
