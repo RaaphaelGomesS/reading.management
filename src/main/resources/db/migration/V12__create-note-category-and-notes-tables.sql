@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS TB_NOTE_CATEGORY(
     name varchar(255) NOT NULL UNIQUE,
     user_id BIGINT NOT NULL,
 
-    CONSTRAINT fk_note_category_to_user FOREIGN KEY (user_id) REFERENCES TB_USER(user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_note_category_to_user FOREIGN KEY (user_id) REFERENCES TB_USER(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS TB_NOTE(
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS TB_NOTE(
     CONSTRAINT chk_TB_NOTE_type CHECK (type in ('QUICK', 'REFERENCE', 'PERMANENT')),
     CONSTRAINT fk_note_to_book FOREIGN KEY (book_id) REFERENCES TB_BOOK(book_id) ON DELETE SET NULL,
     CONSTRAINT fk_note_to_note_category FOREIGN KEY (note_category_id) REFERENCES TB_NOTE_CATEGORY(note_category_id) ON DELETE SET NULL,
-    CONSTRAINT fk_note_to_user FOREIGN KEY (user_id) REFERENCES TB_USER(user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_note_to_user FOREIGN KEY (user_id) REFERENCES TB_USER(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS TB_NOTE_LINK(
@@ -33,5 +33,5 @@ CREATE TABLE IF NOT EXISTS TB_NOTE_LINK(
     CONSTRAINT fk_source_note_to_note FOREIGN KEY (source_note_id) REFERENCES TB_NOTE(note_id) ON DELETE CASCADE,
     CONSTRAINT fk_target_note_to_note FOREIGN KEY (target_note_id) REFERENCES TB_NOTE(note_id) ON DELETE CASCADE,
 
-    CONSTRAINT chk_no_self_link CHECK (source_note_id <> target_note_id),
+    CONSTRAINT chk_no_self_link CHECK (source_note_id <> target_note_id)
 );

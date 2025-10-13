@@ -7,6 +7,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import tech.gomes.reading.management.indicator.NoteTypeIndicator;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -51,4 +53,10 @@ public class Note {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "TB_BOOK_LINK",
+            joinColumns = @JoinColumn(name = "source_note_id"),
+            inverseJoinColumns = @JoinColumn(name = "target_note_id"))
+    private Set<Note> linkedNotes = new HashSet<>();
 }
