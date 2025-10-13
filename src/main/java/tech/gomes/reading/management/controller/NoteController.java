@@ -71,8 +71,10 @@ public class NoteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteNote(@RequestParam long id, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<Void> deleteNote(@RequestParam long id, JwtAuthenticationToken token) throws Exception {
         User user = authService.getUserByToken(token);
+
+        noteService.DeleteNoteById(id, user);
 
         return ResponseEntity.ok(null);
     }

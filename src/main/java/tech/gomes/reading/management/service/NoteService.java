@@ -99,6 +99,12 @@ public class NoteService {
         return category;
     }
 
+    public void DeleteNoteById(long id, User user) throws Exception {
+        Note note = findNoteById(id, user.getId());
+
+        noteRepository.delete(note);
+    }
+
     private Note findNoteById(long id, long userId) throws Exception {
         return noteRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new NoteException("A anotação não foi encontrada.", HttpStatus.NOT_FOUND));
