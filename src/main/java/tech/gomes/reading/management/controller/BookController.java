@@ -9,7 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.book.request.*;
 import tech.gomes.reading.management.dto.book.response.BookResponseDTO;
+import tech.gomes.reading.management.dto.book.response.BookResponsePageDTO;
 import tech.gomes.reading.management.dto.book.response.FullBookResponseDTO;
+import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 import tech.gomes.reading.management.service.AuthService;
 import tech.gomes.reading.management.service.BookService;
 
@@ -23,6 +25,62 @@ public class BookController {
 
     private final AuthService authService;
 
+    @GetMapping("/reading/{id}")
+    public ResponseEntity<BookResponsePageDTO> getReadingBooksInLibrary(@PathVariable long id,
+                                                                        @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                                        @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                                                        @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction,
+                                                                        JwtAuthenticationToken token) throws Exception {
+
+        User user = authService.getUserByToken(token);
+
+        BookResponsePageDTO responseDTO = bookService.getAllBooksByStatus(id, user, ReadingStatusIndicator.READING, page, pageSize, direction);
+
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("/finished/{id}")
+    public ResponseEntity<BookResponsePageDTO> getFinishedBooksInLibrary(@PathVariable long id,
+                                                                         @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                                         @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                                                         @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction,
+                                                                         JwtAuthenticationToken token) throws Exception {
+
+        User user = authService.getUserByToken(token);
+
+        BookResponsePageDTO responseDTO = bookService.getAllBooksByStatus(id, user, ReadingStatusIndicator.READ, page, pageSize, direction);
+
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("/awaited/{id}")
+    public ResponseEntity<BookResponsePageDTO> getAwaitedBooksInLibrary(@PathVariable long id,
+                                                                        @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                                        @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                                                        @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction,
+                                                                        JwtAuthenticationToken token) throws Exception {
+
+        User user = authService.getUserByToken(token);
+
+        BookResponsePageDTO responseDTO = bookService.getAllBooksByStatus(id, user, ReadingStatusIndicator.WANT_TO_READ, page, pageSize, direction);
+
+
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("/dropped/{id}")
+    public ResponseEntity<BookResponsePageDTO> getDroppedBooksInLibrary(@PathVariable long id,
+                                                                        @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                                        @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                                                        @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction,
+                                                                        JwtAuthenticationToken token) throws Exception {
+
+        User user = authService.getUserByToken(token);
+
+        BookResponsePageDTO responseDTO = bookService.getAllBooksByStatus(id, user, ReadingStatusIndicator.DROPPED, page, pageSize, direction);
+
+        return ResponseEntity.ok(responseDTO);
+    }
 
     @PostMapping("/")
     public ResponseEntity<BookResponseDTO> registerBookInLibrary(@RequestPart("book") BookCreateRequestDTO requestDTO, @RequestPart("coverImg") MultipartFile file, JwtAuthenticationToken token) throws Exception {

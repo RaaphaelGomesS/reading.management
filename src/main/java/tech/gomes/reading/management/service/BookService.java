@@ -1,6 +1,10 @@
 package tech.gomes.reading.management.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +17,7 @@ import tech.gomes.reading.management.domain.Library;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.book.request.*;
 import tech.gomes.reading.management.dto.book.response.BookResponseDTO;
+import tech.gomes.reading.management.dto.book.response.BookResponsePageDTO;
 import tech.gomes.reading.management.dto.book.response.BookTemplateResponseDTO;
 import tech.gomes.reading.management.dto.book.response.FullBookResponseDTO;
 import tech.gomes.reading.management.exception.BookException;
@@ -31,6 +36,19 @@ public class BookService {
     private final LibraryService libraryService;
 
     private final BookTemplateService templateService;
+
+    public BookResponsePageDTO getAllBooksByStatus(long id, User user, ReadingStatusIndicator status, int page, int pageSize, String direction) throws Exception {
+
+        Library library = libraryService.getLibraryById(id, user);
+
+        Sort sort = Sort.by(Sort.Direction.valueOf(direction), "updatedAt");
+
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+
+        Page<Book> pageBook = bookRepository.findAllByLibraryIdAndStatus(library.getId(), status, pageable);
+
+        return BookResponseDTOBuilder.from(pageBook);
+    }
 
     public BookResponseDTO createBook(BookCreateRequestDTO requestDTO, User user, MultipartFile file) throws Exception {
 
