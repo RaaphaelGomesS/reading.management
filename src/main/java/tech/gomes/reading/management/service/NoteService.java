@@ -15,7 +15,6 @@ import tech.gomes.reading.management.domain.NoteCategory;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.note.*;
 import tech.gomes.reading.management.exception.NoteException;
-import tech.gomes.reading.management.repository.NoteCategoryRepository;
 import tech.gomes.reading.management.repository.NoteRepository;
 
 import java.util.HashSet;
@@ -32,7 +31,7 @@ public class NoteService {
 
     private final BookService bookService;
 
-    private final NoteCategoryRepository categoryRepository;
+    private final NoteCategoryService categoryService;
 
     public NoteFullResponseDTO findNoteByIdWithSummaryLinkedNotes(long id, User user) throws Exception {
 
@@ -85,7 +84,7 @@ public class NoteService {
 
         Book book = requestDTO.reference() == null ? null : bookService.findBookById(requestDTO.reference(), user.getId());
 
-        NoteCategory category = takeCategoryOrCreateIfNotExists(requestDTO.category(), user);
+        NoteCategory category = categoryService.takeCategoryOrCreateIfNotExists(requestDTO.category(), user);
 
         Note newNote = NoteBuilder.from(requestDTO, user, book, category);
 
@@ -109,24 +108,13 @@ public class NoteService {
 
         Book book = requestDTO.reference() == null ? null : bookService.findBookById(requestDTO.reference(), user.getId());
 
-        NoteCategory category = takeCategoryOrCreateIfNotExists(requestDTO.category(), user);
+        NoteCategory category = categoryService.takeCategoryOrCreateIfNotExists(requestDTO.category(), user);
 
         NoteBuilder.from(note, requestDTO, book, category, linkedNotes);
 
         Note updatedNote = noteRepository.save(note);
 
         return NoteResponseDTOBuilder.from(updatedNote);
-    }
-
-    private NoteCategory takeCategoryOrCreateIfNotExists(String categoryName, User user) {
-        NoteCategory category = categoryRepository.findByNameAndUserId(categoryName, user.getId()).orElse(null);
-
-        if (category == null) {
-            NoteCategory newCategory = NoteCategory.builder().name(categoryName).user(user).build();
-            return categoryRepository.save(newCategory);
-        }
-
-        return category;
     }
 
     public void DeleteNoteById(long id, User user) throws Exception {
