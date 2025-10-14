@@ -30,17 +30,29 @@ public class NoteController {
     }
 
     @GetMapping("/linked/{id}")
-    public ResponseEntity<NoteResponsePageDTO> getAllLinkedNotes(@RequestParam long id, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<NoteResponsePageDTO> getAllLinksToNote(@RequestParam long id,
+                                                                 @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                                 @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                                                 @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction,
+                                                                 JwtAuthenticationToken token) throws Exception {
         User user = authService.getUserByToken(token);
 
-        return ResponseEntity.ok(null);
+        NoteResponsePageDTO responseDTOS = noteService.findAllLinksToNote(id, user, page, pageSize, direction);
+
+        return ResponseEntity.ok(responseDTOS);
     }
 
     @GetMapping("/reversed/{id}")
-    public ResponseEntity<NoteResponsePageDTO> getAllReversedLinked(@RequestParam long id, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<NoteResponsePageDTO> getAllLinksFromNote(@RequestParam long id,
+                                                                   @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                                   @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                                                   @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction,
+                                                                   JwtAuthenticationToken token) throws Exception {
         User user = authService.getUserByToken(token);
 
-        return ResponseEntity.ok(null);
+        NoteResponsePageDTO responseDTOS = noteService.findAllLinksFromNote(id, user, page, pageSize, direction);
+
+        return ResponseEntity.ok(responseDTOS);
     }
 
     @GetMapping("/{id}")

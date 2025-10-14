@@ -1,8 +1,10 @@
 package tech.gomes.reading.management.builder;
 
+import org.springframework.data.domain.Page;
 import tech.gomes.reading.management.domain.Note;
 import tech.gomes.reading.management.dto.note.NoteFullResponseDTO;
 import tech.gomes.reading.management.dto.note.NoteResponseDTO;
+import tech.gomes.reading.management.dto.note.NoteResponsePageDTO;
 import tech.gomes.reading.management.dto.note.NoteSummaryDTO;
 
 import java.time.LocalDateTime;
@@ -33,6 +35,16 @@ public class NoteResponseDTOBuilder {
                 .category(note.getCategory().getName())
                 .createdDate(LocalDateTime.ofInstant(note.getCreatedAt(), ZoneId.of("America/Sao_Paulo")))
                 .updatedDate(LocalDateTime.ofInstant(note.getUpdatedAt(), ZoneId.of("America/Sao_Paulo")))
+                .build();
+    }
+
+    public static NoteResponsePageDTO from(Page<NoteResponseDTO> notePage) {
+        return NoteResponsePageDTO.builder()
+                .page(notePage.getNumber())
+                .pageSize(notePage.getSize())
+                .totalPages(notePage.getTotalPages())
+                .totalElements(notePage.getNumberOfElements())
+                .data(notePage.getContent())
                 .build();
     }
 }

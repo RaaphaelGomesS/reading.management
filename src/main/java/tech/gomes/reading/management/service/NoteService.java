@@ -1,6 +1,10 @@
 package tech.gomes.reading.management.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import tech.gomes.reading.management.builder.NoteBuilder;
@@ -9,10 +13,7 @@ import tech.gomes.reading.management.domain.Book;
 import tech.gomes.reading.management.domain.Note;
 import tech.gomes.reading.management.domain.NoteCategory;
 import tech.gomes.reading.management.domain.User;
-import tech.gomes.reading.management.dto.note.NoteFullResponseDTO;
-import tech.gomes.reading.management.dto.note.NoteRequestDTO;
-import tech.gomes.reading.management.dto.note.NoteResponseDTO;
-import tech.gomes.reading.management.dto.note.NoteSummaryDTO;
+import tech.gomes.reading.management.dto.note.*;
 import tech.gomes.reading.management.exception.NoteException;
 import tech.gomes.reading.management.repository.NoteCategoryRepository;
 import tech.gomes.reading.management.repository.NoteRepository;
@@ -38,9 +39,38 @@ public class NoteService {
         Note note = noteRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new NoteException("Não foi encontrado a anotação.", HttpStatus.NOT_FOUND));
 
-        List<NoteSummaryDTO> linkedSummaryNotes = noteRepository.findAllLinkedNotes(id);
+        List<NoteSummaryDTO> linkedSummaryNotes = noteRepository.findAllSummaryTargetNotes(id);
 
         return NoteResponseDTOBuilder.from(note, linkedSummaryNotes);
+    }
+
+    public NoteResponsePageDTO findAllLinksFromNote(long id, User user, int page, int pageSize, String direction) throws Exception {
+
+        if (noteRepository.existsByIdAndUserId(id, user.getId())) {
+            throw new NoteException("Não foi encontrada a anotação.", HttpStatus.NOT_FOUND);
+        }
+
+        Sort sort = Sort.by(Sort.Direction.valueOf(direction), "title");
+
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+
+        Page<NoteResponseDTO> responseDTOPage = noteRepository.findAllTargetNotesFromSource(id, pageable);
+
+        return NoteResponseDTOBuilder.from(responseDTOPage);
+    }
+
+    public NoteResponsePageDTO findAllLinksToNote(long id, User user, int page, int pageSize, String direction) throws Exception {
+        if (noteRepository.existsByIdAndUserId(id, user.getId())) {
+            throw new NoteException("Não foi encontrada a anotação.", HttpStatus.NOT_FOUND);
+        }
+
+        Sort sort = Sort.by(Sort.Direction.valueOf(direction), "title");
+
+        Pageable pageable = PageRequest.of(page, pageSize, sort);
+
+        Page<NoteResponseDTO> responseDTOPage = noteRepository.findAllSourceNotesFromTarget(id, pageable);
+
+        return NoteResponseDTOBuilder.from(responseDTOPage);
     }
 
     public NoteResponseDTO createNoteAndSetLinks(NoteRequestDTO requestDTO, User user) throws Exception {
