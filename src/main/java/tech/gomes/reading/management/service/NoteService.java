@@ -67,7 +67,7 @@ public class NoteService {
 
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
-        Page<NoteResponseDTO> responseDTOPage = noteRepository.findAllTargetNotesFromSource(id, pageable);
+        Page<NoteDTO> responseDTOPage = noteRepository.findAllTargetNotesFromSource(id, pageable);
 
         return NoteResponseDTOBuilder.from(responseDTOPage);
     }
@@ -81,7 +81,7 @@ public class NoteService {
 
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
-        Page<NoteResponseDTO> responseDTOPage = noteRepository.findAllSourceNotesFromTarget(id, pageable);
+        Page<NoteDTO> responseDTOPage = noteRepository.findAllSourceNotesFromTarget(id, pageable);
 
         return NoteResponseDTOBuilder.from(responseDTOPage);
     }

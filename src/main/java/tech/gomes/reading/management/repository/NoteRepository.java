@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import tech.gomes.reading.management.domain.Note;
-import tech.gomes.reading.management.dto.note.NoteResponseDTO;
+import tech.gomes.reading.management.dto.note.NoteDTO;
 import tech.gomes.reading.management.dto.note.NoteSummaryDTO;
 
 import java.util.List;
@@ -29,9 +29,9 @@ public interface NoteRepository extends JpaRepository<Note, Long>, JpaSpecificat
     @Query("SELECT new tech.gomes.reading.management.dto.note.NoteSummaryDTO(t.id, t.title) FROM note s JOIN s.linkedNotes t WHERE s.id = :sourceNoteId")
     List<NoteSummaryDTO> findAllSummaryTargetNotes(@Param("sourceNoteId") long id);
 
-    @Query("SELECT new tech.gomes.reading.management.dto.note.NoteResponseDTO(t.id, t.title, t.category, t.type, t.book, t.createdAt, t.updatedAt) FROM note s JOIN s.linkedNotes t WHERE s.id = :sourceNoteId")
-    Page<NoteResponseDTO> findAllTargetNotesFromSource(@Param("sourceNoteId") long id, Pageable pageable);
+    @Query("SELECT new tech.gomes.reading.management.dto.note.NoteDTO(t.id, t.title, t.category.name, t.type, t.book.id, t.createdAt, t.updatedAt) FROM note s JOIN s.linkedNotes t WHERE s.id = :sourceNoteId")
+    Page<NoteDTO> findAllTargetNotesFromSource(@Param("sourceNoteId") long id, Pageable pageable);
 
-    @Query("SELECT new tech.gomes.reading.management.dto.note.NoteResponseDTO(s.id, s.title, s.category, s.type, s.book, s.createdAt, s.updatedAt) FROM note t JOIN t.linkedNotes s WHERE t.id = :targetNoteId")
-    Page<NoteResponseDTO> findAllSourceNotesFromTarget(@Param("targetNoteId") long id, Pageable pageable);
+    @Query("SELECT new tech.gomes.reading.management.dto.note.NoteDTO(t.id, t.title, t.category.name, t.type, t.book.id, t.createdAt, t.updatedAt) FROM note s JOIN s.invertedNoteLinks t WHERE s.id = :targetNoteId")
+    Page<NoteDTO> findAllSourceNotesFromTarget(@Param("targetNoteId") long id, Pageable pageable);
 }

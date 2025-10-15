@@ -59,4 +59,7 @@ public class Note {
             joinColumns = @JoinColumn(name = "source_note_id"),
             inverseJoinColumns = @JoinColumn(name = "target_note_id"))
     private Set<Note> linkedNotes = new HashSet<>();
+
+    @ManyToMany(mappedBy = "linkedNotes")
+    private Set<Note> invertedNoteLinks = new HashSet<>();
 }
