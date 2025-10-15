@@ -25,12 +25,12 @@ public class NoteSpecification {
 
     public static Specification<Note> byFilter(NoteFilter filter) {
 
-        NoteTypeIndicator type = NoteTypeIndicator.getTypeByName(filter.type());
+        NoteTypeIndicator type = NoteTypeIndicator.getTypeByName(filter.getType());
 
         return Specification
-                .where(byUserId(filter.userId()))
+                .where(byUserId(filter.getUserId()))
                 .and(byType(type))
-                .and(byBookId(filter.bookId()))
-                .and(byCategoryId(filter.categoryId()));
+                .and(byBookId(filter.getBookId()))
+                .and(byCategoryId(filter.getCategoryId()));
     }
 }

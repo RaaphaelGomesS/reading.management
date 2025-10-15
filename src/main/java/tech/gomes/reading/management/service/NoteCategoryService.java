@@ -19,7 +19,7 @@ public class NoteCategoryService {
 
     private final NoteCategoryRepository categoryRepository;
 
-    public List<CategoryResponseDTO> getAllCategoriesFromUser(User user) throws Exception {
+    public List<CategoryResponseDTO> getAllCategoriesFromUser(User user) {
         List<NoteCategory> categories = categoryRepository.findAllByUserId(user.getId());
 
         return categories.stream().map(category -> new CategoryResponseDTO(category.getId(), category.getName())).collect(Collectors.toList());

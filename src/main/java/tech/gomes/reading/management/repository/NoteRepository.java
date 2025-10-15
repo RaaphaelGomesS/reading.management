@@ -26,12 +26,12 @@ public interface NoteRepository extends JpaRepository<Note, Long>, JpaSpecificat
 
     boolean existsByIdAndUserId(long id, long userId);
 
-    @Query("SELECT new tech.gomes.reading.management.dto.note.NoteSummaryDTO(n.id, n.title) FROM note s JOIN s.linkedNotes t WHERE s.id = :sourceNoteId")
+    @Query("SELECT new tech.gomes.reading.management.dto.note.NoteSummaryDTO(t.id, t.title) FROM note s JOIN s.linkedNotes t WHERE s.id = :sourceNoteId")
     List<NoteSummaryDTO> findAllSummaryTargetNotes(@Param("sourceNoteId") long id);
 
-    @Query("SELECT new tech.gomes.reading.management.dto.note.NoteResponseDTO(t.id, t.title, t.category, t.book, t.type, t.createdDate, t.updatedDate) FROM note s JOIN s.linkedNotes t s.id = :sourceNoteId")
+    @Query("SELECT new tech.gomes.reading.management.dto.note.NoteResponseDTO(t.id, t.title, t.category, t.type, t.book, t.createdAt, t.updatedAt) FROM note s JOIN s.linkedNotes t WHERE s.id = :sourceNoteId")
     Page<NoteResponseDTO> findAllTargetNotesFromSource(@Param("sourceNoteId") long id, Pageable pageable);
 
-    @Query("SELECT new tech.gomes.reading.management.dto.note.NoteResponseDTO(s.id, s.title, s.category, s.book, s.type, s.createdDate, s.updatedDate) FROM note t INNER t.linkedNotes s t.id = :targetNoteId")
+    @Query("SELECT new tech.gomes.reading.management.dto.note.NoteResponseDTO(s.id, s.title, s.category, s.type, s.book, s.createdAt, s.updatedAt) FROM note t JOIN t.linkedNotes s WHERE t.id = :targetNoteId")
     Page<NoteResponseDTO> findAllSourceNotesFromTarget(@Param("targetNoteId") long id, Pageable pageable);
 }
