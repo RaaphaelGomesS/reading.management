@@ -9,6 +9,7 @@ import tech.gomes.reading.management.dto.note.NoteSummaryDTO;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +46,20 @@ public class NoteResponseDTOBuilder {
                 .totalPages(notePage.getTotalPages())
                 .totalElements(notePage.getNumberOfElements())
                 .data(notePage.getContent())
+                .build();
+    }
+
+    public static NoteResponsePageDTO fromPage(Page<Note> notePage) {
+
+        List<NoteResponseDTO> responseDTOList = notePage.getContent().isEmpty() ?
+                notePage.getContent().stream().map(NoteResponseDTOBuilder::from).toList() : Collections.emptyList();
+
+        return NoteResponsePageDTO.builder()
+                .page(notePage.getNumber())
+                .pageSize(notePage.getSize())
+                .totalPages(notePage.getTotalPages())
+                .totalElements(notePage.getNumberOfElements())
+                .data(responseDTOList)
                 .build();
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import tech.gomes.reading.management.controller.filter.NoteFilter;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.note.NoteFullResponseDTO;
 import tech.gomes.reading.management.dto.note.NoteRequestDTO;
@@ -23,10 +24,14 @@ public class NoteController {
     private final NoteService noteService;
 
     @GetMapping("/")
-    public ResponseEntity<NoteResponsePageDTO> getAllNotesByFilter(JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<NoteResponsePageDTO> getAllNotesByFilter(@RequestBody NoteFilter filter, JwtAuthenticationToken token) throws Exception {
         User user = authService.getUserByToken(token);
 
-        return ResponseEntity.ok(null);
+        filter.setUserId(user.getId());
+
+        NoteResponsePageDTO responseDTO = noteService.findAllNotesByFilter(filter);
+
+        return ResponseEntity.ok(responseDTO);
     }
 
     @GetMapping("/linked/{id}")

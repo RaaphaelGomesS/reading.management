@@ -5,11 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.builder.BookTemplateBuilder;
 import tech.gomes.reading.management.builder.BookTemplateResponseDTOBuilder;
+import tech.gomes.reading.management.controller.filter.BookTemplateFilter;
 import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.BookCategory;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
@@ -20,6 +22,7 @@ import tech.gomes.reading.management.exception.BookTemplateException;
 import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 import tech.gomes.reading.management.repository.BookTemplateRepository;
 import tech.gomes.reading.management.repository.BookCategoryRepository;
+import tech.gomes.reading.management.repository.Specification.BookTemplateSpecification;
 import tech.gomes.reading.management.utils.ConvertUtils;
 
 import java.util.Optional;
@@ -35,6 +38,17 @@ public class BookTemplateService {
     private final BookCategoryRepository bookCategoryRepository;
 
     private final UploadService uploadService;
+
+    public BookTemplateResponsePageDTO findAllTemplatesByFilter(BookTemplateFilter filter) {
+
+        Specification<BookTemplate> spec = BookTemplateSpecification.byFilter(filter);
+
+        Pageable pageable = PageRequest.of(filter.page(), filter.pageSize());
+
+        Page<BookTemplate> template = bookTemplateRepository.findAll(spec, pageable);
+
+        return BookTemplateResponseDTOBuilder.fromPage(template);
+    }
 
     public BookTemplate getOrcreateBookTemplate(BookTemplateRequestDTO requestDTO, MultipartFile file) {
 

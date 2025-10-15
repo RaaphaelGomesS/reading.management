@@ -5,17 +5,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import tech.gomes.reading.management.builder.BookTemplateResponseDTOBuilder;
 import tech.gomes.reading.management.builder.NoteBuilder;
 import tech.gomes.reading.management.builder.NoteResponseDTOBuilder;
-import tech.gomes.reading.management.domain.Book;
-import tech.gomes.reading.management.domain.Note;
-import tech.gomes.reading.management.domain.NoteCategory;
-import tech.gomes.reading.management.domain.User;
+import tech.gomes.reading.management.controller.filter.BookTemplateFilter;
+import tech.gomes.reading.management.controller.filter.NoteFilter;
+import tech.gomes.reading.management.domain.*;
+import tech.gomes.reading.management.dto.book.response.BookTemplateResponsePageDTO;
 import tech.gomes.reading.management.dto.note.*;
 import tech.gomes.reading.management.exception.NoteException;
 import tech.gomes.reading.management.repository.NoteRepository;
+import tech.gomes.reading.management.repository.Specification.BookTemplateSpecification;
+import tech.gomes.reading.management.repository.Specification.NoteSpecification;
 
 import java.util.HashSet;
 import java.util.List;
@@ -32,6 +36,17 @@ public class NoteService {
     private final BookService bookService;
 
     private final NoteCategoryService categoryService;
+
+    public NoteResponsePageDTO findAllNotesByFilter(NoteFilter filter) {
+
+        Specification<Note> spec = NoteSpecification.byFilter(filter);
+
+        Pageable pageable = PageRequest.of(filter.page(), filter.pageSize());
+
+        Page<Note> notes = noteRepository.findAll(spec, pageable);
+
+        return NoteResponseDTOBuilder.fromPage(notes);
+    }
 
     public NoteFullResponseDTO findNoteByIdWithSummaryLinkedNotes(long id, User user) throws Exception {
 

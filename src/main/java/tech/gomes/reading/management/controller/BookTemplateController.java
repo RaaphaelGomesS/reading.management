@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.builder.BookTemplateResponseDTOBuilder;
+import tech.gomes.reading.management.controller.filter.BookTemplateFilter;
 import tech.gomes.reading.management.dto.book.request.BookTemplateRequestDTO;
 import tech.gomes.reading.management.dto.book.response.BookTemplateResponseDTO;
 import tech.gomes.reading.management.dto.book.response.BookTemplateResponsePageDTO;
@@ -18,6 +19,12 @@ import tech.gomes.reading.management.service.BookTemplateService;
 public class BookTemplateController {
 
     private final BookTemplateService templateService;
+
+    @GetMapping("/search")
+    public ResponseEntity<BookTemplateResponsePageDTO> searchTemplateByFilter(@RequestBody BookTemplateFilter filter) {
+
+        return ResponseEntity.ok(templateService.findAllTemplatesByFilter(filter));
+    }
 
     @GetMapping("/")
     @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
