@@ -1,7 +1,9 @@
 package tech.gomes.reading.management.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public class BookException extends Exception {
 
     private HttpStatus status;

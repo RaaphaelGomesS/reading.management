@@ -26,7 +26,7 @@ public class BookResponseDTOBuilder {
 
     public static BookResponsePageDTO from(Page<Book> bookPage) {
         List<BookResponseDTO> responseDTOList = bookPage.getContent().isEmpty() ?
-                bookPage.getContent().stream().map(BookResponseDTOBuilder::from).collect(Collectors.toList()) : Collections.emptyList();
+                Collections.emptyList() : bookPage.getContent().stream().map(BookResponseDTOBuilder::from).collect(Collectors.toList());
 
         return BookResponsePageDTO.builder()
                 .page(bookPage.getNumber())

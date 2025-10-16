@@ -17,7 +17,7 @@ public class SuggestionResponseDTOBuilder {
 
     public static SuggestionResponsePageDTO fromPage(Page<SuggestionTemplate> suggestionPage) {
         List<SuggestionResponseDTO> responseDTOList = suggestionPage.getContent().isEmpty() ?
-                suggestionPage.getContent().stream().map(SuggestionResponseDTOBuilder::fromSuggestion).toList() : Collections.emptyList();
+                Collections.emptyList() : suggestionPage.getContent().stream().map(SuggestionResponseDTOBuilder::fromSuggestion).toList();
 
         return SuggestionResponsePageDTO.builder()
                 .page(suggestionPage.getNumber())

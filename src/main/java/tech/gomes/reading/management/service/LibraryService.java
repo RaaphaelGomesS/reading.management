@@ -54,11 +54,11 @@ public class LibraryService {
         return LibraryResponseDTOBuilder.from(library);
     }
 
-    public LibraryResponseDTO updateLibrary(Long id, LibraryRequestDTO requestDTO, User user) throws Exception {
+    public LibraryResponseDTO updateLibrary(LibraryRequestDTO requestDTO, User user) throws Exception {
 
         verifyIfLibraryAlreadyExist(requestDTO, user);
 
-        Library library = getLibraryById(id, user);
+        Library library = getLibraryById(requestDTO.id(), user);
 
         library.setName(requestDTO.name());
         library.setDescription(requestDTO.description());

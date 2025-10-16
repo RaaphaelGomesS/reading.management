@@ -17,4 +17,52 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 
         return ResponseEntity.status(exception.getStatus()).body(exception.getMessage());
     }
+
+    @ExceptionHandler(LibraryException.class)
+    public ResponseEntity handlerLibraryException(LibraryException e) {
+
+        LibraryException exception = new LibraryException(e.getMessage(), e.getStatus());
+
+        return ResponseEntity.status(exception.getStatus()).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(BookException.class)
+    public ResponseEntity handlerBookException(BookException e) {
+
+        BookException exception = new BookException(e.getMessage(), e.getStatus());
+
+        return ResponseEntity.status(exception.getStatus()).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(BookTemplateException.class)
+    public ResponseEntity handlerBookTemplateException(BookTemplateException e) {
+
+        BookTemplateException exception = new BookTemplateException(e.getMessage(), e.getStatus());
+
+        return ResponseEntity.status(exception.getStatus()).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(NoteCategoryException.class)
+    public ResponseEntity handlerNoteCategoryException(NoteCategoryException e) {
+
+        NoteCategoryException exception = new NoteCategoryException(e.getMessage(), e.getStatus());
+
+        return ResponseEntity.status(exception.getStatus()).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(NoteException.class)
+    public ResponseEntity handlerNoteException(NoteException e) {
+
+        NoteException exception = new NoteException(e.getMessage(), e.getStatus());
+
+        return ResponseEntity.status(exception.getStatus()).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(SuggestionException.class)
+    public ResponseEntity handlerSuggestionException(SuggestionException e) {
+
+        SuggestionException exception = new SuggestionException(e.getMessage(), e.getStatus());
+
+        return ResponseEntity.status(exception.getStatus()).body(exception.getMessage());
+    }
 }

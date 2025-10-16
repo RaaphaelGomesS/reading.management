@@ -52,12 +52,12 @@ public class LibraryController {
         return new ResponseEntity<>(libraryService.createLibrary(requestDTO, user), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<LibraryResponseDTO> updateLibraryById(@PathVariable Long id, @RequestBody LibraryRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+    @PutMapping("/")
+    public ResponseEntity<LibraryResponseDTO> updateLibraryById(@RequestBody LibraryRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
 
         User user = authService.getUserByToken(token);
 
-        return ResponseEntity.ok(libraryService.updateLibrary(id, requestDTO, user));
+        return ResponseEntity.ok(libraryService.updateLibrary(requestDTO, user));
     }
 
     @DeleteMapping("/{id}")

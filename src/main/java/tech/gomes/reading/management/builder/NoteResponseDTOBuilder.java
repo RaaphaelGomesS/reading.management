@@ -50,7 +50,7 @@ public class NoteResponseDTOBuilder {
     public static NoteResponsePageDTO from(Page<NoteDTO> notePage) {
 
         List<NoteResponseDTO> responseDTOList = notePage.getContent().isEmpty() ?
-                notePage.getContent().stream().map(NoteResponseDTOBuilder::from).toList() : Collections.emptyList();
+                Collections.emptyList() : notePage.getContent().stream().map(NoteResponseDTOBuilder::from).toList();
 
         return NoteResponsePageDTO.builder()
                 .page(notePage.getNumber())
@@ -64,7 +64,7 @@ public class NoteResponseDTOBuilder {
     public static NoteResponsePageDTO fromPage(Page<Note> notePage) {
 
         List<NoteResponseDTO> responseDTOList = notePage.getContent().isEmpty() ?
-                notePage.getContent().stream().map(NoteResponseDTOBuilder::from).toList() : Collections.emptyList();
+                Collections.emptyList() : notePage.getContent().stream().map(NoteResponseDTOBuilder::from).toList();
 
         return NoteResponsePageDTO.builder()
                 .page(notePage.getNumber())
