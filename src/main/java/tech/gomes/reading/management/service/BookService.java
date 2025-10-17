@@ -60,7 +60,7 @@ public class BookService {
 
         Library library = libraryService.getLibraryById(requestDTO.book().libraryId(), user);
 
-        BookTemplate template = templateService.getOrcreateBookTemplate(requestDTO.template(), file);
+        BookTemplate template = templateService.getOrCreateBookTemplate(requestDTO.template(), file);
 
         Book newBook = BookBuilder.from(requestDTO.book(), template, library);
 

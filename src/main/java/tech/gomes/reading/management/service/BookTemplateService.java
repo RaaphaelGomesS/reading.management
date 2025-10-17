@@ -51,9 +51,12 @@ public class BookTemplateService {
         return BookTemplateResponseDTOBuilder.fromPage(template);
     }
 
-    //TODO: Separar método de criação, retornar Template mesmo sem ter sido validada em caso de criação
     @Transactional
-    public BookTemplate getOrcreateBookTemplate(BookTemplateRequestDTO requestDTO, MultipartFile file) {
+    public BookTemplate getOrCreateBookTemplate(BookTemplateRequestDTO requestDTO, MultipartFile file) throws Exception {
+
+        if (requestDTO.templateId() != null) {
+            return findBookTemplateById(requestDTO.templateId());
+        }
 
         String identifier = ConvertUtils.getIdentifierByRequestDTO(requestDTO);
 
@@ -77,6 +80,12 @@ public class BookTemplateService {
 
         BookTemplate bookTemplate = findTemplateById(requestDTO.templateId());
 
+        String identifier = ConvertUtils.getIdentifierByRequestDTO(requestDTO);
+
+        if (!identifier.equals(bookTemplate.getISBN()) || !identifier.equals(bookTemplate.getTitleAuthor())) {
+            verifyIfExistsAnyTemplateWithIdentifier(identifier);
+        }
+
         Set<BookCategory> categories = getCategoriesOrCreateIfNotExist(requestDTO.categories());
 
         String coverImg = uploadService.uploadCoverImg(file);
@@ -96,12 +105,14 @@ public class BookTemplateService {
         bookTemplateRepository.save(bookTemplate);
     }
 
-    //TODO: Mudar a validação para verificar se o ISBN do template bate com a da sugestão, se for diferente, procurar se já existe um outro template
     @Transactional
     public void updateBookTemplateBySuggestion(SuggestionTemplate suggestion) throws Exception {
 
         String identifier = ConvertUtils.getIdentifierBySuggestion(suggestion);
 
+        if (!identifier.equals(suggestion.getBookTemplate().getISBN()) || !identifier.equals(suggestion.getBookTemplate().getTitleAuthor())) {
+            verifyIfExistsAnyTemplateWithIdentifier(identifier);
+        }
 
         Set<BookCategory> categories = getCategoriesOrCreateIfNotExist(suggestion.getSuggestedCategories());
 
@@ -141,7 +152,17 @@ public class BookTemplateService {
         return existentCategories;
     }
 
-    private BookTemplate getBookTemplateByIdentifier(String identifier) {
-        return bookTemplateRepository.findByIdentifierAndStatus(identifier, TemplateStatusIndicator.VERIFIED).orElse(null);
+    public BookTemplate findBookTemplateById(long id) throws Exception {
+        return bookTemplateRepository.findByIdAndStatus(id, TemplateStatusIndicator.VERIFIED)
+                .orElseThrow(() -> new BookTemplateException("Template não foi encontrado.", HttpStatus.NOT_FOUND));
+    }
+
+    private void verifyIfExistsAnyTemplateWithIdentifier(String identifier) throws Exception {
+
+        Optional<BookTemplate> template = bookTemplateRepository.findByIdentifierWhenNotIsInactive(identifier);
+
+        (template.isPresent()) {
+            throw new BookTemplateException("Já existe um template com esse identificador: " + identifier, HttpStatus.BAD_REQUEST);
+        }
     }
 }
