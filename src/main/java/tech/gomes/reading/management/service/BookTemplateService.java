@@ -13,16 +13,16 @@ import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.builder.BookTemplateBuilder;
 import tech.gomes.reading.management.builder.BookTemplateResponseDTOBuilder;
 import tech.gomes.reading.management.controller.filter.BookTemplateFilter;
-import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.BookCategory;
+import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
 import tech.gomes.reading.management.dto.book.request.BookTemplateRequestDTO;
 import tech.gomes.reading.management.dto.book.response.BookTemplateResponseDTO;
 import tech.gomes.reading.management.dto.book.response.BookTemplateResponsePageDTO;
 import tech.gomes.reading.management.exception.BookTemplateException;
 import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
-import tech.gomes.reading.management.repository.BookTemplateRepository;
 import tech.gomes.reading.management.repository.BookCategoryRepository;
+import tech.gomes.reading.management.repository.BookTemplateRepository;
 import tech.gomes.reading.management.repository.Specification.BookTemplateSpecification;
 import tech.gomes.reading.management.utils.ConvertUtils;
 
@@ -51,12 +51,13 @@ public class BookTemplateService {
         return BookTemplateResponseDTOBuilder.fromPage(template);
     }
 
+    //TODO: Separar método de criação, retornar Template mesmo sem ter sido validada em caso de criação
     @Transactional
     public BookTemplate getOrcreateBookTemplate(BookTemplateRequestDTO requestDTO, MultipartFile file) {
 
         String identifier = ConvertUtils.getIdentifierByRequestDTO(requestDTO);
 
-        Optional<BookTemplate> existentTemplate = bookTemplateRepository.findByIdentifierAndStatus(identifier, TemplateStatusIndicator.VERIFIED);
+        Optional<BookTemplate> existentTemplate = bookTemplateRepository.findByIdentifierWhenNotIsInactive(identifier);
 
         if (existentTemplate.isPresent()) {
             return existentTemplate.get();
@@ -95,12 +96,12 @@ public class BookTemplateService {
         bookTemplateRepository.save(bookTemplate);
     }
 
+    //TODO: Mudar a validação para verificar se o ISBN do template bate com a da sugestão, se for diferente, procurar se já existe um outro template
     @Transactional
     public void updateBookTemplateBySuggestion(SuggestionTemplate suggestion) throws Exception {
 
         String identifier = ConvertUtils.getIdentifierBySuggestion(suggestion);
 
-        verifyBookTemplateAlreadyExist(identifier);
 
         Set<BookCategory> categories = getCategoriesOrCreateIfNotExist(suggestion.getSuggestedCategories());
 
@@ -140,12 +141,7 @@ public class BookTemplateService {
         return existentCategories;
     }
 
-    private void verifyBookTemplateAlreadyExist(String identifier) throws Exception {
-
-        Optional<BookTemplate> bookTemplate = bookTemplateRepository.findByIdentifierAndStatus(identifier, TemplateStatusIndicator.VERIFIED);
-
-        if (bookTemplate.isPresent()) {
-            throw new BookTemplateException("Já existe um template com esse ISBN ou combinação de titulo + autor", HttpStatus.BAD_REQUEST);
-        }
+    private BookTemplate getBookTemplateByIdentifier(String identifier) {
+        return bookTemplateRepository.findByIdentifierAndStatus(identifier, TemplateStatusIndicator.VERIFIED).orElse(null);
     }
 }
