@@ -29,7 +29,7 @@ public class BookTemplate {
     @Column(name = "title_author", unique = true)
     private String titleAuthor;
 
-    @Column(name = "tile", nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "author", nullable = false)

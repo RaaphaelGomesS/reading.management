@@ -10,7 +10,7 @@ public class BookBuilder {
 
     public static Book from(BookRequestDTO book, BookTemplate template, Library library) {
         return Book.builder()
-                .status(ReadingStatusIndicator.valueOf(book.status()))
+                .status(ReadingStatusIndicator.getStatusByName(book.status()))
                 .readPages(book.pages())
                 .rating(book.rating())
                 .finishedAt(book.finishedDate().toInstant())

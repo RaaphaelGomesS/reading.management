@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.builder.BookTemplateBuilder;
 import tech.gomes.reading.management.builder.BookTemplateResponseDTOBuilder;
@@ -50,11 +51,12 @@ public class BookTemplateService {
         return BookTemplateResponseDTOBuilder.fromPage(template);
     }
 
+    @Transactional
     public BookTemplate getOrcreateBookTemplate(BookTemplateRequestDTO requestDTO, MultipartFile file) {
 
         String identifier = ConvertUtils.getIdentifierByRequestDTO(requestDTO);
 
-        Optional<BookTemplate> existentTemplate = bookTemplateRepository.findByIdentifierAndStatus(identifier, TemplateStatusIndicator.VERIFIED.name());
+        Optional<BookTemplate> existentTemplate = bookTemplateRepository.findByIdentifierAndStatus(identifier, TemplateStatusIndicator.VERIFIED);
 
         if (existentTemplate.isPresent()) {
             return existentTemplate.get();
@@ -69,6 +71,7 @@ public class BookTemplateService {
         return bookTemplateRepository.save(template);
     }
 
+    @Transactional
     public BookTemplateResponseDTO updateBookTemplateByAdminRequest(BookTemplateRequestDTO requestDTO, MultipartFile file) throws Exception {
 
         BookTemplate bookTemplate = findTemplateById(requestDTO.templateId());
@@ -92,6 +95,7 @@ public class BookTemplateService {
         bookTemplateRepository.save(bookTemplate);
     }
 
+    @Transactional
     public void updateBookTemplateBySuggestion(SuggestionTemplate suggestion) throws Exception {
 
         String identifier = ConvertUtils.getIdentifierBySuggestion(suggestion);
@@ -109,13 +113,13 @@ public class BookTemplateService {
 
         Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.valueOf(direction), "createdAt");
 
-        Page<BookTemplate> bookTemplatePage = bookTemplateRepository.findByStatus(status, pageable);
+        Page<BookTemplate> bookTemplatePage = bookTemplateRepository.findByStatus(TemplateStatusIndicator.valueOf(status), pageable);
 
         return BookTemplateResponseDTOBuilder.fromPage(bookTemplatePage);
     }
 
     public BookTemplate findTemplateById(long id) throws Exception {
-        return bookTemplateRepository.findByIdAndStatus(id, TemplateStatusIndicator.VERIFIED.name())
+        return bookTemplateRepository.findByIdAndStatus(id, TemplateStatusIndicator.VERIFIED)
                 .orElseThrow(() -> new BookTemplateException("O template não foi encontrado.", HttpStatus.NOT_FOUND));
     }
 
@@ -138,7 +142,7 @@ public class BookTemplateService {
 
     private void verifyBookTemplateAlreadyExist(String identifier) throws Exception {
 
-        Optional<BookTemplate> bookTemplate = bookTemplateRepository.findByIdentifierAndStatus(identifier, TemplateStatusIndicator.VERIFIED.name());
+        Optional<BookTemplate> bookTemplate = bookTemplateRepository.findByIdentifierAndStatus(identifier, TemplateStatusIndicator.VERIFIED);
 
         if (bookTemplate.isPresent()) {
             throw new BookTemplateException("Já existe um template com esse ISBN ou combinação de titulo + autor", HttpStatus.BAD_REQUEST);

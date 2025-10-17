@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.builder.BookBuilder;
 import tech.gomes.reading.management.builder.BookResponseDTOBuilder;
@@ -50,9 +51,12 @@ public class BookService {
         return BookResponseDTOBuilder.from(pageBook);
     }
 
+    @Transactional
     public BookResponseDTO createBook(BookCreateRequestDTO requestDTO, User user, MultipartFile file) throws Exception {
 
-        verifyBookAlreadyRegister(requestDTO.template(), user);
+        if (requestDTO.template().templateId() != null) {
+            verifyBookAlreadyRegister(requestDTO.template(), user);
+        }
 
         Library library = libraryService.getLibraryById(requestDTO.book().libraryId(), user);
 

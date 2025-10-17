@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import tech.gomes.reading.management.domain.BookTemplate;
+import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 
 import java.util.Optional;
 
@@ -15,9 +16,9 @@ import java.util.Optional;
 public interface BookTemplateRepository extends JpaRepository<BookTemplate, Long>, JpaSpecificationExecutor<BookTemplate> {
 
     @Query("SELECT b FROM bookTemplate b WHERE (b.ISBN = :identifier OR b.titleAuthor = :identifier) AND b.status = :status")
-    Optional<BookTemplate> findByIdentifierAndStatus(@Param("identifier") String identifier, @Param("status") String status);
+    Optional<BookTemplate> findByIdentifierAndStatus(@Param("identifier") String identifier, @Param("status") TemplateStatusIndicator status);
 
-    Page<BookTemplate> findByStatus(String status, Pageable pageable);
+    Page<BookTemplate> findByStatus(TemplateStatusIndicator status, Pageable pageable);
 
-    Optional<BookTemplate> findByIdAndStatus(long id, String status);
+    Optional<BookTemplate> findByIdAndStatus(long id, TemplateStatusIndicator status);
 }

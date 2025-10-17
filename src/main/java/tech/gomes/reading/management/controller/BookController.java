@@ -82,7 +82,7 @@ public class BookController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @PostMapping("/")
+    @PostMapping(value = "/", consumes = {"multipart/form-data"})
     public ResponseEntity<BookResponseDTO> registerBookInLibrary(@RequestPart("book") BookCreateRequestDTO requestDTO, @RequestPart("coverImg") MultipartFile file, JwtAuthenticationToken token) throws Exception {
 
         User user = authService.getUserByToken(token);
