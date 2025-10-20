@@ -62,7 +62,7 @@ public class SuggestionController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/decline/{id}")
+    @PostMapping("/decline/")
     @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<Void> declineSuggestion(@RequestBody DeclineRequestDTO requestDTO) throws Exception {
 

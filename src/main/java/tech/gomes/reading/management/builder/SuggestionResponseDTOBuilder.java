@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.BookCategory;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
+import tech.gomes.reading.management.dto.book.response.BookTemplateResponseDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponseDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponsePageDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionUpdateResponseDTO;
@@ -37,6 +38,7 @@ public class SuggestionResponseDTOBuilder {
 
     public static SuggestionResponseDTO fromSuggestion(SuggestionTemplate suggestion) {
         return SuggestionResponseDTO.builder()
+                .id(suggestion.getId())
                 .isbn(suggestion.getSuggestedISBN())
                 .title(suggestion.getSuggestedTitle())
                 .author(suggestion.getSuggestedAuthor())
@@ -46,15 +48,16 @@ public class SuggestionResponseDTOBuilder {
                 .year(suggestion.getSuggestedYear())
                 .pages(suggestion.getSuggestedPages())
                 .img(ConvertUtils.uriCoverImg(suggestion.getSuggestedImg()))
-                .reason(suggestion.getReason() == null ? "" : suggestion.getReason())
-                .justification(suggestion.getJustification() == null ? "" : suggestion.getJustification())
+                .reason(suggestion.getReason() == null ? null : suggestion.getReason())
+                .justification(suggestion.getJustification() == null ? null : suggestion.getJustification())
                 .status(suggestion.getStatus().name())
                 .categories(suggestion.getSuggestedCategories())
                 .build();
     }
 
-    private static SuggestionResponseDTO fromTemplate(BookTemplate template) {
-        return SuggestionResponseDTO.builder()
+    private static BookTemplateResponseDTO fromTemplate(BookTemplate template) {
+        return BookTemplateResponseDTO.builder()
+                .id(template.getId())
                 .isbn(template.getISBN())
                 .title(template.getTitle())
                 .author(template.getAuthor())
@@ -64,6 +67,7 @@ public class SuggestionResponseDTOBuilder {
                 .year(template.getYearPublication())
                 .pages(template.getPages())
                 .img(ConvertUtils.uriCoverImg(template.getImg()))
+                .status(template.getStatus().name())
                 .categories(template.getCategories().stream().map(BookCategory::getName).collect(Collectors.toSet()))
                 .build();
     }

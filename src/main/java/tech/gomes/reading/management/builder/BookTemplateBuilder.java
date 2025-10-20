@@ -52,7 +52,7 @@ public class BookTemplateBuilder {
         bookTemplate.setEdition(requestDTO.edition());
         bookTemplate.setDescription(requestDTO.description());
         bookTemplate.setPages(requestDTO.pages());
-        bookTemplate.setImg(coverImg);
+        bookTemplate.setImg(coverImg != null ? coverImg : bookTemplate.getImg());
         bookTemplate.setCategories(categories);
         bookTemplate.setStatus(TemplateStatusIndicator.VERIFIED);
     }

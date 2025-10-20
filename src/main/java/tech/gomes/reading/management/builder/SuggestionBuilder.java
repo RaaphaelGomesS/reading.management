@@ -4,6 +4,7 @@ import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.suggestion.request.SuggestionRequestDTO;
+import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 
 public class SuggestionBuilder {
 
@@ -18,7 +19,9 @@ public class SuggestionBuilder {
                 .suggestedYear(requestDTO.suggestedYear() != null ? requestDTO.suggestedYear() : template.getYearPublication())
                 .suggestedPages(requestDTO.suggestedPages() != null ? requestDTO.suggestedPages() : template.getPages())
                 .suggestedImg(coverImg != null ? coverImg : template.getImg())
-                .reason(requestDTO.suggestedReason() != null ? requestDTO.suggestedISBN() : template.getISBN())
+                .reason(requestDTO.suggestedReason())
+                .status(TemplateStatusIndicator.IN_ANALYZE)
+                .suggestedCategories(requestDTO.suggestedCategories())
                 .user(user)
                 .bookTemplate(template)
                 .build();

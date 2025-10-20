@@ -43,7 +43,7 @@ public class BookTemplateController {
         return ResponseEntity.ok(BookTemplateResponseDTOBuilder.from(templateService.findTemplateByIdWithAnyStatus(id)));
     }
 
-    @PostMapping(value = "/fix", consumes = {"multipart/form-data"})
+    @PutMapping(value = "/fix", consumes = {"multipart/form-data"})
     @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<BookTemplateResponseDTO> updateBookTemplate(@RequestPart("template") BookTemplateRequestDTO requestDTO,
                                                                       @RequestPart("coverImg") MultipartFile file) throws Exception {

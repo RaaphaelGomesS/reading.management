@@ -78,11 +78,11 @@ public class BookTemplateService {
     @Transactional
     public BookTemplateResponseDTO updateBookTemplateByAdminRequest(BookTemplateRequestDTO requestDTO, MultipartFile file) throws Exception {
 
-        BookTemplate bookTemplate = findTemplateById(requestDTO.templateId());
+        BookTemplate bookTemplate = findTemplateByIdWithAnyStatus(requestDTO.templateId());
 
         String identifier = ConvertUtils.getIdentifierByRequestDTO(requestDTO);
 
-        if (!identifier.equals(bookTemplate.getISBN()) || !identifier.equals(bookTemplate.getTitleAuthor())) {
+        if (!identifier.equals(bookTemplate.getISBN()) && !identifier.equals(bookTemplate.getTitleAuthor())) {
             verifyIfExistsAnyTemplateWithIdentifier(identifier);
         }
 
@@ -118,13 +118,15 @@ public class BookTemplateService {
 
         String identifier = ConvertUtils.getIdentifierBySuggestion(suggestion);
 
-        if (!identifier.equals(suggestion.getBookTemplate().getISBN()) || !identifier.equals(suggestion.getBookTemplate().getTitleAuthor())) {
+        if (!identifier.equals(suggestion.getBookTemplate().getISBN()) && !identifier.equals(suggestion.getBookTemplate().getTitleAuthor())) {
             verifyIfExistsAnyTemplateWithIdentifier(identifier);
         }
 
         Set<BookCategory> categories = getCategoriesOrCreateIfNotExist(suggestion.getSuggestedCategories());
 
         BookTemplate template = BookTemplateBuilder.from(suggestion, categories);
+
+        template.setStatus(TemplateStatusIndicator.VERIFIED);
 
         bookTemplateRepository.save(template);
     }

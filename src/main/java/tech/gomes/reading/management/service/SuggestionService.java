@@ -1,5 +1,6 @@
 package tech.gomes.reading.management.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +34,12 @@ public class SuggestionService {
 
     private final UploadService uploadService;
 
+    @Transactional
     public void createUpdateSuggestion(SuggestionRequestDTO requestDTO, User user, MultipartFile file) throws Exception {
+
+        if (requestDTO.suggestedReason() == null) {
+            throw new SuggestionException("Deve justificar a alteração.", HttpStatus.BAD_REQUEST);
+        }
 
         BookTemplate bookTemplate = bookTemplateService.findTemplateById(requestDTO.templateId());
 
@@ -67,6 +73,7 @@ public class SuggestionService {
         return SuggestionResponseDTOBuilder.toUpdate(suggestion, suggestion.getBookTemplate());
     }
 
+    @Transactional
     public void approveSuggestion(long id) throws Exception {
 
         SuggestionTemplate suggestion = suggestionRepository.findById(id)
@@ -83,6 +90,7 @@ public class SuggestionService {
         suggestionRepository.save(suggestion);
     }
 
+    @Transactional
     public void declineSuggestion(DeclineRequestDTO requestDTO) throws Exception {
         SuggestionTemplate suggestion = suggestionRepository.findById(requestDTO.id())
                 .orElseThrow(() -> new SuggestionException("Não foi encontrado nenhuma sugestão com esse id", HttpStatus.NOT_FOUND));
