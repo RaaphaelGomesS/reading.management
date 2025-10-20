@@ -15,7 +15,7 @@ import tech.gomes.reading.management.service.BookTemplateService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(name = "/template")
+@RequestMapping("/template")
 public class BookTemplateController {
 
     private final BookTemplateService templateService;
@@ -40,23 +40,33 @@ public class BookTemplateController {
     @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<BookTemplateResponseDTO> getTemplateToBeAnalyze(@PathVariable long id) throws Exception {
 
-        return ResponseEntity.ok(BookTemplateResponseDTOBuilder.from(templateService.findTemplateById(id)));
+        return ResponseEntity.ok(BookTemplateResponseDTOBuilder.from(templateService.findTemplateByIdWithAnyStatus(id)));
     }
 
-    @PostMapping("/fix")
+    @PostMapping(value = "/fix", consumes = {"multipart/form-data"})
     @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
-    public ResponseEntity<BookTemplateResponseDTO> updateBookTemplate(@RequestPart("template") BookTemplateRequestDTO requestDTO, @RequestPart("coverImg") MultipartFile file) throws Exception {
+    public ResponseEntity<BookTemplateResponseDTO> updateBookTemplate(@RequestPart("template") BookTemplateRequestDTO requestDTO,
+                                                                      @RequestPart("coverImg") MultipartFile file) throws Exception {
 
         BookTemplateResponseDTO responseDTO = templateService.updateBookTemplateByAdminRequest(requestDTO, file);
 
         return ResponseEntity.ok(responseDTO);
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/inactive/{id}")
     @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<Void> inactiveInvalidTemplate(@PathVariable long id) throws Exception {
 
         templateService.inactiveInvalidTemplate(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/approve/{id}")
+    @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
+    public ResponseEntity<Void> approveTemplate(@PathVariable long id) throws Exception {
+
+        templateService.approveTemplate(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

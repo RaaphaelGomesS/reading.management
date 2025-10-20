@@ -26,6 +26,7 @@ import tech.gomes.reading.management.exception.BookTemplateException;
 import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 import tech.gomes.reading.management.repository.BookRepository;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Service
@@ -99,6 +100,7 @@ public class BookService {
 
         Book book = findBookById(requestDTO.bookId(), user.getId());
 
+        book.setFinishedAt(Instant.now());
         book.setRating(requestDTO.rating());
         book.setStatus(ReadingStatusIndicator.READ);
         book.setReadPages(book.getBookTemplate().getPages());
@@ -125,6 +127,10 @@ public class BookService {
         Library library = libraryService.getLibraryById(requestDTO.libraryId(), user);
 
         Book book = findBookById(requestDTO.bookId(), user.getId());
+
+        if (book.getLibrary().getId() == requestDTO.libraryId()) {
+            return BookResponseDTOBuilder.from(book);
+        }
 
         book.setLibrary(library);
 

@@ -2,7 +2,6 @@ package tech.gomes.reading.management.dto.note;
 
 import lombok.Builder;
 
-import java.util.Date;
 import java.util.List;
 
 @Builder
@@ -12,6 +11,6 @@ public record NoteFullResponseDTO(long id,
                                   String category,
                                   String type,
                                   long bookReference,
-                                  Date createdDate,
+                                  String createdDate,
                                   List<NoteSummaryDTO> linkedNotes) {
 }

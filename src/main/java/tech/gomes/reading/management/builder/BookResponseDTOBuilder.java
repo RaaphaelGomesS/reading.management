@@ -5,9 +5,9 @@ import org.springframework.data.domain.Page;
 import tech.gomes.reading.management.domain.Book;
 import tech.gomes.reading.management.dto.book.response.BookResponseDTO;
 import tech.gomes.reading.management.dto.book.response.BookResponsePageDTO;
+import tech.gomes.reading.management.utils.DateUtils;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,11 +16,14 @@ public class BookResponseDTOBuilder {
     public static BookResponseDTO from(Book book) {
         return BookResponseDTO.builder()
                 .id(book.getId())
+                .title(book.getBookTemplate().getTitle())
+                .author(book.getBookTemplate().getAuthor())
+                .img(book.getBookTemplate().getImg())
                 .pages(book.getReadPages())
                 .rating(book.getRating())
                 .status(book.getStatus().getValue())
-                .startedDate(Date.from(book.getStartedAt()))
-                .finishedDate(Date.from(book.getFinishedAt()))
+                .startedDate(book.getStartedAt() == null ? null : DateUtils.formatInstantToDate(book.getStartedAt()))
+                .finishedDate(book.getFinishedAt() == null ? null : DateUtils.formatInstantToDate(book.getFinishedAt()))
                 .build();
     }
 

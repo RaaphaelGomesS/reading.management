@@ -28,6 +28,7 @@ public class BookTemplateResponseDTOBuilder {
 
     public static BookTemplateResponseDTO from(BookTemplate template) {
         return BookTemplateResponseDTO.builder()
+                .id(template.getId())
                 .isbn(template.getISBN())
                 .title(template.getTitle())
                 .author(template.getAuthor())

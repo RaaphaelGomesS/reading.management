@@ -56,11 +56,14 @@ public class LibraryService {
 
     public LibraryResponseDTO updateLibrary(LibraryRequestDTO requestDTO, User user) throws Exception {
 
-        verifyIfLibraryAlreadyExist(requestDTO, user);
-
         Library library = getLibraryById(requestDTO.id(), user);
 
-        library.setName(requestDTO.name());
+        if (!requestDTO.name().equalsIgnoreCase(library.getName())) {
+            verifyIfLibraryAlreadyExist(requestDTO, user);
+
+            library.setName(requestDTO.name());
+        }
+
         library.setDescription(requestDTO.description());
 
         Library updatedLibrary = libraryRepository.save(library);

@@ -18,11 +18,10 @@ public enum ReadingStatusIndicator {
     public static ReadingStatusIndicator getStatusByName(String name) {
 
         for (ReadingStatusIndicator indicator : ReadingStatusIndicator.values()) {
-            if (indicator.getValue().equals(name)) {
+            if (indicator.getValue().equalsIgnoreCase(name)) {
                 return indicator;
             }
-            return WANT_TO_READ;
         }
-        return null;
+        return WANT_TO_READ;
     }
 }

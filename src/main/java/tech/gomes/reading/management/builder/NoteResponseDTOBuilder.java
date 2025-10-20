@@ -3,11 +3,9 @@ package tech.gomes.reading.management.builder;
 import org.springframework.data.domain.Page;
 import tech.gomes.reading.management.domain.Note;
 import tech.gomes.reading.management.dto.note.*;
+import tech.gomes.reading.management.utils.DateUtils;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class NoteResponseDTOBuilder {
@@ -20,7 +18,7 @@ public class NoteResponseDTOBuilder {
                 .category(note.getCategory().getName())
                 .bookReference(note.getBook().getId())
                 .content(note.getContent())
-                .createdDate(Date.from(note.getCreatedAt()))
+                .createdDate(DateUtils.formatInstantToDateTime(note.getCreatedAt()))
                 .linkedNotes(linkedNotes)
                 .build();
     }
@@ -31,8 +29,8 @@ public class NoteResponseDTOBuilder {
                 .title(note.getTitle())
                 .bookReference(note.getBook().getId())
                 .category(note.getCategory().getName())
-                .createdDate(LocalDateTime.ofInstant(note.getCreatedAt(), ZoneId.of("America/Sao_Paulo")))
-                .updatedDate(LocalDateTime.ofInstant(note.getUpdatedAt(), ZoneId.of("America/Sao_Paulo")))
+                .createdDate(DateUtils.formatInstantToDateTime(note.getCreatedAt()))
+                .updatedDate(DateUtils.formatInstantToDateTime(note.getUpdatedAt()))
                 .build();
     }
 
@@ -42,8 +40,8 @@ public class NoteResponseDTOBuilder {
                 .title(note.title())
                 .bookReference(note.bookReference())
                 .category(note.category())
-                .createdDate(LocalDateTime.ofInstant(note.createdDate(), ZoneId.of("America/Sao_Paulo")))
-                .updatedDate(LocalDateTime.ofInstant(note.updatedDate(), ZoneId.of("America/Sao_Paulo")))
+                .createdDate(DateUtils.formatInstantToDateTime(note.createdDate()))
+                .updatedDate(DateUtils.formatInstantToDateTime(note.updatedDate()))
                 .build();
     }
 

@@ -18,10 +18,9 @@ public interface BookTemplateRepository extends JpaRepository<BookTemplate, Long
     @Query("SELECT b FROM bookTemplate b WHERE (b.ISBN = :identifier OR b.titleAuthor = :identifier) AND b.status <> 'INACTIVE'")
     Optional<BookTemplate> findByIdentifierWhenNotIsInactive(@Param("identifier") String identifier);
 
-    @Query("SELECT b FROM bookTemplate b WHERE (b.ISBN = :identifier OR b.titleAuthor = :identifier) AND b.status <> :status")
-    Optional<BookTemplate> findByIdentifierAndStatus(@Param("identifier") String identifier, @Param("status") TemplateStatusIndicator status);
-
     Page<BookTemplate> findByStatus(TemplateStatusIndicator status, Pageable pageable);
 
     Optional<BookTemplate> findByIdAndStatus(long id, TemplateStatusIndicator status);
+
+    Optional<BookTemplate> findById(long id);
 }
