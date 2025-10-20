@@ -22,6 +22,7 @@ import tech.gomes.reading.management.exception.SuggestionException;
 import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 import tech.gomes.reading.management.repository.SuggestionRepository;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Service
@@ -85,6 +86,7 @@ public class SuggestionService {
 
         bookTemplateService.updateBookTemplateBySuggestion(suggestion);
 
+        suggestion.setReviewedAt(Instant.now());
         suggestion.setStatus(TemplateStatusIndicator.VERIFIED);
 
         suggestionRepository.save(suggestion);
