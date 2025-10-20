@@ -15,9 +15,9 @@ public class UserBuilder {
 
     public User from(UserRequestDTO requestDTO) {
         return User.builder()
-                .email(requestDTO.getEmail())
-                .username(requestDTO.getUsername())
-                .password(passwordEncoder.encode(requestDTO.getPassword()))
+                .email(requestDTO.email())
+                .username(requestDTO.username())
+                .password(passwordEncoder.encode(requestDTO.password()))
                 .role(RoleIndicator.DEFAULT)
                 .build();
     }

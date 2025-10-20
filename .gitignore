@@ -22,6 +22,7 @@ target/
 *.env
 *.key
 *.pub
+uploads
 
 ### NetBeans ###
 /nbproject/private/

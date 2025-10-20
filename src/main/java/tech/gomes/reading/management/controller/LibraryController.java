@@ -24,7 +24,10 @@ public class LibraryController {
     private final AuthService authService;
 
     @GetMapping("/")
-    public ResponseEntity<LibraryResponsePageDTO> getAllLibrariesByUserId(@RequestParam(value = "page", required = false, defaultValue = "0") int page, @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize, @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<LibraryResponsePageDTO> getAllLibrariesByUserId(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                                          @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
+                                                                          @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction,
+                                                                          JwtAuthenticationToken token) throws Exception {
 
         User user = authService.getUserByToken(token);
 
@@ -49,12 +52,12 @@ public class LibraryController {
         return new ResponseEntity<>(libraryService.createLibrary(requestDTO, user), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<LibraryResponseDTO> updateLibraryById(@PathVariable Long id, @RequestBody LibraryRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+    @PutMapping("/")
+    public ResponseEntity<LibraryResponseDTO> updateLibraryById(@RequestBody LibraryRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
 
         User user = authService.getUserByToken(token);
 
-        return ResponseEntity.ok(libraryService.updateLibrary(id, requestDTO, user));
+        return ResponseEntity.ok(libraryService.updateLibrary(requestDTO, user));
     }
 
     @DeleteMapping("/{id}")

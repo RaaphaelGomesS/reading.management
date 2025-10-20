@@ -1,15 +1,13 @@
 package tech.gomes.reading.management.dto.library;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.validation.constraints.NotNull;
 
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class LibraryRequestDTO {
-
-    String name;
-
-    String description;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record LibraryRequestDTO(@NotNull
+                                long id,
+                                @NotNull
+                                String name,
+                                @NotNull
+                                String description) {
 }

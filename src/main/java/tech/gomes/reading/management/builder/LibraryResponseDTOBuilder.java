@@ -13,7 +13,7 @@ public class LibraryResponseDTOBuilder {
     public static LibraryResponsePageDTO fromPage(Page<Library> libraries) {
 
         List<LibraryResponseDTO> responseDTOList = libraries.getContent().isEmpty() ?
-                libraries.getContent().stream().map(LibraryResponseDTOBuilder::from).toList() : Collections.emptyList();
+                Collections.emptyList() : libraries.getContent().stream().map(LibraryResponseDTOBuilder::from).toList();
 
         return LibraryResponsePageDTO.builder()
                 .page(libraries.getNumber())

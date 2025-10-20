@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 
 import java.time.Instant;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class BookTemplate {
     @Column(name = "title_author", unique = true)
     private String titleAuthor;
 
-    @Column(name = "tile", nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "author", nullable = false)
@@ -60,7 +61,13 @@ public class BookTemplate {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @ManyToMany
-    @JoinTable(name = "TB_BOOK_TEMPLATE_CATEGORY", joinColumns = @JoinColumn(name = "book_template_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> categories;
+    @Column(name = "status")
+    @Enumerated(value = EnumType.STRING)
+    private TemplateStatusIndicator status;
+
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(name = "TB_BOOK_TEMPLATE_CATEGORY",
+            joinColumns = @JoinColumn(name = "book_template_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private Set<BookCategory> categories;
 }

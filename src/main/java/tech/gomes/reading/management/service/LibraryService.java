@@ -26,7 +26,7 @@ public class LibraryService {
 
     public LibraryResponsePageDTO getALlLibraries(User user, int page, int pageSize, String direction) {
 
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.valueOf(direction), "updated_at");
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.valueOf(direction), "updatedAt");
 
         Page<Library> libraryPage = libraryRepository.findByUserId(user.getId(), pageable);
 
@@ -44,8 +44,8 @@ public class LibraryService {
 
         Library newLibrary = Library
                 .builder()
-                .name(requestDTO.getName())
-                .description(requestDTO.getDescription())
+                .name(requestDTO.name())
+                .description(requestDTO.description())
                 .user(user)
                 .build();
 
@@ -54,14 +54,17 @@ public class LibraryService {
         return LibraryResponseDTOBuilder.from(library);
     }
 
-    public LibraryResponseDTO updateLibrary(Long id, LibraryRequestDTO requestDTO, User user) throws Exception {
+    public LibraryResponseDTO updateLibrary(LibraryRequestDTO requestDTO, User user) throws Exception {
 
-        verifyIfLibraryAlreadyExist(requestDTO, user);
+        Library library = getLibraryById(requestDTO.id(), user);
 
-        Library library = getLibraryById(id, user);
+        if (!requestDTO.name().equalsIgnoreCase(library.getName())) {
+            verifyIfLibraryAlreadyExist(requestDTO, user);
 
-        library.setName(requestDTO.getName());
-        library.setDescription(requestDTO.getDescription());
+            library.setName(requestDTO.name());
+        }
+
+        library.setDescription(requestDTO.description());
 
         Library updatedLibrary = libraryRepository.save(library);
 
@@ -75,7 +78,7 @@ public class LibraryService {
     }
 
     private void verifyIfLibraryAlreadyExist(LibraryRequestDTO requestDTO, User user) throws Exception {
-        Optional<Library> optionalLibrary = libraryRepository.findByNameAndUserId(requestDTO.getName(), user.getId());
+        Optional<Library> optionalLibrary = libraryRepository.findByNameAndUserId(requestDTO.name(), user.getId());
 
         if (optionalLibrary.isPresent()) {
             throw new LibraryException("Já existe uma biblioteca com esse nome.", HttpStatus.BAD_REQUEST);
