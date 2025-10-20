@@ -6,10 +6,9 @@ public enum NoteTypeIndicator {
     public static NoteTypeIndicator getTypeByName(String name) {
 
         for (NoteTypeIndicator indicator : NoteTypeIndicator.values()) {
-            if (indicator.name().equals(name)) {
+            if (indicator.name().equalsIgnoreCase(name)) {
                 return indicator;
             }
-            return null;
         }
         return null;
     }

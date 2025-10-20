@@ -10,7 +10,7 @@ public record NoteFullResponseDTO(long id,
                                   String content,
                                   String category,
                                   String type,
-                                  long bookReference,
+                                  Long bookReference,
                                   String createdDate,
                                   List<NoteSummaryDTO> linkedNotes) {
 }

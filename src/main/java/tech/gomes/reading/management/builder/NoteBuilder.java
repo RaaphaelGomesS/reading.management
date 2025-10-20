@@ -9,6 +9,7 @@ import tech.gomes.reading.management.indicator.NoteTypeIndicator;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 public class NoteBuilder {
 
@@ -24,7 +25,7 @@ public class NoteBuilder {
                 .build();
     }
 
-    public static void from(Note note, NoteRequestDTO requestDTO, Book book, NoteCategory category, List<Note> linkedNotes) {
+    public static void from(Note note, NoteRequestDTO requestDTO, Book book, NoteCategory category, Set<Note> linkedNotes) {
         note.setBook(book);
         note.setCategory(category);
         note.setTitle(requestDTO.title());

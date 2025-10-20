@@ -41,10 +41,13 @@ public class BookTemplateService {
     private final UploadService uploadService;
 
     public BookTemplateResponsePageDTO findAllTemplatesByFilter(BookTemplateFilter filter) {
+        if (filter.getTitle() == null && filter.getAuthor() == null && filter.getISBN() == null) {
+            return BookTemplateResponseDTOBuilder.fromPage(Page.empty());
+        }
 
         Specification<BookTemplate> spec = BookTemplateSpecification.byFilter(filter);
 
-        Pageable pageable = PageRequest.of(filter.page(), filter.pageSize());
+        Pageable pageable = PageRequest.of(filter.getPage(), filter.getPageSize());
 
         Page<BookTemplate> template = bookTemplateRepository.findAll(spec, pageable);
 

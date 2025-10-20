@@ -21,7 +21,7 @@ public class BookTemplateController {
     private final BookTemplateService templateService;
 
     @GetMapping("/search")
-    public ResponseEntity<BookTemplateResponsePageDTO> searchTemplateByFilter(@RequestBody BookTemplateFilter filter) {
+    public ResponseEntity<BookTemplateResponsePageDTO> searchTemplateByFilter(BookTemplateFilter filter) {
 
         return ResponseEntity.ok(templateService.findAllTemplatesByFilter(filter));
     }

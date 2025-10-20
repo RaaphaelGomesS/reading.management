@@ -4,15 +4,7 @@ import org.springframework.data.jpa.domain.Specification;
 import tech.gomes.reading.management.controller.filter.BookTemplateFilter;
 import tech.gomes.reading.management.domain.BookTemplate;
 
-import static org.springframework.data.jpa.domain.Specification.where;
-
 public class BookTemplateSpecification {
-
-    public static Specification<BookTemplate> byFilter(BookTemplateFilter filter) {
-        return where(byTitle(filter.title()))
-                .or(byAuthor(filter.author()))
-                .or(byIsbn(filter.ISBN()));
-    }
 
     private static Specification<BookTemplate> byIsbn(String isbn) {
         return (root, query, cb) ->
@@ -27,5 +19,14 @@ public class BookTemplateSpecification {
     private static Specification<BookTemplate> byTitle(String title) {
         return (root, query, cb) ->
                 title == null ? null : cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%");
+    }
+
+    public static Specification<BookTemplate> byFilter(BookTemplateFilter filter) {
+
+        return Specification.anyOf(
+                byTitle(filter.getTitle()))
+                .or(byAuthor(filter.getAuthor()))
+                .or(byIsbn(filter.getISBN())
+                );
     }
 }

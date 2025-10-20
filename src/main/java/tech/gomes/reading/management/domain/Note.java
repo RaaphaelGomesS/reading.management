@@ -26,7 +26,6 @@ public class Note {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Lob
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
@@ -55,7 +54,7 @@ public class Note {
     private User user;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "TB_BOOK_LINK",
+    @JoinTable(name = "TB_NOTE_LINK",
             joinColumns = @JoinColumn(name = "source_note_id"),
             inverseJoinColumns = @JoinColumn(name = "target_note_id"))
     private Set<Note> linkedNotes = new HashSet<>();

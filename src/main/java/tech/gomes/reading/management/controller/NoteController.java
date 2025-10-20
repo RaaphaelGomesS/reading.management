@@ -24,7 +24,7 @@ public class NoteController {
     private final NoteService noteService;
 
     @GetMapping("/")
-    public ResponseEntity<NoteResponsePageDTO> getAllNotesByFilter(@RequestBody NoteFilter filter, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<NoteResponsePageDTO> getAllNotesByFilter(NoteFilter filter, JwtAuthenticationToken token) throws Exception {
         User user = authService.getUserByToken(token);
 
         filter.setUserId(user.getId());
@@ -34,34 +34,34 @@ public class NoteController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @GetMapping("/linked/{id}")
-    public ResponseEntity<NoteResponsePageDTO> getAllLinksToNote(@RequestParam long id,
+    @GetMapping("/reversed/")
+    public ResponseEntity<NoteResponsePageDTO> getAllLinksToNote(@RequestParam (value = "id") long id,
                                                                  @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                                  @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
                                                                  @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction,
                                                                  JwtAuthenticationToken token) throws Exception {
         User user = authService.getUserByToken(token);
 
-        NoteResponsePageDTO responseDTOS = noteService.findAllLinksToNote(id, user, page, pageSize, direction);
+        NoteResponsePageDTO responseDTOS = noteService.findAllNotesThatCallTheCurrent(id, user, page, pageSize, direction);
 
         return ResponseEntity.ok(responseDTOS);
     }
 
-    @GetMapping("/reversed/{id}")
-    public ResponseEntity<NoteResponsePageDTO> getAllLinksFromNote(@RequestParam long id,
+    @GetMapping("/linked/")
+    public ResponseEntity<NoteResponsePageDTO> getAllLinksFromNote(@RequestParam (value = "id") long id,
                                                                    @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                                    @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
                                                                    @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction,
                                                                    JwtAuthenticationToken token) throws Exception {
         User user = authService.getUserByToken(token);
 
-        NoteResponsePageDTO responseDTOS = noteService.findAllLinksFromNote(id, user, page, pageSize, direction);
+        NoteResponsePageDTO responseDTOS = noteService.findAllNotesThatAreCalledByTheCurrent(id, user, page, pageSize, direction);
 
         return ResponseEntity.ok(responseDTOS);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<NoteFullResponseDTO> getNoteById(@RequestParam long id, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<NoteFullResponseDTO> getNoteById(@PathVariable long id, JwtAuthenticationToken token) throws Exception {
         User user = authService.getUserByToken(token);
 
         NoteFullResponseDTO responseDTO = noteService.findNoteByIdWithSummaryLinkedNotes(id, user);
@@ -88,7 +88,7 @@ public class NoteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNote(@RequestParam long id, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<Void> deleteNote(@PathVariable long id, JwtAuthenticationToken token) throws Exception {
         User user = authService.getUserByToken(token);
 
         noteService.DeleteNoteById(id, user);

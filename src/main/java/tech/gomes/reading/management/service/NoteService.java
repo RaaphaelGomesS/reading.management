@@ -1,6 +1,8 @@
 package tech.gomes.reading.management.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,8 @@ import tech.gomes.reading.management.dto.note.*;
 import tech.gomes.reading.management.exception.NoteException;
 import tech.gomes.reading.management.repository.NoteRepository;
 import tech.gomes.reading.management.repository.Specification.NoteSpecification;
+import tech.gomes.reading.management.repository.projections.NoteProjection;
+import tech.gomes.reading.management.repository.projections.NoteSummaryProjection;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +30,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NoteService {
@@ -52,14 +57,14 @@ public class NoteService {
         Note note = noteRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new NoteException("Não foi encontrado a anotação.", HttpStatus.NOT_FOUND));
 
-        List<NoteSummaryDTO> linkedSummaryNotes = noteRepository.findAllSummaryTargetNotes(id);
+        List<NoteSummaryProjection> linkedSummaryNotes = noteRepository.findAllSummaryTargetNotes(id);
 
         return NoteResponseDTOBuilder.from(note, linkedSummaryNotes);
     }
 
-    public NoteResponsePageDTO findAllLinksFromNote(long id, User user, int page, int pageSize, String direction) throws Exception {
+    public NoteResponsePageDTO findAllNotesThatCallTheCurrent(long id, User user, int page, int pageSize, String direction) throws Exception {
 
-        if (noteRepository.existsByIdAndUserId(id, user.getId())) {
+        if (!noteRepository.existsByIdAndUserId(id, user.getId())) {
             throw new NoteException("Não foi encontrada a anotação.", HttpStatus.NOT_FOUND);
         }
 
@@ -67,13 +72,15 @@ public class NoteService {
 
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
-        Page<NoteDTO> responseDTOPage = noteRepository.findAllTargetNotesFromSource(id, pageable);
+        Page<NoteProjection> responseDTOPage = noteRepository.findAllNotesLinkingToNoteId(id, pageable);
+
+        log.info("Target notes:{}", responseDTOPage.getContent());
 
         return NoteResponseDTOBuilder.from(responseDTOPage);
     }
 
-    public NoteResponsePageDTO findAllLinksToNote(long id, User user, int page, int pageSize, String direction) throws Exception {
-        if (noteRepository.existsByIdAndUserId(id, user.getId())) {
+    public NoteResponsePageDTO findAllNotesThatAreCalledByTheCurrent(long id, User user, int page, int pageSize, String direction) throws Exception {
+        if (!noteRepository.existsByIdAndUserId(id, user.getId())) {
             throw new NoteException("Não foi encontrada a anotação.", HttpStatus.NOT_FOUND);
         }
 
@@ -81,11 +88,12 @@ public class NoteService {
 
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
-        Page<NoteDTO> responseDTOPage = noteRepository.findAllSourceNotesFromTarget(id, pageable);
+        Page<NoteProjection> responseDTOPage = noteRepository.findAllLinkedNotesByNoteId(id, pageable);
 
         return NoteResponseDTOBuilder.from(responseDTOPage);
     }
 
+    @Transactional
     public NoteResponseDTO createNoteAndSetLinks(NoteRequestDTO requestDTO, User user) throws Exception {
 
         if (noteRepository.existsByTitleAndUserId(requestDTO.title(), user.getId())) {
@@ -94,7 +102,7 @@ public class NoteService {
 
         Set<String> linksTitles = extractLinks(requestDTO.content());
 
-        List<Note> linkedNotes = noteRepository.findAllByTitleInAndUserId(linksTitles, user.getId());
+        Set<Note> linkedNotes = noteRepository.findAllByTitleInAndUserId(linksTitles, user.getId());
 
         Book book = requestDTO.reference() == null ? null : bookService.findBookById(requestDTO.reference(), user.getId());
 
@@ -104,21 +112,23 @@ public class NoteService {
 
         Note note = noteRepository.save(newNote);
 
-        note.getLinkedNotes().addAll(linkedNotes);
+        note.setLinkedNotes(linkedNotes);
 
         return NoteResponseDTOBuilder.from(note);
     }
 
+    @Transactional
     public NoteResponseDTO updateNoteAndLinks(NoteRequestDTO requestDTO, User user) throws Exception {
-        if (noteRepository.existsByTitleAndUserId(requestDTO.title(), user.getId())) {
-            throw new NoteException("Já existe uma anotação com esse título.", HttpStatus.BAD_REQUEST);
-        }
 
         Note note = findNoteById(requestDTO.id(), user.getId());
 
+        if (!requestDTO.title().equalsIgnoreCase(note.getTitle()) && noteRepository.existsByTitleAndUserId(requestDTO.title(), user.getId())) {
+            throw new NoteException("Já existe uma anotação com esse título.", HttpStatus.BAD_REQUEST);
+        }
+
         Set<String> linksTitles = extractLinks(requestDTO.content());
 
-        List<Note> linkedNotes = noteRepository.findAllByTitleInAndUserId(linksTitles, user.getId());
+        Set<Note> linkedNotes = noteRepository.findAllByTitleInAndUserId(linksTitles, user.getId());
 
         Book book = requestDTO.reference() == null ? null : bookService.findBookById(requestDTO.reference(), user.getId());
 

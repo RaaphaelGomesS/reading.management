@@ -11,10 +11,13 @@ import lombok.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NoteFilter {
 
-    private long categoryId;
-    private long bookId;
-    private long userId;
+    private String title;
+    private Long categoryId;
+    private Long bookId;
+    private Long userId;
     private String type;
-    private int page;
-    private int pageSize;
+    @Builder.Default
+    private int page = 0;
+    @Builder.Default
+    private int pageSize = 10;
 }
