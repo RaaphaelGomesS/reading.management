@@ -7,8 +7,8 @@ import tech.gomes.reading.management.dto.book.response.CategoryFinishCountDTO;
 import java.util.List;
 
 @Builder
-public record StatisticsResponseDTO(Double averagePagesReadForDay,
-                                    Double averageReadingTimeInDays,
+public record StatisticsResponseDTO(Long averagePagesReadInDay,
+                                    Long averageReadingTimeInDays,
                                     List<BookStatusCountDTO> statusCounts,
                                     List<CategoryFinishCountDTO> finishedBooksByCategory
 ) {

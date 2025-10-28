@@ -52,4 +52,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "WHERE b.user.id = :userId AND b.status = 'READ' " +
             "GROUP BY c.name")
     List<CategoryFinishCountProjection> countFinishedBooksByCategoryByUserId(@Param("userId") long userId);
+
+    Optional<Book> findFirstByUserIdAndStatusOrderByFinishedAtDesc(Long userId, ReadingStatusIndicator status);
 }

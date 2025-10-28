@@ -11,6 +11,7 @@ import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface BookTemplateRepository extends JpaRepository<BookTemplate, Long>, JpaSpecificationExecutor<BookTemplate> {
@@ -23,4 +24,12 @@ public interface BookTemplateRepository extends JpaRepository<BookTemplate, Long
     Optional<BookTemplate> findByIdAndStatus(long id, TemplateStatusIndicator status);
 
     Optional<BookTemplate> findById(long id);
+
+    @Query("SELECT bt FROM bookTemplate bt JOIN bt.categories c WHERE c.id IN :categoryIds " +
+            "AND bt.id != :targetTemplateId AND bt.status = 'VERIFIED' " +
+            "GROUP BY bt.id ORDER BY COUNT(bt.id) DESC"
+    )
+    Page<BookTemplate> findSimilarTemplatesByCategories(@Param("categoryIds") Set<Long> categoryIds,
+                                                        @Param("targetTemplateId") long targetTemplateId,
+                                                        Pageable pageable);
 }
