@@ -24,8 +24,6 @@ public interface NoteRepository extends JpaRepository<Note, Long>, JpaSpecificat
 
     boolean existsByTitleAndUserId(String title, long id);
 
-    boolean existsByIdAndUserId(long id, long userId);
-
     @Query("SELECT target.id AS id, target.title AS title FROM note source JOIN source.linkedNotes target WHERE source.id = :sourceNoteId")
     List<NoteSummaryProjection> findAllSummaryTargetNotes(@Param("sourceNoteId") long id);
 

@@ -7,6 +7,7 @@ import tech.gomes.reading.management.dto.StatisticsResponseDTO;
 import tech.gomes.reading.management.dto.book.response.BookStatusCountDTO;
 import tech.gomes.reading.management.dto.book.response.CategoryFinishCountDTO;
 import tech.gomes.reading.management.repository.BookRepository;
+import tech.gomes.reading.management.repository.BookTemplateRepository;
 import tech.gomes.reading.management.repository.projections.BookStatusCountProjection;
 import tech.gomes.reading.management.repository.projections.CategoryFinishCountProjection;
 

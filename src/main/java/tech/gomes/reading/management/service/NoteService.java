@@ -17,7 +17,10 @@ import tech.gomes.reading.management.domain.Book;
 import tech.gomes.reading.management.domain.Note;
 import tech.gomes.reading.management.domain.NoteCategory;
 import tech.gomes.reading.management.domain.User;
-import tech.gomes.reading.management.dto.note.*;
+import tech.gomes.reading.management.dto.note.NoteFullResponseDTO;
+import tech.gomes.reading.management.dto.note.NoteRequestDTO;
+import tech.gomes.reading.management.dto.note.NoteResponseDTO;
+import tech.gomes.reading.management.dto.note.NoteResponsePageDTO;
 import tech.gomes.reading.management.exception.NoteException;
 import tech.gomes.reading.management.repository.NoteRepository;
 import tech.gomes.reading.management.repository.Specification.NoteSpecification;
@@ -63,16 +66,13 @@ public class NoteService {
     }
 
     public NoteResponsePageDTO findAllNotesThatCallTheCurrent(long id, User user, int page, int pageSize, String direction) throws Exception {
-
-        if (!noteRepository.existsByIdAndUserId(id, user.getId())) {
-            throw new NoteException("Não foi encontrada a anotação.", HttpStatus.NOT_FOUND);
-        }
+        Note note = findNoteById(id, user.getId());
 
         Sort sort = Sort.by(Sort.Direction.valueOf(direction), "title");
 
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
-        Page<NoteProjection> responseDTOPage = noteRepository.findAllNotesLinkingToNoteId(id, pageable);
+        Page<NoteProjection> responseDTOPage = noteRepository.findAllNotesLinkingToNoteId(note.getId(), pageable);
 
         log.info("Target notes:{}", responseDTOPage.getContent());
 
@@ -80,15 +80,13 @@ public class NoteService {
     }
 
     public NoteResponsePageDTO findAllNotesThatAreCalledByTheCurrent(long id, User user, int page, int pageSize, String direction) throws Exception {
-        if (!noteRepository.existsByIdAndUserId(id, user.getId())) {
-            throw new NoteException("Não foi encontrada a anotação.", HttpStatus.NOT_FOUND);
-        }
+        Note note = findNoteById(id, user.getId());
 
         Sort sort = Sort.by(Sort.Direction.valueOf(direction), "title");
 
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
-        Page<NoteProjection> responseDTOPage = noteRepository.findAllLinkedNotesByNoteId(id, pageable);
+        Page<NoteProjection> responseDTOPage = noteRepository.findAllLinkedNotesByNoteId(note.getId(), pageable);
 
         return NoteResponseDTOBuilder.from(responseDTOPage);
     }
