@@ -19,6 +19,22 @@ public class NoteCategoryService {
 
     private final NoteCategoryRepository categoryRepository;
 
+    public CategoryResponseDTO createCategoryIfNotExists(CategoryRequestDTO requestDTO, User user) throws Exception {
+
+        if (categoryRepository.existsByNameAndUserId(requestDTO.name(), user.getId())) {
+            throw new NoteCategoryException("Já existe uma categoria com esse nome.", HttpStatus.BAD_REQUEST);
+        }
+
+        NoteCategory newCategory = NoteCategory.builder()
+                                            .name(requestDTO.name())
+                                            .user(user)
+                                            .build();
+
+        NoteCategory noteCategory = categoryRepository.save(newCategory);
+
+        return new CategoryResponseDTO(noteCategory.getId(), noteCategory.getName());
+    }
+
     public List<CategoryResponseDTO> getAllCategoriesFromUser(User user) {
         List<NoteCategory> categories = categoryRepository.findAllByUserId(user.getId());
 

@@ -22,6 +22,15 @@ public class NoteCategoryController {
 
     private final NoteCategoryService categoryService;
 
+    @PostMapping("/")
+    public ResponseEntity<CategoryResponseDTO> createCategory(@RequestBody CategoryRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+        User user = authService.getUserByToken(token);
+
+        CategoryResponseDTO responseDTO = categoryService.createCategoryIfNotExists(requestDTO, user);
+
+        return ResponseEntity.ok(responseDTO);
+    }
+
     @GetMapping("/")
     public ResponseEntity<List<CategoryResponseDTO>> getAllCategoriesOfUser(JwtAuthenticationToken token) throws Exception {
         User user = authService.getUserByToken(token);
