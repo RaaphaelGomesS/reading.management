@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.book.request.*;
-import tech.gomes.reading.management.dto.book.response.BookResponseDTO;
-import tech.gomes.reading.management.dto.book.response.BookResponsePageDTO;
-import tech.gomes.reading.management.dto.book.response.FullBookResponseDTO;
+import tech.gomes.reading.management.dto.book.response.*;
 import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 import tech.gomes.reading.management.service.AuthService;
 import tech.gomes.reading.management.service.BookService;
+
+import java.util.List;
 
 
 @RestController
@@ -24,6 +24,14 @@ public class BookController {
     private final BookService bookService;
 
     private final AuthService authService;
+
+    @GetMapping("/")
+    public ResponseEntity<List<ReferenceBookDTO>> getAllUserReferencesBook(JwtAuthenticationToken token) throws Exception {
+
+        User user = authService.getUserByToken(token);
+
+        return ResponseEntity.ok(bookService.findAllUserSummaryBooks(user));
+    }
 
     @GetMapping("/reading/{id}")
     public ResponseEntity<BookResponsePageDTO> getReadingBooksInLibrary(@PathVariable long id,

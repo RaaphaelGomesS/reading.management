@@ -17,17 +17,17 @@ import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.Library;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.book.request.*;
-import tech.gomes.reading.management.dto.book.response.BookResponseDTO;
-import tech.gomes.reading.management.dto.book.response.BookResponsePageDTO;
-import tech.gomes.reading.management.dto.book.response.BookTemplateResponseDTO;
-import tech.gomes.reading.management.dto.book.response.FullBookResponseDTO;
+import tech.gomes.reading.management.dto.book.response.*;
 import tech.gomes.reading.management.exception.BookException;
 import tech.gomes.reading.management.exception.BookTemplateException;
 import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 import tech.gomes.reading.management.repository.BookRepository;
 
 import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +38,18 @@ public class BookService {
     private final LibraryService libraryService;
 
     private final BookTemplateService templateService;
+
+    public List<ReferenceBookDTO> findAllUserSummaryBooks(User user) {
+        List<Book> books = bookRepository.findAllByUserId(user.getId());
+
+        if (books.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return books.stream().map(book ->
+                new ReferenceBookDTO(book.getId(), book.getBookTemplate().getTitle()))
+                .collect(Collectors.toList());
+    }
 
     public BookResponsePageDTO getAllBooksByStatus(long id, User user, ReadingStatusIndicator status, int page, int pageSize, String direction) throws Exception {
 
