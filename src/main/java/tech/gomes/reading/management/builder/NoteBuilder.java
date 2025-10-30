@@ -8,20 +8,19 @@ import tech.gomes.reading.management.dto.note.NoteRequestDTO;
 import tech.gomes.reading.management.indicator.NoteTypeIndicator;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Set;
 
 public class NoteBuilder {
 
-    public static Note from(NoteRequestDTO requestDTO, User user, Book book, NoteCategory category) {
+    public static Note toDefaultCreate(String title, User user) {
         return Note.builder()
-                .title(requestDTO.title())
-                .content(requestDTO.content())
-                .type(NoteTypeIndicator.getTypeByName(requestDTO.type()))
-                .createdAt(requestDTO.createDate() == null ? Instant.now() : requestDTO.createDate().toInstant())
-                .category(category)
-                .book(book)
+                .title(title)
                 .user(user)
+                .content("Use [[título]] para criar um link de uma outra nota à esta.")
+                .type(null)
+                .category(null)
+                .book(null)
+                .createdAt(Instant.now())
                 .build();
     }
 

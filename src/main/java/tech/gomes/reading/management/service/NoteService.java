@@ -92,25 +92,21 @@ public class NoteService {
     }
 
     @Transactional
-    public NoteResponseDTO createNoteAndSetLinks(NoteRequestDTO requestDTO, User user) throws Exception {
+    public NoteResponseDTO createEmptyNote(User user) {
 
-        if (noteRepository.existsByTitleAndUserId(requestDTO.title(), user.getId())) {
-            throw new NoteException("Já existe uma anotação com esse título.", HttpStatus.BAD_REQUEST);
+        String baseTitle = "Sem título";
+        String finalTitle = baseTitle;
+
+        int count = 1;
+
+        while (noteRepository.existsByTitleAndUserId(finalTitle, user.getId())) {
+            finalTitle = String.format("%s (%d)", baseTitle, count);
+            count++;
         }
 
-        Set<String> linksTitles = extractLinks(requestDTO.content());
-
-        Set<Note> linkedNotes = noteRepository.findAllByTitleInAndUserId(linksTitles, user.getId());
-
-        Book book = requestDTO.reference() == null ? null : bookService.findBookById(requestDTO.reference(), user.getId());
-
-        NoteCategory category = categoryService.takeCategoryOrCreateIfNotExists(requestDTO.category(), user);
-
-        Note newNote = NoteBuilder.from(requestDTO, user, book, category);
+        Note newNote = NoteBuilder.toDefaultCreate(finalTitle, user);
 
         Note note = noteRepository.save(newNote);
-
-        note.setLinkedNotes(linkedNotes);
 
         return NoteResponseDTOBuilder.from(note);
     }
