@@ -52,6 +52,7 @@ public class SuggestionResponseDTOBuilder {
                 .justification(suggestion.getJustification() == null ? null : suggestion.getJustification())
                 .status(suggestion.getStatus().name())
                 .categories(suggestion.getSuggestedCategories())
+                .username(suggestion.getUser().getUsername())
                 .build();
     }
 
