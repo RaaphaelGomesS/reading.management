@@ -9,6 +9,7 @@ public record BookResponseDTO(long id,
                               String author,
                               String status,
                               int pages,
+                              int totalPages,
                               int rating,
                               String startedDate,
                               String finishedDate) {

@@ -17,7 +17,7 @@ public class NoteBuilder {
                 .title(title)
                 .user(user)
                 .content("Use [[título]] para criar um link de uma outra nota à esta.")
-                .type(null)
+                .type(NoteTypeIndicator.QUICK)
                 .category(null)
                 .book(null)
                 .createdAt(Instant.now())

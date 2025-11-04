@@ -29,6 +29,7 @@ import tech.gomes.reading.management.repository.projections.NoteSummaryProjectio
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -121,6 +122,10 @@ public class NoteService {
         }
 
         Set<String> linksTitles = extractLinks(requestDTO.content());
+
+        Optional<String> repeatTitle = linksTitles.stream().filter(title -> title.equals(requestDTO.title())).findAny();
+
+        repeatTitle.ifPresent(linksTitles::remove);
 
         Set<Note> linkedNotes = noteRepository.findAllByTitleInAndUserId(linksTitles, user.getId());
 

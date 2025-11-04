@@ -26,9 +26,9 @@ public class NoteCategoryService {
         }
 
         NoteCategory newCategory = NoteCategory.builder()
-                                            .name(requestDTO.name())
-                                            .user(user)
-                                            .build();
+                .name(requestDTO.name())
+                .user(user)
+                .build();
 
         NoteCategory noteCategory = categoryRepository.save(newCategory);
 
@@ -63,6 +63,11 @@ public class NoteCategoryService {
     }
 
     public NoteCategory takeCategoryOrCreateIfNotExists(String categoryName, User user) {
+
+        if (categoryName == null) {
+            return null;
+        }
+
         NoteCategory category = categoryRepository.findByNameAndUserId(categoryName, user.getId()).orElse(null);
 
         if (category == null) {

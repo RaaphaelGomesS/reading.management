@@ -22,6 +22,7 @@ public class BookResponseDTOBuilder {
                 .pages(book.getReadPages())
                 .rating(book.getRating())
                 .status(book.getStatus().getValue())
+                .totalPages(book.getBookTemplate().getPages())
                 .startedDate(book.getStartedAt() == null ? null : DateUtils.formatInstantToDate(book.getStartedAt()))
                 .finishedDate(book.getFinishedAt() == null ? null : DateUtils.formatInstantToDate(book.getFinishedAt()))
                 .build();
