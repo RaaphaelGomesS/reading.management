@@ -16,6 +16,7 @@ public class BookResponseDTOBuilder {
     public static BookResponseDTO from(Book book) {
         return BookResponseDTO.builder()
                 .id(book.getId())
+                .libraryId(book.getLibrary().getId())
                 .title(book.getBookTemplate().getTitle())
                 .author(book.getBookTemplate().getAuthor())
                 .img(book.getBookTemplate().getImg())

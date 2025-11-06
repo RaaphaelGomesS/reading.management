@@ -15,7 +15,7 @@ public record UserRequestDTO(@NotBlank(message = "O username não pode estar em 
                              @Email(message = "O email deve ser válido.")
                              String email,
 
-                             @NotBlank(message = "O senha não pode estar em branco.")
+                             @NotBlank(message = "A senha não pode estar em branco.")
                              @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,15}$",
                                      message = "A senha deve ter entre 8 e 15 caracteres, contendo pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.")
                              String password) {
