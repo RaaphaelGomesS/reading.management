@@ -4,6 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record BookResponseDTO(long id,
+                              long libraryId,
                               String img,
                               String title,
                               String author,

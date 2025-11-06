@@ -37,6 +37,10 @@ public class AuthService {
 
     public LoginResponseDTO authenticateUser(LoginRequestDTO requestDTO) throws UserException {
 
+        if (requestDTO.identifier() == null || requestDTO.identifier().isBlank()) {
+            throw new UserException("O identificador não pode estar em branco", HttpStatus.BAD_REQUEST);
+        }
+
         User user = userRepository.findByIdentifier(requestDTO.identifier())
                 .orElseThrow(() -> new UserException("Não foi possível encontrar o usuário pelo identificador: " + requestDTO.identifier(), HttpStatus.NOT_FOUND));
 
