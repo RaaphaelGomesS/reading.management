@@ -38,7 +38,7 @@ public class BookTemplateResponseDTOBuilder {
                 .year(template.getYearPublication())
                 .pages(template.getPages())
                 .img(ConvertUtils.uriCoverImg(template.getImg()))
-                .status(template.getStatus().name())
+                .status(template.getStatus().getValue())
                 .categories(template.getCategories().stream().map(BookCategory::getName).collect(Collectors.toSet()))
                 .build();
     }
