@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers("/auth/login").permitAll();
                     req.requestMatchers("/auth/register").permitAll();
+                    req.requestMatchers("/uploads/**").permitAll();
                     req.anyRequest().authenticated();
                 })
                 .build();
