@@ -8,8 +8,9 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.web.bind.annotation.*;
 import tech.gomes.reading.management.builder.UserResponseDTOBuilder;
 import tech.gomes.reading.management.domain.User;
-import tech.gomes.reading.management.dto.user.UserRequestDTO;
+import tech.gomes.reading.management.dto.user.ChangePasswordRequestDTO;
 import tech.gomes.reading.management.dto.user.UserResponseDTO;
+import tech.gomes.reading.management.dto.user.UserUpdateRequestDTO;
 import tech.gomes.reading.management.service.AuthService;
 import tech.gomes.reading.management.service.UserService;
 
@@ -33,11 +34,21 @@ public class UserController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<UserResponseDTO> updatedUser(@Valid @RequestBody UserRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<UserResponseDTO> updatedUser(@Valid @RequestBody UserUpdateRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
 
         User user = authService.getUserByToken(token);
 
         return ResponseEntity.ok(userService.updateUser(requestDTO, user));
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity<Void> updatePassword(@Valid @RequestBody ChangePasswordRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+
+        User user = authService.getUserByToken(token);
+
+        userService.updatePassword(requestDTO, user);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
