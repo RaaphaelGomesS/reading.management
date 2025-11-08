@@ -18,6 +18,7 @@ import tech.gomes.reading.management.repository.BookRepository;
 import tech.gomes.reading.management.repository.BookTemplateRepository;
 import tech.gomes.reading.management.repository.projections.BookStatusCountProjection;
 import tech.gomes.reading.management.repository.projections.CategoryFinishCountProjection;
+import tech.gomes.reading.management.utils.ConvertUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -69,6 +70,6 @@ public class StatisticsService {
 
         Page<BookTemplate> recommendations = templateRepository.findSimilarTemplatesByCategories(categories, recentFinishedBook.getBookTemplate().getId(), pageable);
 
-        return recommendations.stream().map(r -> new BookSummaryDTO(r.getId(), r.getTitle(), r.getAuthor(), r.getImg())).toList();
+        return recommendations.stream().map(r -> new BookSummaryDTO(r.getId(), r.getTitle(), r.getAuthor(), ConvertUtils.uriCoverImg(r.getImg()))).toList();
     }
 }

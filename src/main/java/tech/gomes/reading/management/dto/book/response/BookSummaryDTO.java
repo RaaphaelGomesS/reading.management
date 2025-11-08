@@ -6,6 +6,5 @@ import lombok.Builder;
 public record BookSummaryDTO(Long templateId,
                              String title,
                              String author,
-                             String img
-                             ) {
+                             String img) {
 }
