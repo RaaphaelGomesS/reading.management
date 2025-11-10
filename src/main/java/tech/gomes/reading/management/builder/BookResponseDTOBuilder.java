@@ -6,7 +6,6 @@ import tech.gomes.reading.management.domain.Book;
 import tech.gomes.reading.management.dto.book.response.BookResponseDTO;
 import tech.gomes.reading.management.dto.book.response.BookResponsePageDTO;
 import tech.gomes.reading.management.utils.ConvertUtils;
-import tech.gomes.reading.management.utils.DateUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,8 +24,8 @@ public class BookResponseDTOBuilder {
                 .rating(book.getRating())
                 .status(book.getStatus().getValue())
                 .totalPages(book.getBookTemplate().getPages())
-                .startedDate(book.getStartedAt() == null ? null : DateUtils.formatInstantToDate(book.getStartedAt()))
-                .finishedDate(book.getFinishedAt() == null ? null : DateUtils.formatInstantToDate(book.getFinishedAt()))
+                .startedDate(book.getStartedAt() == null ? null : book.getStartedAt())
+                .finishedDate(book.getFinishedAt() == null ? null :book.getFinishedAt())
                 .build();
     }
 

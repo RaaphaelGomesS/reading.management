@@ -36,6 +36,15 @@ public class BookBuilder {
             book.setStatus(ReadingStatusIndicator.getStatusByName(requestDTO.status()));
         }
 
+        ReadingStatusIndicator status = ReadingStatusIndicator.getStatusByName(requestDTO.status());
+
+        if (status != ReadingStatusIndicator.READ) {
+            book.setRating(0);
+            book.setStatus(status);
+            book.setFinishedAt(null);
+            book.setReadPages(requestDTO.pages());
+        }
+
         if (requestDTO.startedDate() != null) {
             book.setStartedAt(requestDTO.startedDate());
         }

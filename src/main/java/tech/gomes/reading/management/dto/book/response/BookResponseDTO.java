@@ -2,6 +2,8 @@ package tech.gomes.reading.management.dto.book.response;
 
 import lombok.Builder;
 
+import java.time.Instant;
+
 @Builder
 public record BookResponseDTO(long id,
                               long libraryId,
@@ -12,6 +14,6 @@ public record BookResponseDTO(long id,
                               int pages,
                               int totalPages,
                               int rating,
-                              String startedDate,
-                              String finishedDate) {
+                              Instant startedDate,
+                              Instant finishedDate) {
 }
