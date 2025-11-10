@@ -47,7 +47,7 @@ public class BookService {
         }
 
         return books.stream().map(book ->
-                new ReferenceBookDTO(book.getId(), book.getBookTemplate().getTitle()))
+                        new ReferenceBookDTO(book.getId(), book.getBookTemplate().getTitle()))
                 .collect(Collectors.toList());
     }
 
@@ -68,12 +68,14 @@ public class BookService {
     public BookResponseDTO createBook(BookCreateRequestDTO requestDTO, User user, MultipartFile file) throws Exception {
 
         if (requestDTO.template().templateId() != null) {
-            verifyBookAlreadyRegister(requestDTO.template(), user);
+            verifyBookAlreadyRegister(requestDTO.template().templateId(), user.getId());
         }
 
         Library library = libraryService.getLibraryById(requestDTO.book().libraryId(), user);
 
         BookTemplate template = templateService.getOrCreateBookTemplate(requestDTO.template(), file);
+
+        verifyBookAlreadyRegister(template.getId(), user.getId());
 
         Book newBook = BookBuilder.from(requestDTO.book(), template, library);
 
@@ -162,9 +164,9 @@ public class BookService {
                 .orElseThrow(() -> new BookException("Não foi encontrado o livro.", HttpStatus.NOT_FOUND));
     }
 
-    private void verifyBookAlreadyRegister(BookTemplateRequestDTO requestDTO, User user) throws Exception {
+    private void verifyBookAlreadyRegister(Long templateId, Long userId) throws Exception {
 
-        Optional<Book> book = bookRepository.findByBookTemplateIdAndUserId(requestDTO.templateId(), user.getId());
+        Optional<Book> book = bookRepository.findByBookTemplateIdAndUserId(templateId, userId);
 
         if (book.isPresent()) {
             throw new BookTemplateException("Já existe um cadastro deste livro.", HttpStatus.BAD_REQUEST);

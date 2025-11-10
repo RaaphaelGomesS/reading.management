@@ -42,7 +42,7 @@ public class SuggestionService {
             throw new SuggestionException("Deve justificar a alteração.", HttpStatus.BAD_REQUEST);
         }
 
-        BookTemplate bookTemplate = bookTemplateService.findTemplateById(requestDTO.templateId());
+        BookTemplate bookTemplate = bookTemplateService.findTemplateByIdWithAnyStatus(requestDTO.templateId());
 
         Optional<SuggestionTemplate> existentSuggestion = suggestionRepository.findBySuggestedISBNAndStatus(requestDTO.suggestedISBN(), TemplateStatusIndicator.IN_ANALYZE);
 

@@ -27,32 +27,32 @@ public class BookBuilder {
 
         if (book.getBookTemplate().getPages() == requestDTO.pages()) {
             book.setStatus(ReadingStatusIndicator.READ);
-            book.setReadPages(book.getBookTemplate().getPages());
+            book.setReadPages(requestDTO.pages());
+
             if (requestDTO.finishedDate() == null) {
                 book.setFinishedAt(Instant.now());
             }
-        } else {
-            book.setReadPages(requestDTO.pages());
-            book.setStatus(ReadingStatusIndicator.getStatusByName(requestDTO.status()));
+
+            if (book.getStartedAt() == null) {
+                book.setStartedAt(Instant.now());
+            }
         }
 
         ReadingStatusIndicator status = ReadingStatusIndicator.getStatusByName(requestDTO.status());
 
-        if (status != ReadingStatusIndicator.READ) {
-            book.setRating(0);
-            book.setStatus(status);
-            book.setFinishedAt(null);
+        book.setStatus(status);
+
+        if (status == ReadingStatusIndicator.READ) {
+            book.setFinishedAt(Instant.now());
+            book.setRating(requestDTO.rating());
+            book.setReadPages(book.getBookTemplate().getPages());
+        } else if (status == ReadingStatusIndicator.READING) {
+            book.setStartedAt(Instant.now());
             book.setReadPages(requestDTO.pages());
+        } else {
+            if (requestDTO.startedDate() != null) {
+                book.setStartedAt(requestDTO.startedDate());
+            }
         }
-
-        if (requestDTO.startedDate() != null) {
-            book.setStartedAt(requestDTO.startedDate());
-        }
-
-        if (requestDTO.finishedDate() != null) {
-            book.setFinishedAt(requestDTO.finishedDate());
-        }
-
-        book.setRating(requestDTO.rating());
     }
 }

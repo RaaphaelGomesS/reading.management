@@ -16,5 +16,6 @@ public record BookTemplateRequestDTO(Long templateId,
                                      String description,
                                      int year,
                                      int pages,
-                                     Set<String> categories) {
+                                     Set<String> categories,
+                                     String imgUrl) {
 }
