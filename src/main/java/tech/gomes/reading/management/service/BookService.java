@@ -169,7 +169,11 @@ public class BookService {
         Optional<Book> book = bookRepository.findByBookTemplateIdAndUserId(templateId, userId);
 
         if (book.isPresent()) {
-            throw new BookTemplateException("Já existe um cadastro deste livro.", HttpStatus.BAD_REQUEST);
+            String errorMessage = String.format("ALREADY_EXISTS|%d|%s",
+                    book.get().getId(),
+                    book.get().getLibrary().getName());
+
+            throw new BookTemplateException(errorMessage, HttpStatus.BAD_REQUEST);
         }
     }
 }

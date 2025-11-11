@@ -17,15 +17,19 @@ public class ConvertUtils {
                 : (suggestion.getSuggestedTitle() + suggestion.getSuggestedAuthor()).toLowerCase();
     }
 
-    public static String uriCoverImg(String imgName) {
-        if (imgName == null || imgName.isBlank()) {
+    public static String uriCoverImg(String imgNameOrUrl) {
+        if (imgNameOrUrl == null || imgNameOrUrl.isBlank()) {
             return null;
+        }
+
+        if (imgNameOrUrl.startsWith("http://") || imgNameOrUrl.startsWith("https://")) {
+            return imgNameOrUrl;
         }
 
         return ServletUriComponentsBuilder
                 .fromCurrentContextPath()
                 .path("/uploads/")
-                .path(imgName)
+                .path(imgNameOrUrl)
                 .toUriString();
     }
 }

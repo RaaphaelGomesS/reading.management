@@ -44,7 +44,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Double getAverageReadingTimeInDaysByUserId(@Param("userId") long userId);
 
     @Query("SELECT b.status as status, COUNT(b) as count " +
-            "FROM book b WHERE b.user.id = :userId GROUP BY b.status")
+            "FROM book b WHERE b.user.id = :userId GROUP BY b.status " +
+            "ORDER BY count DESC")
     List<BookStatusCountProjection> countBooksByStatusByUserId(@Param("userId") long userId);
 
     @Query("SELECT c.name as category, COUNT(b) as count " +
@@ -52,7 +53,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "JOIN b.bookTemplate bt " +
             "JOIN bt.categories c " +
             "WHERE b.user.id = :userId AND b.status = 'READ' " +
-            "GROUP BY c.name")
+            "GROUP BY c.name " +
+            "ORDER BY count DESC LIMIT 5")
     List<CategoryFinishCountProjection> countFinishedBooksByCategoryByUserId(@Param("userId") long userId);
 
     Optional<Book> findFirstByUserIdAndStatusOrderByFinishedAtDesc(Long userId, ReadingStatusIndicator status);

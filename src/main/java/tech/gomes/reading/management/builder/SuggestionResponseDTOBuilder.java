@@ -50,7 +50,7 @@ public class SuggestionResponseDTOBuilder {
                 .img(ConvertUtils.uriCoverImg(suggestion.getSuggestedImg()))
                 .reason(suggestion.getReason() == null ? null : suggestion.getReason())
                 .justification(suggestion.getJustification() == null ? null : suggestion.getJustification())
-                .status(suggestion.getStatus().name())
+                .status(suggestion.getStatus().getValue())
                 .categories(suggestion.getSuggestedCategories())
                 .username(suggestion.getUser().getUsername())
                 .build();
@@ -68,7 +68,7 @@ public class SuggestionResponseDTOBuilder {
                 .year(template.getYearPublication())
                 .pages(template.getPages())
                 .img(ConvertUtils.uriCoverImg(template.getImg()))
-                .status(template.getStatus().name())
+                .status(template.getStatus().getValue())
                 .categories(template.getCategories().stream().map(BookCategory::getName).collect(Collectors.toSet()))
                 .build();
     }

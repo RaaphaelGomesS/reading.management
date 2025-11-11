@@ -13,7 +13,7 @@ public record BookResponseDTO(long id,
                               String status,
                               int pages,
                               int totalPages,
-                              int rating,
+                              double rating,
                               Instant startedDate,
                               Instant finishedDate) {
 }

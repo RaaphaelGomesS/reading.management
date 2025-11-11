@@ -73,7 +73,15 @@ public class BookTemplateService {
 
         Set<BookCategory> categories = getCategoriesOrCreateIfNotExist(requestDTO.categories());
 
-        String coverImg = uploadService.uploadCoverImg(file);
+        log.info(requestDTO.imgUrl());
+
+        String coverImg = null;
+
+        if (file != null && !file.isEmpty()) {
+            coverImg = uploadService.uploadCoverImg(file);
+        } else if (requestDTO.imgUrl() != null && !requestDTO.imgUrl().isBlank()) {
+            coverImg = requestDTO.imgUrl();
+        }
 
         BookTemplate template = BookTemplateBuilder.from(requestDTO, categories, coverImg);
 
@@ -156,11 +164,14 @@ public class BookTemplateService {
     }
 
     private Set<BookCategory> getCategoriesOrCreateIfNotExist(Set<String> categoriesName) {
-        Set<BookCategory> existentCategories = bookCategoryRepository.findByNameIn(categoriesName);
+
+        Set<String> categoriesNormalize = categoriesName.stream().map(String::toLowerCase).collect(Collectors.toSet());
+
+        Set<BookCategory> existentCategories = bookCategoryRepository.findByNameIn(categoriesNormalize);
 
         Set<String> existentCategoriesNames = existentCategories.stream().map(BookCategory::getName).collect(Collectors.toSet());
 
-        Set<BookCategory> newCategories = categoriesName.stream().filter(category -> !existentCategoriesNames.contains(category))
+        Set<BookCategory> newCategories = categoriesName.stream().filter(category -> !existentCategoriesNames.contains(category.toLowerCase()))
                 .map(category -> BookCategory.builder().name(category).build())
                 .collect(Collectors.toSet());
 
