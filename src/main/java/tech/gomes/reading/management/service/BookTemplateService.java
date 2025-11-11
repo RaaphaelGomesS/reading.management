@@ -172,7 +172,7 @@ public class BookTemplateService {
 
         Set<String> existentCategoriesNames = existentCategories.stream().map(BookCategory::getName).collect(Collectors.toSet());
 
-        Set<BookCategory> newCategories = categoriesNormalize.stream().filter(category -> !existentCategoriesNames.contains(category.toLowerCase()))
+        Set<BookCategory> newCategories = categoriesNormalize.stream().filter(category -> !existentCategoriesNames.contains(category))
                 .map(category -> BookCategory.builder().name(category).build())
                 .collect(Collectors.toSet());
 
