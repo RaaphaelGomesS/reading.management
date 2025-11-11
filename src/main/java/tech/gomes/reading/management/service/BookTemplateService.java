@@ -27,6 +27,7 @@ import tech.gomes.reading.management.repository.BookTemplateRepository;
 import tech.gomes.reading.management.repository.Specification.BookTemplateSpecification;
 import tech.gomes.reading.management.utils.ConvertUtils;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -165,13 +166,13 @@ public class BookTemplateService {
 
     private Set<BookCategory> getCategoriesOrCreateIfNotExist(Set<String> categoriesName) {
 
-        Set<String> categoriesNormalize = categoriesName.stream().map(String::toLowerCase).collect(Collectors.toSet());
+        Set<String> categoriesNormalize = categoriesName.stream().map(ConvertUtils::normalizeCategoryName).filter(Objects::nonNull).collect(Collectors.toSet());
 
         Set<BookCategory> existentCategories = bookCategoryRepository.findByNameIn(categoriesNormalize);
 
         Set<String> existentCategoriesNames = existentCategories.stream().map(BookCategory::getName).collect(Collectors.toSet());
 
-        Set<BookCategory> newCategories = categoriesName.stream().filter(category -> !existentCategoriesNames.contains(category.toLowerCase()))
+        Set<BookCategory> newCategories = categoriesNormalize.stream().filter(category -> !existentCategoriesNames.contains(category.toLowerCase()))
                 .map(category -> BookCategory.builder().name(category).build())
                 .collect(Collectors.toSet());
 

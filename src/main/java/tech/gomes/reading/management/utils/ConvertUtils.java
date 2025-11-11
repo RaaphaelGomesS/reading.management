@@ -32,4 +32,12 @@ public class ConvertUtils {
                 .path(imgNameOrUrl)
                 .toUriString();
     }
+
+    public static String normalizeCategoryName(String name) {
+        if (name == null || name.isBlank()) {
+            return null;
+        }
+        String trimmedName = name.trim();
+        return Character.toUpperCase(trimmedName.charAt(0)) + trimmedName.substring(1).toLowerCase();
+    }
 }
