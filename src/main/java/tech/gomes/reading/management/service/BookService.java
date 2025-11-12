@@ -1,6 +1,7 @@
 package tech.gomes.reading.management.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import tech.gomes.reading.management.exception.BookException;
 import tech.gomes.reading.management.exception.BookTemplateException;
 import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 import tech.gomes.reading.management.repository.BookRepository;
+import tech.gomes.reading.management.utils.BookUtils;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -29,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookService {
@@ -67,6 +70,8 @@ public class BookService {
     @Transactional
     public BookResponseDTO createBook(BookCreateRequestDTO requestDTO, User user, MultipartFile file) throws Exception {
 
+        log.info("Livro: {}", requestDTO.book());
+
         if (requestDTO.template().templateId() != null) {
             verifyBookAlreadyRegister(requestDTO.template().templateId(), user.getId());
         }
@@ -85,7 +90,8 @@ public class BookService {
     public BookResponseDTO updateBookStatus(BookRequestDTO requestDTO, User user) throws Exception {
         Book book = findBookById(requestDTO.id(), user.getId());
 
-        BookBuilder.updateBookFromRequest(book, requestDTO);
+        log.info("Request data check: {}", requestDTO);
+        BookUtils.setValuesToBookByStatusAndRequest(book, requestDTO);
 
         Book updatedBook = bookRepository.save(book);
 
