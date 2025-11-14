@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import tech.gomes.reading.management.domain.Book;
 import tech.gomes.reading.management.dto.book.response.BookResponseDTO;
 import tech.gomes.reading.management.dto.book.response.BookResponsePageDTO;
-import tech.gomes.reading.management.utils.DateUtils;
+import tech.gomes.reading.management.utils.ConvertUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,14 +16,16 @@ public class BookResponseDTOBuilder {
     public static BookResponseDTO from(Book book) {
         return BookResponseDTO.builder()
                 .id(book.getId())
+                .libraryId(book.getLibrary().getId())
                 .title(book.getBookTemplate().getTitle())
                 .author(book.getBookTemplate().getAuthor())
-                .img(book.getBookTemplate().getImg())
+                .img(ConvertUtils.uriCoverImg(book.getBookTemplate().getImg()))
                 .pages(book.getReadPages())
                 .rating(book.getRating())
                 .status(book.getStatus().getValue())
-                .startedDate(book.getStartedAt() == null ? null : DateUtils.formatInstantToDate(book.getStartedAt()))
-                .finishedDate(book.getFinishedAt() == null ? null : DateUtils.formatInstantToDate(book.getFinishedAt()))
+                .totalPages(book.getBookTemplate().getPages())
+                .startedDate(book.getStartedAt() == null ? null : book.getStartedAt())
+                .finishedDate(book.getFinishedAt() == null ? null :book.getFinishedAt())
                 .build();
     }
 

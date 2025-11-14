@@ -32,7 +32,7 @@ public class BookTemplateBuilder {
                 .ISBN(requestDTO.isbn())
                 .title(requestDTO.title())
                 .author(requestDTO.author())
-                .titleAuthor((requestDTO.title() + requestDTO.author()).toLowerCase())
+                .titleAuthor(requestDTO.isbn() == null ? (requestDTO.title() + requestDTO.author()).toLowerCase() : null)
                 .publisher(requestDTO.publisher())
                 .edition(requestDTO.edition())
                 .description(requestDTO.description())

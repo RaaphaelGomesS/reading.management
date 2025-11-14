@@ -70,10 +70,10 @@ public class NoteController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<NoteResponseDTO> createNote(@RequestBody NoteRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<NoteResponseDTO> createNote(JwtAuthenticationToken token) throws Exception {
         User user = authService.getUserByToken(token);
 
-        NoteResponseDTO responseDTO = noteService.createNoteAndSetLinks(requestDTO, user);
+        NoteResponseDTO responseDTO = noteService.createEmptyNote(user);
 
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }

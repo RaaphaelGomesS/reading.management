@@ -9,6 +9,7 @@ import tech.gomes.reading.management.dto.category.CategoryRequestDTO;
 import tech.gomes.reading.management.dto.category.CategoryResponseDTO;
 import tech.gomes.reading.management.exception.NoteCategoryException;
 import tech.gomes.reading.management.repository.NoteCategoryRepository;
+import tech.gomes.reading.management.utils.ConvertUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +20,24 @@ public class NoteCategoryService {
 
     private final NoteCategoryRepository categoryRepository;
 
+    public CategoryResponseDTO createCategoryIfNotExists(CategoryRequestDTO requestDTO, User user) throws Exception {
+
+        String normalizedName = ConvertUtils.normalizeCategoryName(requestDTO.name());
+
+        if (categoryRepository.existsByNameAndUserId(normalizedName, user.getId())) {
+            throw new NoteCategoryException("Já existe uma categoria com esse nome.", HttpStatus.BAD_REQUEST);
+        }
+
+        NoteCategory newCategory = NoteCategory.builder()
+                .name(normalizedName)
+                .user(user)
+                .build();
+
+        NoteCategory noteCategory = categoryRepository.save(newCategory);
+
+        return new CategoryResponseDTO(noteCategory.getId(), noteCategory.getName());
+    }
+
     public List<CategoryResponseDTO> getAllCategoriesFromUser(User user) {
         List<NoteCategory> categories = categoryRepository.findAllByUserId(user.getId());
 
@@ -27,13 +46,15 @@ public class NoteCategoryService {
 
     public CategoryResponseDTO updateCategory(CategoryRequestDTO requestDTO, User user) throws Exception {
 
-        if (categoryRepository.existsByNameAndUserId(requestDTO.name(), user.getId())) {
+        String normalizedName = ConvertUtils.normalizeCategoryName(requestDTO.name());
+
+        if (categoryRepository.existsByNameAndUserId(normalizedName, user.getId())) {
             throw new NoteCategoryException("Já existe uma categoria com esse nome.", HttpStatus.BAD_REQUEST);
         }
 
         NoteCategory category = findCategory(requestDTO.id(), user.getId());
 
-        category.setName(requestDTO.name());
+        category.setName(normalizedName);
 
         NoteCategory updatedCategory = categoryRepository.save(category);
 
@@ -47,10 +68,17 @@ public class NoteCategoryService {
     }
 
     public NoteCategory takeCategoryOrCreateIfNotExists(String categoryName, User user) {
-        NoteCategory category = categoryRepository.findByNameAndUserId(categoryName, user.getId()).orElse(null);
+
+        String normalizedName = ConvertUtils.normalizeCategoryName(categoryName);
+
+        if (normalizedName == null) {
+            return null;
+        }
+
+        NoteCategory category = categoryRepository.findByNameAndUserId(normalizedName, user.getId()).orElse(null);
 
         if (category == null) {
-            NoteCategory newCategory = NoteCategory.builder().name(categoryName).user(user).build();
+            NoteCategory newCategory = NoteCategory.builder().name(normalizedName).user(user).build();
             return categoryRepository.save(newCategory);
         }
 

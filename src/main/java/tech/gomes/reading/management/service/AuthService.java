@@ -37,9 +37,12 @@ public class AuthService {
 
     public LoginResponseDTO authenticateUser(LoginRequestDTO requestDTO) throws UserException {
 
-        String identifier = requestDTO.email() != null ? requestDTO.email() : requestDTO.username();
+        if (requestDTO.identifier() == null || requestDTO.identifier().isBlank()) {
+            throw new UserException("O identificador não pode estar em branco", HttpStatus.BAD_REQUEST);
+        }
 
-        User user = userRepository.findByIdentifier(identifier).orElseThrow(() -> new UserException("Não foi possível encontrar o usuário pelo identificador: " + identifier, HttpStatus.NOT_FOUND));
+        User user = userRepository.findByIdentifier(requestDTO.identifier())
+                .orElseThrow(() -> new UserException("Não foi possível encontrar o usuário pelo identificador: " + requestDTO.identifier(), HttpStatus.NOT_FOUND));
 
 
         if (!passwordEncoder.matches(requestDTO.password(), user.getPassword())) {

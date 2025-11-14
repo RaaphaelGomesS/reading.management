@@ -6,8 +6,6 @@ import tech.gomes.reading.management.domain.Library;
 import tech.gomes.reading.management.dto.book.request.BookRequestDTO;
 import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 
-import java.time.Instant;
-
 public class BookBuilder {
 
     public static Book from(BookRequestDTO book, BookTemplate template, Library library) {
@@ -21,29 +19,5 @@ public class BookBuilder {
                 .library(library)
                 .user(library.getUser())
                 .build();
-    }
-
-    public static void updateBookFromRequest(Book book, BookRequestDTO requestDTO) {
-
-        if (book.getBookTemplate().getPages() == requestDTO.pages()) {
-            book.setStatus(ReadingStatusIndicator.READ);
-            book.setReadPages(book.getBookTemplate().getPages());
-            if (requestDTO.finishedDate() == null) {
-                book.setFinishedAt(Instant.now());
-            }
-        } else {
-            book.setReadPages(requestDTO.pages());
-            book.setStatus(ReadingStatusIndicator.getStatusByName(requestDTO.status()));
-        }
-
-        if (requestDTO.startedDate() != null) {
-            book.setStartedAt(requestDTO.startedDate());
-        }
-
-        if (requestDTO.finishedDate() != null) {
-            book.setFinishedAt(requestDTO.finishedDate());
-        }
-
-        book.setRating(requestDTO.rating());
     }
 }

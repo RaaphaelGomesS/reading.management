@@ -32,7 +32,7 @@ public class UploadService {
     }
 
     public String uploadCoverImg(MultipartFile file) {
-        if (!file.isEmpty()) {
+        if (file != null && !file.isEmpty()) {
             String originalFileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
             try {
@@ -54,6 +54,7 @@ public class UploadService {
                     Files.copy(inputStream, targetLocation, StandardCopyOption.REPLACE_EXISTING);
                 }
 
+                log.info("Imagem salva como: {}", generatedFileName);
                 return generatedFileName;
             } catch (IOException ex) {
                 throw new RuntimeException("Não foi possível armazenar o arquivo.", ex);

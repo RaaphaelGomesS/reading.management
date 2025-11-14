@@ -26,7 +26,7 @@ public class SuggestionController {
 
     @PostMapping(value = "/", consumes = {"multipart/form-data"})
     public ResponseEntity<Void> createUpdateSuggestion(@RequestPart("suggestion") SuggestionRequestDTO requestDTO,
-                                                       @RequestPart("coverImg") MultipartFile file,
+                                                       @RequestPart(value = "coverImg", required = false) MultipartFile file,
                                                        JwtAuthenticationToken token) throws Exception {
 
         User user = authService.getUserByToken(token);

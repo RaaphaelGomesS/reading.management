@@ -18,5 +18,6 @@ public record SuggestionResponseDTO(long id,
                                     String reason,
                                     String justification,
                                     String status,
-                                    Set<String> categories) {
+                                    Set<String> categories,
+                                    String username) {
 }

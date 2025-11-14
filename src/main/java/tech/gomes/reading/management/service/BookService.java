@@ -1,6 +1,7 @@
 package tech.gomes.reading.management.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,18 +18,20 @@ import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.Library;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.book.request.*;
-import tech.gomes.reading.management.dto.book.response.BookResponseDTO;
-import tech.gomes.reading.management.dto.book.response.BookResponsePageDTO;
-import tech.gomes.reading.management.dto.book.response.BookTemplateResponseDTO;
-import tech.gomes.reading.management.dto.book.response.FullBookResponseDTO;
+import tech.gomes.reading.management.dto.book.response.*;
 import tech.gomes.reading.management.exception.BookException;
 import tech.gomes.reading.management.exception.BookTemplateException;
 import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 import tech.gomes.reading.management.repository.BookRepository;
+import tech.gomes.reading.management.utils.BookUtils;
 
 import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookService {
@@ -38,6 +41,18 @@ public class BookService {
     private final LibraryService libraryService;
 
     private final BookTemplateService templateService;
+
+    public List<ReferenceBookDTO> findAllUserSummaryBooks(User user) {
+        List<Book> books = bookRepository.findAllByUserId(user.getId());
+
+        if (books.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return books.stream().map(book ->
+                        new ReferenceBookDTO(book.getId(), book.getBookTemplate().getTitle()))
+                .collect(Collectors.toList());
+    }
 
     public BookResponsePageDTO getAllBooksByStatus(long id, User user, ReadingStatusIndicator status, int page, int pageSize, String direction) throws Exception {
 
@@ -55,13 +70,17 @@ public class BookService {
     @Transactional
     public BookResponseDTO createBook(BookCreateRequestDTO requestDTO, User user, MultipartFile file) throws Exception {
 
+        log.info("Livro: {}", requestDTO.book());
+
         if (requestDTO.template().templateId() != null) {
-            verifyBookAlreadyRegister(requestDTO.template(), user);
+            verifyBookAlreadyRegister(requestDTO.template().templateId(), user.getId());
         }
 
         Library library = libraryService.getLibraryById(requestDTO.book().libraryId(), user);
 
         BookTemplate template = templateService.getOrCreateBookTemplate(requestDTO.template(), file);
+
+        verifyBookAlreadyRegister(template.getId(), user.getId());
 
         Book newBook = BookBuilder.from(requestDTO.book(), template, library);
 
@@ -71,7 +90,8 @@ public class BookService {
     public BookResponseDTO updateBookStatus(BookRequestDTO requestDTO, User user) throws Exception {
         Book book = findBookById(requestDTO.id(), user.getId());
 
-        BookBuilder.updateBookFromRequest(book, requestDTO);
+        log.info("Request data check: {}", requestDTO);
+        BookUtils.setValuesToBookByStatusAndRequest(book, requestDTO);
 
         Book updatedBook = bookRepository.save(book);
 
@@ -150,12 +170,16 @@ public class BookService {
                 .orElseThrow(() -> new BookException("Não foi encontrado o livro.", HttpStatus.NOT_FOUND));
     }
 
-    private void verifyBookAlreadyRegister(BookTemplateRequestDTO requestDTO, User user) throws Exception {
+    private void verifyBookAlreadyRegister(Long templateId, Long userId) throws Exception {
 
-        Optional<Book> book = bookRepository.findByBookTemplateIdAndUserId(requestDTO.templateId(), user.getId());
+        Optional<Book> book = bookRepository.findByBookTemplateIdAndUserId(templateId, userId);
 
         if (book.isPresent()) {
-            throw new BookTemplateException("Já existe um cadastro deste livro.", HttpStatus.BAD_REQUEST);
+            String errorMessage = String.format("ALREADY_EXISTS|%d|%s",
+                    book.get().getId(),
+                    book.get().getLibrary().getName());
+
+            throw new BookTemplateException(errorMessage, HttpStatus.BAD_REQUEST);
         }
     }
 }
