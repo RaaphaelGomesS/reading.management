@@ -24,7 +24,7 @@ import tech.gomes.reading.management.exception.BookTemplateException;
 import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 import tech.gomes.reading.management.repository.BookCategoryRepository;
 import tech.gomes.reading.management.repository.BookTemplateRepository;
-import tech.gomes.reading.management.repository.Specification.BookTemplateSpecification;
+import tech.gomes.reading.management.repository.specification.BookTemplateSpecification;
 import tech.gomes.reading.management.utils.ConvertUtils;
 
 import java.util.Objects;

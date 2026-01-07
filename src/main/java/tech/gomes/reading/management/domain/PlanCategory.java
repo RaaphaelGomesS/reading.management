@@ -1,14 +1,18 @@
 package tech.gomes.reading.management.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
 @Data
-@Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "planCategory")
 @Table(name = "TB_PLAN_CATEGORY")
 public class PlanCategory {
 

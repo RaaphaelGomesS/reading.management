@@ -1,10 +1,13 @@
-package tech.gomes.reading.management.repository.Specification;
+package tech.gomes.reading.management.repository.specification;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import tech.gomes.reading.management.controller.filter.NoteFilter;
 import tech.gomes.reading.management.domain.Note;
 import tech.gomes.reading.management.indicator.NoteTypeIndicator;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class NoteSpecification {
 
     private static Specification<Note> byUserId(Long userId) {

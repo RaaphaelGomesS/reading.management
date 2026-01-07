@@ -12,7 +12,7 @@ import lombok.*;
 public class BookTemplateFilter {
 
     private String author;
-    private String ISBN;
+    private String isbn;
     private String title;
     @Builder.Default
     private int page = 0;

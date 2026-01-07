@@ -91,7 +91,7 @@ public class NoteController {
     public ResponseEntity<Void> deleteNote(@PathVariable long id, JwtAuthenticationToken token) throws Exception {
         User user = authService.getUserByToken(token);
 
-        noteService.DeleteNoteById(id, user);
+        noteService.deleteNoteById(id, user);
 
         return ResponseEntity.ok(null);
     }

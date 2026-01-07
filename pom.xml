@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>tech.gomes</groupId>
 	<artifactId>reading.management</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 	<name>reading.management</name>
 	<description>Aplicação para gerenciamento de bibliotecas, livros, planos de leituras, anotações e consulta de estatísticas.</description>
 	<url/>

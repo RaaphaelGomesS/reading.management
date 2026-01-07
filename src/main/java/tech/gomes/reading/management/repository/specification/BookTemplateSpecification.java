@@ -1,10 +1,13 @@
-package tech.gomes.reading.management.repository.Specification;
+package tech.gomes.reading.management.repository.specification;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import tech.gomes.reading.management.controller.filter.BookTemplateFilter;
 import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookTemplateSpecification {
 
     private static Specification<BookTemplate> byIsbn(String isbn) {
@@ -33,7 +36,7 @@ public class BookTemplateSpecification {
         Specification<BookTemplate> filters = Specification.anyOf(
                 byTitle(filter.getTitle()))
                 .or(byAuthor(filter.getAuthor()))
-                .or(byIsbn(filter.getISBN())
+                .or(byIsbn(filter.getIsbn())
                 );
 
         return spec.and(filters);
