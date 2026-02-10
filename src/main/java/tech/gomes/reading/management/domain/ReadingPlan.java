@@ -33,6 +33,12 @@ public class ReadingPlan {
     @Column(name = "goal")
     private Instant goalDate;
 
+    @Column(name = "is_public", nullable = false)
+    private Boolean isPublic = false;
+
+    @Column(name = "copy_count", nullable = false)
+    private Integer copyCount = 0;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Instant createdAt;

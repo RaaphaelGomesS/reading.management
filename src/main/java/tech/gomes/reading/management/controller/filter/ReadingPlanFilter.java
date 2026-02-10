@@ -24,5 +24,5 @@ public class ReadingPlanFilter {
     @Builder.Default
     private String direction = "ASC";
     @Builder.Default
-    private FilterTypeIndicator type = FilterTypeIndicator.DATE;
+    private FilterTypeIndicator type = FilterTypeIndicator.RELEVANCE;
 }

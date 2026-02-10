@@ -1,31 +1,34 @@
 package tech.gomes.reading.management.builder;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
+import tech.gomes.reading.management.domain.ReadingPlan;
 import tech.gomes.reading.management.dto.readingPlan.PlanSummaryDTO;
 import tech.gomes.reading.management.dto.readingPlan.ReadingPlanPageDTO;
-import tech.gomes.reading.management.repository.projections.PlanSummary;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReadingPlanResponseDTOBuilder {
 
-    public static ReadingPlanPageDTO fromPageSummary(Page<PlanSummary> summaryPage) {
+    public static ReadingPlanPageDTO fromPageReadingPlan(Page<ReadingPlan> plans) {
 
-        List<PlanSummaryDTO> summaryDTOList = summaryPage.getContent().isEmpty() ? Collections.emptyList()
-                : summaryPage.getContent().stream().map(ReadingPlanResponseDTOBuilder::fromProjection).collect(Collectors.toList());
+        List<PlanSummaryDTO> summaryDTOList = plans.getContent().isEmpty() ? Collections.emptyList()
+                : plans.getContent().stream().map(ReadingPlanResponseDTOBuilder::fromReadingPlan).collect(Collectors.toList());
 
         return ReadingPlanPageDTO.builder()
-                .page(summaryPage.getNumber())
-                .pageSize(summaryPage.getSize())
-                .totalPages(summaryPage.getTotalPages())
-                .totalElements(summaryPage.getNumberOfElements())
+                .page(plans.getNumber())
+                .pageSize(plans.getSize())
+                .totalPages(plans.getTotalPages())
+                .totalElements(plans.getNumberOfElements())
                 .data(summaryDTOList)
                 .build();
     }
 
-    private static PlanSummaryDTO fromProjection(PlanSummary summary) {
-        return new PlanSummaryDTO(summary.getId(), summary.getTitle(), summary.getDescription());
+    private static PlanSummaryDTO fromReadingPlan(ReadingPlan plan) {
+        return new PlanSummaryDTO(plan.getId(), plan.getTitle(), plan.getDescription());
     }
 }

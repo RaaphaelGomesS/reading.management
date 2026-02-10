@@ -27,7 +27,15 @@ public class ReadingPlanController {
 
         User user = authService.getUserByToken(token);
 
-        ReadingPlanPageDTO pageDTO = planService.findAllUserPlans(user, filter);
+        ReadingPlanPageDTO pageDTO = planService.findAllPlans(user, filter);
+
+        return ResponseEntity.ok(pageDTO);
+    }
+
+    @GetMapping("/public")
+    public ResponseEntity<ReadingPlanPageDTO> getPublicPlans(ReadingPlanFilter filter) {
+
+        ReadingPlanPageDTO pageDTO = planService.findAllPlans(null, filter);
 
         return ResponseEntity.ok(pageDTO);
     }

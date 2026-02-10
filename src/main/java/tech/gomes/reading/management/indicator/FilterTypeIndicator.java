@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public enum FilterTypeIndicator {
-    DATE("updatedAt"), RELEVANCE("");
+    DATE("updatedAt"), RELEVANCE("copyCount");
 
     private String value;
 }

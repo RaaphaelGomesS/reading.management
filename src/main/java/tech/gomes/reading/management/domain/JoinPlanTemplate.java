@@ -1,12 +1,16 @@
 package tech.gomes.reading.management.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "joinPlanTemplate")
 @Table(name = "TB_JOIN_PLAN_TEMPLATE")
 public class JoinPlanTemplate {
 

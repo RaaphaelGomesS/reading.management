@@ -44,7 +44,7 @@ public class BookTemplateService {
     private final UploadService uploadService;
 
     public BookTemplateResponsePageDTO findAllTemplatesByFilter(BookTemplateFilter filter) {
-        if (filter.getTitle() == null && filter.getAuthor() == null && filter.getISBN() == null) {
+        if (filter.getTitle() == null && filter.getAuthor() == null && filter.getIsbn() == null) {
             return BookTemplateResponseDTOBuilder.fromPage(Page.empty());
         }
 

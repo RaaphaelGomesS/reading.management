@@ -7,6 +7,7 @@ import java.util.Date;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record NoteRequestDTO(Long id,
+                             //TODO: Remover ou adicionar sistema de referencia (Obra)
                              Long reference,
                              String category,
                              String type,
