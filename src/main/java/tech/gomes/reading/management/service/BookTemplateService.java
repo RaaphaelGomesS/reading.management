@@ -90,7 +90,7 @@ public class BookTemplateService {
     }
 
     @Transactional
-    public BookTemplateResponseDTO updateBookTemplateByAdminRequest(BookTemplateRequestDTO requestDTO, MultipartFile file) throws Exception {
+    public BookTemplateResponseDTO updateBookTemplateByAdminRequest(BookTemplateRequestDTO requestDTO, MultipartFile file) throws BookTemplateException {
 
         BookTemplate bookTemplate = findTemplateByIdWithAnyStatus(requestDTO.templateId());
 
@@ -111,7 +111,7 @@ public class BookTemplateService {
         return BookTemplateResponseDTOBuilder.from(updateTemplate);
     }
 
-    public void inactiveInvalidTemplate(long id) throws Exception {
+    public void inactiveInvalidTemplate(long id) throws BookTemplateException {
         BookTemplate bookTemplate = findTemplateByIdWithAnyStatus(id);
 
         bookTemplate.setStatus(TemplateStatusIndicator.INACTIVE);
@@ -119,7 +119,7 @@ public class BookTemplateService {
         bookTemplateRepository.save(bookTemplate);
     }
 
-    public void approveTemplate(long id) throws Exception {
+    public void approveTemplate(long id) throws BookTemplateException {
         BookTemplate template = findTemplateByIdWithAnyStatus(id);
 
         template.setStatus(TemplateStatusIndicator.VERIFIED);
@@ -128,7 +128,7 @@ public class BookTemplateService {
     }
 
     @Transactional
-    public void updateBookTemplateBySuggestion(SuggestionTemplate suggestion) throws Exception {
+    public void updateBookTemplateBySuggestion(SuggestionTemplate suggestion) throws BookTemplateException {
 
         String identifier = ConvertUtils.getIdentifierBySuggestion(suggestion);
 
@@ -154,12 +154,12 @@ public class BookTemplateService {
         return BookTemplateResponseDTOBuilder.fromPage(bookTemplatePage);
     }
 
-    public BookTemplate findTemplateById(long id) throws Exception {
+    public BookTemplate findTemplateById(long id) throws BookTemplateException {
         return bookTemplateRepository.findByIdAndStatus(id, TemplateStatusIndicator.VERIFIED)
                 .orElseThrow(() -> new BookTemplateException("O template não foi encontrado.", HttpStatus.NOT_FOUND));
     }
 
-    public BookTemplate findTemplateByIdWithAnyStatus(long id) throws Exception {
+    public BookTemplate findTemplateByIdWithAnyStatus(long id) throws BookTemplateException {
         return bookTemplateRepository.findById(id)
                 .orElseThrow(() -> new BookTemplateException("O template não foi encontrado.", HttpStatus.NOT_FOUND));
     }
@@ -184,7 +184,7 @@ public class BookTemplateService {
         return existentCategories;
     }
 
-    private void verifyIfExistsAnyTemplateWithIdentifier(String identifier) throws Exception {
+    private void verifyIfExistsAnyTemplateWithIdentifier(String identifier) throws BookTemplateException {
 
         Optional<BookTemplate> template = bookTemplateRepository.findByIdentifierWhenNotIsInactive(identifier);
 

@@ -12,7 +12,6 @@ import tech.gomes.reading.management.repository.NoteCategoryRepository;
 import tech.gomes.reading.management.utils.ConvertUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +19,7 @@ public class NoteCategoryService {
 
     private final NoteCategoryRepository categoryRepository;
 
-    public CategoryResponseDTO createCategoryIfNotExists(CategoryRequestDTO requestDTO, User user) throws Exception {
+    public CategoryResponseDTO createCategoryIfNotExists(CategoryRequestDTO requestDTO, User user) throws NoteCategoryException {
 
         String normalizedName = ConvertUtils.normalizeCategoryName(requestDTO.name());
 
@@ -41,10 +40,10 @@ public class NoteCategoryService {
     public List<CategoryResponseDTO> getAllCategoriesFromUser(User user) {
         List<NoteCategory> categories = categoryRepository.findAllByUserId(user.getId());
 
-        return categories.stream().map(category -> new CategoryResponseDTO(category.getId(), category.getName())).collect(Collectors.toList());
+        return categories.stream().map(category -> new CategoryResponseDTO(category.getId(), category.getName())).toList();
     }
 
-    public CategoryResponseDTO updateCategory(CategoryRequestDTO requestDTO, User user) throws Exception {
+    public CategoryResponseDTO updateCategory(CategoryRequestDTO requestDTO, User user) throws NoteCategoryException {
 
         String normalizedName = ConvertUtils.normalizeCategoryName(requestDTO.name());
 
@@ -61,7 +60,7 @@ public class NoteCategoryService {
         return new CategoryResponseDTO(updatedCategory.getId(), updatedCategory.getName());
     }
 
-    public void deleteCategory(long id, User user) throws Exception {
+    public void deleteCategory(long id, User user) throws NoteCategoryException {
         NoteCategory category = findCategory(id, user.getId());
 
         categoryRepository.delete(category);
@@ -85,7 +84,7 @@ public class NoteCategoryService {
         return category;
     }
 
-    private NoteCategory findCategory(long id, long userId) throws Exception {
+    private NoteCategory findCategory(long id, long userId) throws NoteCategoryException {
         return categoryRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new NoteCategoryException("Categoria não foi encontrada.", HttpStatus.NOT_FOUND));
     }

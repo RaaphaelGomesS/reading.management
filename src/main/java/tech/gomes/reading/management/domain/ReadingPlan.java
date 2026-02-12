@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -31,7 +32,7 @@ public class ReadingPlan {
     private String description;
 
     @Column(name = "goal")
-    private Instant goalDate;
+    private LocalDate goalDate;
 
     @Column(name = "is_public", nullable = false)
     private Boolean isPublic = false;

@@ -8,4 +8,5 @@ import tech.gomes.reading.management.domain.ReadingPlan;
 @Repository
 public interface ReadingPlanRepository extends JpaRepository<ReadingPlan, Long>, JpaSpecificationExecutor<ReadingPlan> {
 
+    boolean existsByTitleAndUserId(String title, long id);
 }
