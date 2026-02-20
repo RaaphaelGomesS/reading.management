@@ -44,14 +44,14 @@ public class StatisticsService {
                 .map(p -> new BookStatusCountDTO(p.getStatus().getValue(), p.getCount()))
                 .toList();
 
-        List<CategoryFinishCountDTO> CategoryFinishCountList = finishCountProjections.stream()
+        List<CategoryFinishCountDTO> categoryFinishCountList = finishCountProjections.stream()
                 .map(p -> new CategoryFinishCountDTO(p.getCategory(), p.getCount()))
                 .toList();
 
         return StatisticsResponseDTO.builder()
                 .averagePagesReadInDay(avgReadPagesPerDay == null ? 0L : Math.round(avgReadPagesPerDay))
                 .averageReadingTimeInDays(avgDaysToFinish == null ? 0L : Math.round(avgDaysToFinish))
-                .finishedBooksByCategory(CategoryFinishCountList)
+                .finishedBooksByCategory(categoryFinishCountList)
                 .statusCounts(statusCountList)
                 .build();
     }

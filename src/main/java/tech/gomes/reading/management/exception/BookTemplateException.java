@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class BookTemplateException extends Exception {
 
-    private HttpStatus status;
+    private final HttpStatus status;
 
     public BookTemplateException(String message, HttpStatus status) {
         super(message);

@@ -60,7 +60,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void deleteUser(User user, Long userId) throws Exception {
+    public void deleteUser(User user, Long userId) throws UserException {
 
         User userToDelete = userRepository.findById(userId).orElseThrow(() -> new UserException("O usuário não foi encontrado.", HttpStatus.NOT_FOUND));
 

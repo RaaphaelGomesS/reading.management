@@ -9,8 +9,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import tech.gomes.reading.management.builder.SuggestionResponseDTOBuilder;
 import tech.gomes.reading.management.builder.SuggestionBuilder;
+import tech.gomes.reading.management.builder.SuggestionResponseDTOBuilder;
 import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
 import tech.gomes.reading.management.domain.User;
@@ -66,7 +66,7 @@ public class SuggestionService {
         return SuggestionResponseDTOBuilder.fromPage(suggestionPage);
     }
 
-    public SuggestionUpdateResponseDTO findUpdateSuggestion(long suggestionId) throws Exception {
+    public SuggestionUpdateResponseDTO findUpdateSuggestion(long suggestionId) throws SuggestionException {
 
         SuggestionTemplate suggestion = suggestionRepository.findByIdAndBookTemplateIsNotNull(suggestionId)
                 .orElseThrow(() -> new SuggestionException("Não foi encontrado nenhuma sugestão com esse id", HttpStatus.NOT_FOUND));
@@ -93,7 +93,7 @@ public class SuggestionService {
     }
 
     @Transactional
-    public void declineSuggestion(DeclineRequestDTO requestDTO) throws Exception {
+    public void declineSuggestion(DeclineRequestDTO requestDTO) throws SuggestionException {
         SuggestionTemplate suggestion = suggestionRepository.findById(requestDTO.id())
                 .orElseThrow(() -> new SuggestionException("Não foi encontrado nenhuma sugestão com esse id", HttpStatus.NOT_FOUND));
 

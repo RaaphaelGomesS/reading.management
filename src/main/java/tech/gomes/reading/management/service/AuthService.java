@@ -77,7 +77,7 @@ public class AuthService {
         return UserResponseDTOBuilder.from(user);
     }
 
-    public User getUserByToken(JwtAuthenticationToken token) throws Exception {
+    public User getUserByToken(JwtAuthenticationToken token) throws UserException {
         return userRepository.findById(Long.valueOf(token.getName()))
                 .orElseThrow(() -> new UserException("O usuário não foi encontrado.", HttpStatus.NOT_FOUND));
     }

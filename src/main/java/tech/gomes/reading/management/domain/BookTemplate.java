@@ -24,7 +24,7 @@ public class BookTemplate {
     private Long id;
 
     @Column(name = "isbn", unique = true)
-    private String ISBN;
+    private String isbn;
 
     @Column(name = "title_author", unique = true)
     private String titleAuthor;

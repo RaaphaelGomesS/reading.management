@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class SuggestionException extends Exception {
 
-    private HttpStatus status;
+    private final HttpStatus status;
 
     public SuggestionException(String message, HttpStatus status) {
         super(message);

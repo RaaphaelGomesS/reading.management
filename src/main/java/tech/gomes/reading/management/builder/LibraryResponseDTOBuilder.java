@@ -1,5 +1,7 @@
 package tech.gomes.reading.management.builder;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import tech.gomes.reading.management.domain.Library;
 import tech.gomes.reading.management.dto.library.LibraryResponseDTO;
@@ -8,6 +10,7 @@ import tech.gomes.reading.management.dto.library.LibraryResponsePageDTO;
 import java.util.Collections;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LibraryResponseDTOBuilder {
 
     public static LibraryResponsePageDTO fromPage(Page<Library> libraries) {

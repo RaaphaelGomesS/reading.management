@@ -96,7 +96,7 @@ public class BookTemplateService {
 
         String identifier = ConvertUtils.getIdentifierByRequestDTO(requestDTO);
 
-        if (!identifier.equals(bookTemplate.getISBN()) && !identifier.equals(bookTemplate.getTitleAuthor())) {
+        if (!identifier.equals(bookTemplate.getIsbn()) && !identifier.equals(bookTemplate.getTitleAuthor())) {
             verifyIfExistsAnyTemplateWithIdentifier(identifier);
         }
 
@@ -132,7 +132,7 @@ public class BookTemplateService {
 
         String identifier = ConvertUtils.getIdentifierBySuggestion(suggestion);
 
-        if (!identifier.equals(suggestion.getBookTemplate().getISBN()) && !identifier.equals(suggestion.getBookTemplate().getTitleAuthor())) {
+        if (!identifier.equals(suggestion.getBookTemplate().getIsbn()) && !identifier.equals(suggestion.getBookTemplate().getTitleAuthor())) {
             verifyIfExistsAnyTemplateWithIdentifier(identifier);
         }
 

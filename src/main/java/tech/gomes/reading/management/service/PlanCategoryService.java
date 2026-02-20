@@ -8,6 +8,7 @@ import tech.gomes.reading.management.exception.ReadingPlanException;
 import tech.gomes.reading.management.repository.PlanCategoryRepository;
 import tech.gomes.reading.management.utils.ConvertUtils;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,29 +24,33 @@ public class PlanCategoryService {
         return repository.findAll();
     }
 
-    public List<PlanCategory> createNewCategories(Set<String> categoriesNames) throws ReadingPlanException {
+    public List<PlanCategory> createNewCategories(Set<String> categoriesNames) {
 
-        Set<PlanCategory> newCategories = new HashSet<>();
+        if (categoriesNames.isEmpty()) {
+            Set<PlanCategory> newCategories = new HashSet<>();
 
-        Set<PlanCategory> categories = repository.findAllByNameIn(categoriesNames);
+            Set<PlanCategory> categories = repository.findAllByNameIn(categoriesNames);
 
-        if (!categories.isEmpty()) {
-            Set<String> existsNames = categories.stream().map(PlanCategory::getName).collect(Collectors.toSet());
+            if (!categories.isEmpty()) {
+                Set<String> existsNames = categories.stream().map(PlanCategory::getName).collect(Collectors.toSet());
 
-            Set<String> categoriesToCreate = categoriesNames.stream().filter(categoryName -> !existsNames.contains(categoryName)).collect(Collectors.toSet());
+                Set<String> categoriesToCreate = categoriesNames.stream().filter(categoryName -> !existsNames.contains(categoryName)).collect(Collectors.toSet());
 
-            if (!categoriesToCreate.isEmpty()) {
-                Set<PlanCategory> createdCategories = categoriesToCreate.stream().map(nameCategory -> PlanCategory.builder().name(ConvertUtils.normalizeCategoryName(nameCategory)).build()).collect(Collectors.toSet());
+                if (!categoriesToCreate.isEmpty()) {
+                    Set<PlanCategory> createdCategories = categoriesToCreate.stream().map(nameCategory -> PlanCategory.builder().name(ConvertUtils.normalizeCategoryName(nameCategory)).build()).collect(Collectors.toSet());
+
+                    newCategories.addAll(createdCategories);
+                }
+            } else {
+                Set<PlanCategory> createdCategories = categoriesNames.stream().map(nameCategory -> PlanCategory.builder().name(ConvertUtils.normalizeCategoryName(nameCategory)).build()).collect(Collectors.toSet());
 
                 newCategories.addAll(createdCategories);
             }
-        } else {
-            Set<PlanCategory> createdCategories = categoriesNames.stream().map(nameCategory -> PlanCategory.builder().name(ConvertUtils.normalizeCategoryName(nameCategory)).build()).collect(Collectors.toSet());
 
-            newCategories.addAll(createdCategories);
+            return repository.saveAll(newCategories);
         }
 
-        return repository.saveAll(newCategories);
+        return Collections.emptyList();
     }
 
     public PlanCategory updateCategory(long id, String categoryName) throws ReadingPlanException {

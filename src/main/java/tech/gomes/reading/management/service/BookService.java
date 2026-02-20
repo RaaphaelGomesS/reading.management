@@ -29,7 +29,6 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -50,8 +49,7 @@ public class BookService {
         }
 
         return books.stream().map(book ->
-                        new ReferenceBookDTO(book.getId(), book.getBookTemplate().getTitle()))
-                .collect(Collectors.toList());
+                new ReferenceBookDTO(book.getId(), book.getBookTemplate().getTitle())).toList();
     }
 
     public BookResponsePageDTO getAllBooksByStatus(long id, User user, ReadingStatusIndicator status, int page, int pageSize, String direction) throws Exception {
@@ -98,7 +96,7 @@ public class BookService {
         return BookResponseDTOBuilder.from(updatedBook);
     }
 
-    public BookResponseDTO updateReadPages(PagesUpdateRequestDTO requestDTO, User user) throws Exception {
+    public BookResponseDTO updateReadPages(PagesUpdateRequestDTO requestDTO, User user) throws BookException {
 
         Book book = findBookById(requestDTO.bookId(), user.getId());
 
@@ -116,7 +114,7 @@ public class BookService {
         return BookResponseDTOBuilder.from(updatedBook);
     }
 
-    public BookResponseDTO finishBook(FinishBookRequestDTO requestDTO, User user) throws Exception {
+    public BookResponseDTO finishBook(FinishBookRequestDTO requestDTO, User user) throws BookException {
 
         Book book = findBookById(requestDTO.bookId(), user.getId());
 
@@ -130,7 +128,7 @@ public class BookService {
         return BookResponseDTOBuilder.from(updatedBook);
     }
 
-    public FullBookResponseDTO getFullBookById(long id, User user) throws Exception {
+    public FullBookResponseDTO getFullBookById(long id, User user) throws BookException {
         Book book = findBookById(id, user.getId());
 
         BookResponseDTO bookResponse = BookResponseDTOBuilder.from(book);
@@ -159,18 +157,18 @@ public class BookService {
         return BookResponseDTOBuilder.from(updatedBook);
     }
 
-    public void deleteBook(long id, User user) throws Exception {
+    public void deleteBook(long id, User user) throws BookException {
         Book book = findBookById(id, user.getId());
 
         bookRepository.delete(book);
     }
 
-    public Book findBookById(long id, long userId) throws Exception {
+    public Book findBookById(long id, long userId) throws BookException {
         return bookRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new BookException("Não foi encontrado o livro.", HttpStatus.NOT_FOUND));
     }
 
-    private void verifyBookAlreadyRegister(Long templateId, Long userId) throws Exception {
+    private void verifyBookAlreadyRegister(Long templateId, Long userId) throws BookTemplateException {
 
         Optional<Book> book = bookRepository.findByBookTemplateIdAndUserId(templateId, userId);
 

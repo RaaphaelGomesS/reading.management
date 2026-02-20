@@ -12,7 +12,7 @@ public class BookTemplateSpecification {
 
     private static Specification<BookTemplate> byIsbn(String isbn) {
         return (root, query, cb) ->
-                isbn == null ? null : cb.equal(root.get("ISBN"), isbn);
+                isbn == null ? null : cb.equal(root.get("isbn"), isbn);
     }
 
     private static Specification<BookTemplate> byAuthor(String author) {
@@ -31,14 +31,11 @@ public class BookTemplateSpecification {
 
     public static Specification<BookTemplate> byFilter(BookTemplateFilter filter) {
 
-        Specification<BookTemplate> spec = Specification.where(byStatus());
-
-        Specification<BookTemplate> filters = Specification.anyOf(
-                byTitle(filter.getTitle()))
-                .or(byAuthor(filter.getAuthor()))
-                .or(byIsbn(filter.getIsbn())
-                );
-
-        return spec.and(filters);
+        return Specification.allOf(byStatus(),
+                Specification.anyOf(
+                        byTitle(filter.getTitle()),
+                        byAuthor(filter.getAuthor()),
+                        byIsbn(filter.getIsbn())
+                ));
     }
 }

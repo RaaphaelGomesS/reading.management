@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class NoteCategoryException extends Exception {
 
-    private HttpStatus status;
+    private final HttpStatus status;
 
     public NoteCategoryException(String message, HttpStatus status) {
         super(message);

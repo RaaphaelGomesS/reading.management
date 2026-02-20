@@ -25,7 +25,7 @@ public class ConvertUtils {
             return null;
         }
 
-        if (imgNameOrUrl.startsWith("http://") || imgNameOrUrl.startsWith("https://")) {
+        if (imgNameOrUrl.startsWith("https://")) {
             return imgNameOrUrl;
         }
 

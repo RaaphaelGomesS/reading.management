@@ -1,8 +1,10 @@
 package tech.gomes.reading.management.builder;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
-import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.BookCategory;
+import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
 import tech.gomes.reading.management.dto.book.response.BookTemplateResponseDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponseDTO;
@@ -14,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SuggestionResponseDTOBuilder {
 
     public static SuggestionResponsePageDTO fromPage(Page<SuggestionTemplate> suggestionPage) {

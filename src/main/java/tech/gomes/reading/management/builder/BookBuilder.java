@@ -1,11 +1,14 @@
 package tech.gomes.reading.management.builder;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import tech.gomes.reading.management.domain.Book;
 import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.Library;
 import tech.gomes.reading.management.dto.book.request.BookRequestDTO;
 import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookBuilder {
 
     public static Book from(BookRequestDTO book, BookTemplate template, Library library) {

@@ -1,5 +1,7 @@
 package tech.gomes.reading.management.builder;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.BookCategory;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
@@ -8,6 +10,7 @@ import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 
 import java.util.Set;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookTemplateBuilder {
 
     public static BookTemplate from(SuggestionTemplate suggestion, Set<BookCategory> categories) {

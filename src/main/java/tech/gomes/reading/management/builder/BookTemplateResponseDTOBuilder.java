@@ -1,5 +1,7 @@
 package tech.gomes.reading.management.builder;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.BookCategory;
@@ -11,11 +13,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BookTemplateResponseDTOBuilder {
 
     public static BookTemplateResponsePageDTO fromPage(Page<BookTemplate> templatePage) {
         List<BookTemplateResponseDTO> responseDTOList = templatePage.getContent().isEmpty() ?
-                Collections.emptyList() : templatePage.getContent().stream().map(BookTemplateResponseDTOBuilder::from).collect(Collectors.toList());
+                Collections.emptyList() : templatePage.getContent().stream().map(BookTemplateResponseDTOBuilder::from).toList();
 
         return BookTemplateResponsePageDTO.builder()
                 .page(templatePage.getNumber())
