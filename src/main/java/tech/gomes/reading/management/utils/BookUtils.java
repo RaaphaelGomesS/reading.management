@@ -1,11 +1,13 @@
 package tech.gomes.reading.management.utils;
 
+import lombok.experimental.UtilityClass;
 import tech.gomes.reading.management.domain.Book;
 import tech.gomes.reading.management.dto.book.request.BookRequestDTO;
 import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 
 import java.time.Instant;
 
+@UtilityClass
 public class BookUtils {
 
     private static final Instant NOW = Instant.now();

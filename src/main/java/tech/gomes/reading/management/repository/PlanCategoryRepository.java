@@ -10,4 +10,6 @@ import java.util.Set;
 public interface PlanCategoryRepository extends JpaRepository<PlanCategory, Long> {
 
     Set<PlanCategory> findAllByIdIn(Set<Long> ids);
+
+    Set<PlanCategory> findAllByNameIn(Set<String> names);
 }
