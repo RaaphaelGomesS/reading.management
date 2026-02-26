@@ -1,5 +1,6 @@
 package tech.gomes.reading.management.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import tech.gomes.reading.management.controller.filter.ReadingPlanFilter;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.readingPlan.ReadingPlanPageDTO;
 import tech.gomes.reading.management.dto.readingPlan.request.PlanRequestDTO;
+import tech.gomes.reading.management.dto.readingPlan.request.PrivacyPlanDTO;
 import tech.gomes.reading.management.dto.readingPlan.response.PlanResponseDTO;
 import tech.gomes.reading.management.service.AuthService;
 import tech.gomes.reading.management.service.ReadingPlanService;
@@ -50,4 +52,38 @@ public class ReadingPlanController {
 
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
+
+    @PostMapping("/privacy/update")
+    public ResponseEntity<PlanResponseDTO> updatePrivacyOfPlan(@RequestBody @Valid PrivacyPlanDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+
+        User user = authService.getUserByToken(token);
+
+        PlanResponseDTO responseDTO = planService.updatePrivacyFromPlan(requestDTO, user);
+
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PlanResponseDTO> updatePlan(@PathVariable long id, @RequestBody PlanRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+
+        User user = authService.getUserByToken(token);
+
+        PlanResponseDTO responseDTO = planService.updateReadingPlan(id, requestDTO, user);
+
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePlan(@PathVariable long id, JwtAuthenticationToken token) throws Exception {
+
+        User user = authService.getUserByToken(token);
+
+        planService.deletePlan(id, user);
+
+        return ResponseEntity.ok(null);
+    }
+
+    //TODO: Clonar plano de leitura
+
+    //TODO: Criar biblioteca a partir do plano de leitura
 }

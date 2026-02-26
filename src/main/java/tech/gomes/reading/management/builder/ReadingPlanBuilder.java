@@ -27,4 +27,14 @@ public class ReadingPlanBuilder {
                 .user(user)
                 .build();
     }
+
+    public static void updateFromReadingPlan(PlanRequestDTO requestDTO, ReadingPlan plan, Set<JoinPlanTemplate> joinPlans, Set<PlanCategory> planCategories) {
+
+        plan.setTitle(requestDTO.title());
+        plan.setIsPublic(requestDTO.isPublic());
+        plan.setDescription(requestDTO.description());
+        plan.setGoalDate(requestDTO.goalDate() != null ? DateUtils.formatStringToLocalDate(requestDTO.goalDate()) : null);
+        plan.setCategories(planCategories);
+        plan.setBookTemplatesPlan(joinPlans);
+    }
 }

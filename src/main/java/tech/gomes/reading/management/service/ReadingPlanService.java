@@ -19,6 +19,7 @@ import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.readingPlan.ReadingPlanPageDTO;
 import tech.gomes.reading.management.dto.readingPlan.request.BookTemplatePlanDTO;
 import tech.gomes.reading.management.dto.readingPlan.request.PlanRequestDTO;
+import tech.gomes.reading.management.dto.readingPlan.request.PrivacyPlanDTO;
 import tech.gomes.reading.management.dto.readingPlan.response.PlanResponseDTO;
 import tech.gomes.reading.management.exception.ReadingPlanException;
 import tech.gomes.reading.management.repository.BookTemplateRepository;
@@ -67,6 +68,53 @@ public class ReadingPlanService {
         ReadingPlan readingPlan = repository.save(newPlan);
 
         return ReadingPlanResponseDTOBuilder.fromReadingPlan(readingPlan);
+    }
+
+    @Transactional
+    public PlanResponseDTO updateReadingPlan(long id, PlanRequestDTO requestDTO, User user) throws Exception {
+
+        ReadingPlan readingPlan = findByIdForUser(id, user.getId());
+
+        if (!(requestDTO.title().equalsIgnoreCase(readingPlan.getTitle())) && repository.existsByTitleAndUserId(requestDTO.title(), user.getId())) {
+            throw new ReadingPlanException("Já existe um plano com esse título.", HttpStatus.BAD_REQUEST);
+        }
+
+        Set<JoinPlanTemplate> joinPlans = createJoinPlanTemplates(requestDTO);
+
+        Set<PlanCategory> categories = planCategoryRepository.findAllByIdIn(requestDTO.categories());
+
+        if (categories.isEmpty()) {
+            throw new ReadingPlanException("Nenhuma categoria foi encontrada.", HttpStatus.NOT_FOUND);
+        }
+
+        ReadingPlanBuilder.updateFromReadingPlan(requestDTO, readingPlan, joinPlans, categories);
+
+        ReadingPlan updatedPlan = repository.save(readingPlan);
+
+        return ReadingPlanResponseDTOBuilder.fromReadingPlan(updatedPlan);
+    }
+
+    @Transactional
+    public PlanResponseDTO updatePrivacyFromPlan(PrivacyPlanDTO requestDTO, User user) throws ReadingPlanException {
+        ReadingPlan plan = findByIdForUser(requestDTO.id(), user.getId());
+
+        if (requestDTO.privacyStatus() != plan.getIsPublic()) {
+            plan.setIsPublic(requestDTO.privacyStatus());
+            plan = repository.save(plan);
+        }
+
+        return ReadingPlanResponseDTOBuilder.fromReadingPlan(plan);
+    }
+
+    public void deletePlan(long id, User user) throws ReadingPlanException {
+        ReadingPlan plan = findByIdForUser(id, user.getId());
+
+        repository.delete(plan);
+    }
+
+    private ReadingPlan findByIdForUser(long id, long userId) throws ReadingPlanException {
+        return repository.findByIdAndUserId(id, userId).orElseThrow(() ->
+                new ReadingPlanException("Nenhuma plano foi encontrado", HttpStatus.NOT_FOUND));
     }
 
     private Set<JoinPlanTemplate> createJoinPlanTemplates(PlanRequestDTO requestDTO) throws ReadingPlanException {
