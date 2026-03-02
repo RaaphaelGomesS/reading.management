@@ -112,6 +112,21 @@ public class ReadingPlanService {
         repository.delete(plan);
     }
 
+    @Transactional
+    public PlanResponseDTO duplicatePlanToUser(long id, User user) throws ReadingPlanException {
+
+        ReadingPlan plan = repository.findById(id).orElseThrow(() ->
+                new ReadingPlanException("Nenhuma plano foi encontrado.", HttpStatus.NOT_FOUND));
+
+        ReadingPlan duplicatePlan = ReadingPlanBuilder.copyPlan(plan, user);
+
+        ReadingPlan savedPlan = repository.save(duplicatePlan);
+
+        repository.increaseCopyCont(id);
+
+        return ReadingPlanResponseDTOBuilder.fromReadingPlan(savedPlan);
+    }
+
     private ReadingPlan findByIdForUser(long id, long userId) throws ReadingPlanException {
         return repository.findByIdAndUserId(id, userId).orElseThrow(() ->
                 new ReadingPlanException("Nenhuma plano foi encontrado", HttpStatus.NOT_FOUND));

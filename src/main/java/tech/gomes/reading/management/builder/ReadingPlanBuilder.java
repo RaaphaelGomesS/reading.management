@@ -28,6 +28,17 @@ public class ReadingPlanBuilder {
                 .build();
     }
 
+    public static ReadingPlan copyPlan(ReadingPlan plan, User user) {
+        return ReadingPlan.builder()
+                .title(plan.getTitle())
+                .description(plan.getDescription())
+                .categories(plan.getCategories())
+                .bookTemplatesPlan(plan.getBookTemplatesPlan())
+                .isPublic(false)
+                .user(user)
+                .build();
+    }
+
     public static void updateFromReadingPlan(PlanRequestDTO requestDTO, ReadingPlan plan, Set<JoinPlanTemplate> joinPlans, Set<PlanCategory> planCategories) {
 
         plan.setTitle(requestDTO.title());

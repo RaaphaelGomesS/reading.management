@@ -83,7 +83,15 @@ public class ReadingPlanController {
         return ResponseEntity.ok(null);
     }
 
-    //TODO: Clonar plano de leitura
+    @PostMapping("/clone/{id}")
+    ResponseEntity<PlanResponseDTO> duplicatePlan(@PathVariable long id, JwtAuthenticationToken token) throws Exception {
+
+        User user = authService.getUserByToken(token);
+
+        PlanResponseDTO responseDTO = planService.duplicatePlanToUser(id, user);
+
+        return ResponseEntity.ok(responseDTO);
+    }
 
     //TODO: Criar biblioteca a partir do plano de leitura
 }
