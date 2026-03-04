@@ -2,6 +2,7 @@ package tech.gomes.reading.management.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -16,6 +17,7 @@ public interface ReadingPlanRepository extends JpaRepository<ReadingPlan, Long>,
 
     Optional<ReadingPlan> findByIdAndUserId(long id, long userId);
 
+    @Modifying
     @Query("UPDATE TB_PLAN p SET p.copy_count = p.copy_count + 1 WHERE p.plan_id = :id")
     void increaseCopyCont(@Param("id") long id);
 }
