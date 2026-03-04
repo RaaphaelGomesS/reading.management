@@ -1,5 +1,6 @@
 package tech.gomes.reading.management.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import tech.gomes.reading.management.builder.LibraryResponseDTOBuilder;
 import tech.gomes.reading.management.domain.Library;
+import tech.gomes.reading.management.domain.ReadingPlan;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.library.LibraryRequestDTO;
 import tech.gomes.reading.management.dto.library.LibraryResponseDTO;
@@ -24,6 +26,10 @@ public class LibraryService {
 
     private final LibraryRepository libraryRepository;
 
+    private final ReadingPlanService planService;
+
+    private final BookService bookService;
+
     public LibraryResponsePageDTO getALlLibraries(User user, int page, int pageSize, String direction) {
 
         Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.valueOf(direction), "updatedAt");
@@ -38,7 +44,7 @@ public class LibraryService {
                 .orElseThrow(() -> new LibraryException("A biblioteca não foi encontrada.", HttpStatus.NOT_FOUND));
     }
 
-    public LibraryResponseDTO createLibrary(LibraryRequestDTO requestDTO, User user) throws LibraryException {
+    public Library createLibrary(LibraryRequestDTO requestDTO, User user) throws LibraryException {
 
         verifyIfLibraryAlreadyExist(requestDTO, user);
 
@@ -49,9 +55,7 @@ public class LibraryService {
                 .user(user)
                 .build();
 
-        Library library = libraryRepository.save(newLibrary);
-
-        return LibraryResponseDTOBuilder.from(library);
+        return libraryRepository.save(newLibrary);
     }
 
     public LibraryResponseDTO updateLibrary(LibraryRequestDTO requestDTO, User user) throws LibraryException {
@@ -83,5 +87,19 @@ public class LibraryService {
         if (optionalLibrary.isPresent()) {
             throw new LibraryException("Já existe uma biblioteca com esse nome.", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Transactional
+    public LibraryResponseDTO createLibraryAndIndexBookFromPlan(long id, User user) throws Exception {
+
+        ReadingPlan plan = planService.findByIdForUser(id, user.getId());
+
+        LibraryRequestDTO requestDTO = new LibraryRequestDTO(null, plan.getTitle(), plan.getDescription());
+
+        Library library = createLibrary(requestDTO, user);
+
+        bookService.createBooksAndIndexInLibrary(plan, library);
+
+        return LibraryResponseDTOBuilder.from(library);
     }
 }

@@ -49,7 +49,9 @@ public class LibraryController {
 
         User user = authService.getUserByToken(token);
 
-        return new ResponseEntity<>(libraryService.createLibrary(requestDTO, user), HttpStatus.CREATED);
+        LibraryResponseDTO responseDTO = LibraryResponseDTOBuilder.from(libraryService.createLibrary(requestDTO, user));
+
+        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/")
@@ -68,5 +70,15 @@ public class LibraryController {
         libraryService.deleteLibrary(id, user);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/new/library/{id}")
+    ResponseEntity<LibraryResponseDTO> createLibraryByPlan(@PathVariable long id, JwtAuthenticationToken token) throws Exception {
+
+        User user = authService.getUserByToken(token);
+
+        LibraryResponseDTO responseDTO = libraryService.createLibraryAndIndexBookFromPlan(id, user);
+
+        return ResponseEntity.ok(responseDTO);
     }
 }

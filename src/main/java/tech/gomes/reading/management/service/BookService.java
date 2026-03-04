@@ -13,22 +13,22 @@ import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.builder.BookBuilder;
 import tech.gomes.reading.management.builder.BookResponseDTOBuilder;
 import tech.gomes.reading.management.builder.BookTemplateResponseDTOBuilder;
-import tech.gomes.reading.management.domain.Book;
-import tech.gomes.reading.management.domain.BookTemplate;
-import tech.gomes.reading.management.domain.Library;
-import tech.gomes.reading.management.domain.User;
+import tech.gomes.reading.management.domain.*;
 import tech.gomes.reading.management.dto.book.request.*;
 import tech.gomes.reading.management.dto.book.response.*;
 import tech.gomes.reading.management.exception.BookException;
 import tech.gomes.reading.management.exception.BookTemplateException;
 import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 import tech.gomes.reading.management.repository.BookRepository;
+import tech.gomes.reading.management.repository.BookTemplateRepository;
 import tech.gomes.reading.management.utils.BookUtils;
 
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -41,6 +41,8 @@ public class BookService {
 
     private final BookTemplateService templateService;
 
+    private final BookTemplateRepository bookTemplateRepository;
+
     public List<ReferenceBookDTO> findAllUserSummaryBooks(User user) {
         List<Book> books = bookRepository.findAllByUserId(user.getId());
 
@@ -52,7 +54,7 @@ public class BookService {
                 new ReferenceBookDTO(book.getId(), book.getBookTemplate().getTitle())).toList();
     }
 
-    public BookResponsePageDTO getAllBooksByStatus(long id, User user, ReadingStatusIndicator status, int page, int pageSize, String direction) throws Exception {
+    public BookResponsePageDTO getAllBooksByStatusInLibrary(long id, User user, ReadingStatusIndicator status, int page, int pageSize, String direction) throws Exception {
 
         Library library = libraryService.getLibraryById(id, user);
 
@@ -166,6 +168,17 @@ public class BookService {
     public Book findBookById(long id, long userId) throws BookException {
         return bookRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new BookException("Não foi encontrado o livro.", HttpStatus.NOT_FOUND));
+    }
+
+    public void createBooksAndIndexInLibrary(ReadingPlan plan, Library library) {
+
+        Set<Long> templatesIdsFromPlan = plan.getBookTemplatesPlan().stream().map(JoinPlanTemplate::getTemplateId).collect(Collectors.toSet());
+
+        Set<BookTemplate> templatesFromPlan = bookTemplateRepository.findAllByIdIn(templatesIdsFromPlan);
+
+        Set<Book> books = templatesFromPlan.stream().map(template -> BookBuilder.fromPlan(template, library)).collect(Collectors.toSet());
+
+        bookRepository.saveAll(books);
     }
 
     private void verifyBookAlreadyRegister(Long templateId, Long userId) throws BookTemplateException {

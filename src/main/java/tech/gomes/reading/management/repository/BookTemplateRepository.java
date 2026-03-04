@@ -32,4 +32,6 @@ public interface BookTemplateRepository extends JpaRepository<BookTemplate, Long
     Page<BookTemplate> findSimilarTemplatesByCategories(@Param("categoryIds") Set<Long> categoryIds,
                                                         @Param("targetTemplateId") long targetTemplateId,
                                                         Pageable pageable);
+
+    Set<BookTemplate> findAllByIdIn(Set<Long> ids);
 }

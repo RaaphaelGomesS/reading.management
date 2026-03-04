@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record LibraryRequestDTO(long id,
+public record LibraryRequestDTO(Long id,
                                 @NotNull
                                 String name,
                                 @NotNull

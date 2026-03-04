@@ -127,7 +127,7 @@ public class ReadingPlanService {
         return ReadingPlanResponseDTOBuilder.fromReadingPlan(savedPlan);
     }
 
-    private ReadingPlan findByIdForUser(long id, long userId) throws ReadingPlanException {
+    public ReadingPlan findByIdForUser(long id, long userId) throws ReadingPlanException {
         return repository.findByIdAndUserId(id, userId).orElseThrow(() ->
                 new ReadingPlanException("Nenhuma plano foi encontrado", HttpStatus.NOT_FOUND));
     }

@@ -42,7 +42,7 @@ public class BookController {
 
         User user = authService.getUserByToken(token);
 
-        BookResponsePageDTO responseDTO = bookService.getAllBooksByStatus(id, user, ReadingStatusIndicator.READING, page, pageSize, direction);
+        BookResponsePageDTO responseDTO = bookService.getAllBooksByStatusInLibrary(id, user, ReadingStatusIndicator.READING, page, pageSize, direction);
 
         return ResponseEntity.ok(responseDTO);
     }
@@ -56,7 +56,7 @@ public class BookController {
 
         User user = authService.getUserByToken(token);
 
-        BookResponsePageDTO responseDTO = bookService.getAllBooksByStatus(id, user, ReadingStatusIndicator.READ, page, pageSize, direction);
+        BookResponsePageDTO responseDTO = bookService.getAllBooksByStatusInLibrary(id, user, ReadingStatusIndicator.READ, page, pageSize, direction);
 
         return ResponseEntity.ok(responseDTO);
     }
@@ -70,7 +70,7 @@ public class BookController {
 
         User user = authService.getUserByToken(token);
 
-        BookResponsePageDTO responseDTO = bookService.getAllBooksByStatus(id, user, ReadingStatusIndicator.WANT_TO_READ, page, pageSize, direction);
+        BookResponsePageDTO responseDTO = bookService.getAllBooksByStatusInLibrary(id, user, ReadingStatusIndicator.WANT_TO_READ, page, pageSize, direction);
 
 
         return ResponseEntity.ok(responseDTO);
@@ -85,7 +85,7 @@ public class BookController {
 
         User user = authService.getUserByToken(token);
 
-        BookResponsePageDTO responseDTO = bookService.getAllBooksByStatus(id, user, ReadingStatusIndicator.DROPPED, page, pageSize, direction);
+        BookResponsePageDTO responseDTO = bookService.getAllBooksByStatusInLibrary(id, user, ReadingStatusIndicator.DROPPED, page, pageSize, direction);
 
         return ResponseEntity.ok(responseDTO);
     }

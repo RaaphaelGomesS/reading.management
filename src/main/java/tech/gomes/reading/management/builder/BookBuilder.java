@@ -23,4 +23,17 @@ public class BookBuilder {
                 .user(library.getUser())
                 .build();
     }
+
+    public static Book fromPlan(BookTemplate template, Library library) {
+        return Book.builder()
+                .status(ReadingStatusIndicator.WANT_TO_READ)
+                .readPages(0)
+                .rating(0)
+                .finishedAt(null)
+                .startedAt(null)
+                .bookTemplate(template)
+                .library(library)
+                .user(library.getUser())
+                .build();
+    }
 }

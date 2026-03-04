@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.web.bind.annotation.*;
 import tech.gomes.reading.management.controller.filter.ReadingPlanFilter;
 import tech.gomes.reading.management.domain.User;
+import tech.gomes.reading.management.dto.library.LibraryResponseDTO;
 import tech.gomes.reading.management.dto.readingPlan.ReadingPlanPageDTO;
 import tech.gomes.reading.management.dto.readingPlan.request.PlanRequestDTO;
 import tech.gomes.reading.management.dto.readingPlan.request.PrivacyPlanDTO;
@@ -92,6 +93,4 @@ public class ReadingPlanController {
 
         return ResponseEntity.ok(responseDTO);
     }
-
-    //TODO: Criar biblioteca a partir do plano de leitura
 }
