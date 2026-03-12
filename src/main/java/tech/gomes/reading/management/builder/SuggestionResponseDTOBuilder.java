@@ -62,7 +62,7 @@ public class SuggestionResponseDTOBuilder {
     private static BookTemplateResponseDTO fromTemplate(BookTemplate template) {
         return BookTemplateResponseDTO.builder()
                 .id(template.getId())
-                .isbn(template.getISBN())
+                .isbn(template.getIsbn())
                 .title(template.getTitle())
                 .author(template.getAuthor())
                 .publisher(template.getPublisher())

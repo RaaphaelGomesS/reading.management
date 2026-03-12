@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public enum ReadingStatusIndicator {
-    WANT_TO_READ ("aguardando"),
-    READING ("lendo"),
-    READ ("finalizado"),
-    DROPPED ("parado");
+    WANT_TO_READ ("wantToRead"),
+    READING ("reading"),
+    READ ("read"),
+    DROPPED ("dropped");
 
     private String value;
 

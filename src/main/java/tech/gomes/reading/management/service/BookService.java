@@ -15,17 +15,19 @@ import tech.gomes.reading.management.builder.BookResponseDTOBuilder;
 import tech.gomes.reading.management.builder.BookTemplateResponseDTOBuilder;
 import tech.gomes.reading.management.domain.*;
 import tech.gomes.reading.management.dto.book.request.*;
-import tech.gomes.reading.management.dto.book.response.*;
+import tech.gomes.reading.management.dto.book.response.BookResponseDTO;
+import tech.gomes.reading.management.dto.book.response.BookResponsePageDTO;
+import tech.gomes.reading.management.dto.book.response.BookTemplateResponseDTO;
+import tech.gomes.reading.management.dto.book.response.FullBookResponseDTO;
 import tech.gomes.reading.management.exception.BookException;
 import tech.gomes.reading.management.exception.BookTemplateException;
+import tech.gomes.reading.management.exception.LibraryException;
 import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 import tech.gomes.reading.management.repository.BookRepository;
 import tech.gomes.reading.management.repository.BookTemplateRepository;
 import tech.gomes.reading.management.utils.BookUtils;
 
 import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,18 +45,7 @@ public class BookService {
 
     private final BookTemplateRepository bookTemplateRepository;
 
-    public List<ReferenceBookDTO> findAllUserSummaryBooks(User user) {
-        List<Book> books = bookRepository.findAllByUserId(user.getId());
-
-        if (books.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return books.stream().map(book ->
-                new ReferenceBookDTO(book.getId(), book.getBookTemplate().getTitle())).toList();
-    }
-
-    public BookResponsePageDTO getAllBooksByStatusInLibrary(long id, User user, ReadingStatusIndicator status, int page, int pageSize, String direction) throws Exception {
+    public BookResponsePageDTO getAllBooksByStatusInLibrary(long id, User user, ReadingStatusIndicator status, int page, int pageSize, String direction) throws LibraryException {
 
         Library library = libraryService.getLibraryById(id, user);
 
@@ -87,11 +78,17 @@ public class BookService {
         return BookResponseDTOBuilder.from(bookRepository.save(newBook));
     }
 
-    public BookResponseDTO updateBookStatus(BookRequestDTO requestDTO, User user) throws Exception {
+    public BookResponseDTO updateBook(BookRequestDTO requestDTO, User user) throws Exception {
         Book book = findBookById(requestDTO.id(), user.getId());
 
         log.info("Request data check: {}", requestDTO);
         BookUtils.setValuesToBookByStatusAndRequest(book, requestDTO);
+
+        if (requestDTO.libraryId() != null && !book.getLibrary().getId().equals(requestDTO.libraryId())) {
+            Library library = libraryService.getLibraryById(requestDTO.libraryId(), user);
+
+            book.setLibrary(library);
+        }
 
         Book updatedBook = bookRepository.save(book);
 
@@ -142,7 +139,7 @@ public class BookService {
                 .build();
     }
 
-    public BookResponseDTO changeBookFromLibrary(ChangeLibRequestDTO requestDTO, User user) throws Exception {
+    public BookResponseDTO changeBookFromLibrary(ChangeLibRequestDTO requestDTO, User user) throws LibraryException, BookException {
 
         Library library = libraryService.getLibraryById(requestDTO.libraryId(), user);
 

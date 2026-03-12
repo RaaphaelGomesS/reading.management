@@ -16,7 +16,7 @@ public class BookTemplateBuilder {
     public static BookTemplate from(SuggestionTemplate suggestion, Set<BookCategory> categories) {
         return BookTemplate.builder()
                 .id(suggestion.getBookTemplate() != null ? suggestion.getBookTemplate().getId() : null)
-                .ISBN(suggestion.getSuggestedISBN())
+                .isbn(suggestion.getSuggestedISBN())
                 .title(suggestion.getSuggestedTitle())
                 .author(suggestion.getSuggestedAuthor())
                 .publisher(suggestion.getSuggestedPublisher())
@@ -32,7 +32,7 @@ public class BookTemplateBuilder {
     public static BookTemplate from(BookTemplateRequestDTO requestDTO, Set<BookCategory> categories, String coverImg) {
         return BookTemplate.builder()
                 .id(requestDTO.templateId())
-                .ISBN(requestDTO.isbn())
+                .isbn(requestDTO.isbn())
                 .title(requestDTO.title())
                 .author(requestDTO.author())
                 .titleAuthor(requestDTO.isbn() == null ? (requestDTO.title() + requestDTO.author()).toLowerCase() : null)
@@ -48,7 +48,7 @@ public class BookTemplateBuilder {
     }
 
     public static void updateBookTemplate(BookTemplate bookTemplate, BookTemplateRequestDTO requestDTO, Set<BookCategory> categories, String coverImg) {
-        bookTemplate.setISBN(requestDTO.isbn());
+        bookTemplate.setIsbn(requestDTO.isbn());
         bookTemplate.setTitle(requestDTO.title());
         bookTemplate.setAuthor(requestDTO.author());
         bookTemplate.setPublisher(requestDTO.publisher());
