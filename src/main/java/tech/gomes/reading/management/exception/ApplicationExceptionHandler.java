@@ -9,6 +9,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -16,30 +17,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
-            @Nullable HttpHeaders headers,
-            @Nullable HttpStatusCode status,
-            @Nullable WebRequest request) {
-
-        log.warn("Falha na validação: {}", ex.getMessage());
-
-        Map<String, String> fieldErrors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
-            String fieldName = error.getField();
-            String errorMessage = error.getDefaultMessage();
-            fieldErrors.put(fieldName, errorMessage);
-        });
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("errors", fieldErrors);
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
+//    @Override
+//    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+//            MethodArgumentNotValidException ex,
+//            @Nullable HttpHeaders headers,
+//            @Nullable HttpStatusCode status,
+//            @Nullable WebRequest request) {
+//
+//        log.warn("Falha na validação: {}", ex.getMessage());
+//
+//        Map<String, String> fieldErrors = new HashMap<>();
+//        ex.getBindingResult().getFieldErrors().forEach(error -> {
+//            String fieldName = error.getField();
+//            String errorMessage = error.getDefaultMessage();
+//            fieldErrors.put(fieldName, errorMessage);
+//        });
+//
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("errors", fieldErrors);
+//
+//        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+//    }
 
     @ExceptionHandler(UserException.class)
     public ResponseEntity<String> handlerUserException(UserException e) {

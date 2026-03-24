@@ -50,7 +50,7 @@ public class ReadingPlanService {
     }
 
     @Transactional
-    public PlanResponseDTO createReadingPlan(PlanRequestDTO requestDTO, User user) throws Exception {
+    public PlanResponseDTO createReadingPlan(PlanRequestDTO requestDTO, User user) throws ReadingPlanException {
         if (repository.existsByTitleAndUserId(requestDTO.title(), user.getId())) {
             throw new ReadingPlanException("Já existe um plano com esse título.", HttpStatus.BAD_REQUEST);
         }
@@ -71,7 +71,7 @@ public class ReadingPlanService {
     }
 
     @Transactional
-    public PlanResponseDTO updateReadingPlan(long id, PlanRequestDTO requestDTO, User user) throws Exception {
+    public PlanResponseDTO updateReadingPlan(long id, PlanRequestDTO requestDTO, User user) throws ReadingPlanException {
 
         ReadingPlan readingPlan = findByIdForUser(id, user.getId());
 
@@ -98,7 +98,7 @@ public class ReadingPlanService {
     public PlanResponseDTO updatePrivacyFromPlan(PrivacyPlanDTO requestDTO, User user) throws ReadingPlanException {
         ReadingPlan plan = findByIdForUser(requestDTO.id(), user.getId());
 
-        if (requestDTO.privacyStatus() != plan.getIsPublic()) {
+        if (requestDTO.privacyStatus() != Boolean.TRUE.equals(plan.getIsPublic())) {
             plan.setIsPublic(requestDTO.privacyStatus());
             plan = repository.save(plan);
         }

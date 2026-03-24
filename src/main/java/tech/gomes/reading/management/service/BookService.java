@@ -13,15 +13,19 @@ import org.springframework.web.multipart.MultipartFile;
 import tech.gomes.reading.management.builder.BookBuilder;
 import tech.gomes.reading.management.builder.BookResponseDTOBuilder;
 import tech.gomes.reading.management.builder.BookTemplateResponseDTOBuilder;
+import tech.gomes.reading.management.builder.LibraryResponseDTOBuilder;
 import tech.gomes.reading.management.domain.*;
 import tech.gomes.reading.management.dto.book.request.*;
 import tech.gomes.reading.management.dto.book.response.BookResponseDTO;
 import tech.gomes.reading.management.dto.book.response.BookResponsePageDTO;
 import tech.gomes.reading.management.dto.book.response.BookTemplateResponseDTO;
 import tech.gomes.reading.management.dto.book.response.FullBookResponseDTO;
+import tech.gomes.reading.management.dto.library.LibraryRequestDTO;
+import tech.gomes.reading.management.dto.library.LibraryResponseDTO;
 import tech.gomes.reading.management.exception.BookException;
 import tech.gomes.reading.management.exception.BookTemplateException;
 import tech.gomes.reading.management.exception.LibraryException;
+import tech.gomes.reading.management.exception.ReadingPlanException;
 import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 import tech.gomes.reading.management.repository.BookRepository;
 import tech.gomes.reading.management.repository.BookTemplateRepository;
@@ -45,6 +49,8 @@ public class BookService {
 
     private final BookTemplateRepository bookTemplateRepository;
 
+    private final ReadingPlanService planService;
+
     public BookResponsePageDTO getAllBooksByStatusInLibrary(long id, User user, ReadingStatusIndicator status, int page, int pageSize, String direction) throws LibraryException {
 
         Library library = libraryService.getLibraryById(id, user);
@@ -60,8 +66,6 @@ public class BookService {
 
     @Transactional
     public BookResponseDTO createBook(BookCreateRequestDTO requestDTO, User user, MultipartFile file) throws Exception {
-
-        log.info("Livro: {}", requestDTO.book());
 
         if (requestDTO.template().templateId() != null) {
             verifyBookAlreadyRegister(requestDTO.template().templateId(), user.getId());
@@ -167,7 +171,21 @@ public class BookService {
                 .orElseThrow(() -> new BookException("Não foi encontrado o livro.", HttpStatus.NOT_FOUND));
     }
 
-    public void createBooksAndIndexInLibrary(ReadingPlan plan, Library library) {
+    @Transactional
+    public LibraryResponseDTO createLibraryAndIndexBookFromPlan(long id, User user) throws ReadingPlanException, LibraryException {
+
+        ReadingPlan plan = planService.findByIdForUser(id, user.getId());
+
+        LibraryRequestDTO requestDTO = new LibraryRequestDTO(null, plan.getTitle(), plan.getDescription());
+
+        Library library = libraryService.createLibrary(requestDTO, user);
+
+        createBooksAndIndexInLibrary(plan, library);
+
+        return LibraryResponseDTOBuilder.from(library);
+    }
+
+    private void createBooksAndIndexInLibrary(ReadingPlan plan, Library library) {
 
         Set<Long> templatesIdsFromPlan = plan.getBookTemplatesPlan().stream().map(JoinPlanTemplate::getTemplateId).collect(Collectors.toSet());
 

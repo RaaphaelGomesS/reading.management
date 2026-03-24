@@ -11,7 +11,10 @@ import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.library.LibraryRequestDTO;
 import tech.gomes.reading.management.dto.library.LibraryResponseDTO;
 import tech.gomes.reading.management.dto.library.LibraryResponsePageDTO;
+import tech.gomes.reading.management.exception.LibraryException;
+import tech.gomes.reading.management.exception.UserException;
 import tech.gomes.reading.management.service.AuthService;
+import tech.gomes.reading.management.service.BookService;
 import tech.gomes.reading.management.service.LibraryService;
 
 @RestController
@@ -23,11 +26,13 @@ public class LibraryController {
 
     private final AuthService authService;
 
+    private final BookService bookService;
+
     @GetMapping("/")
     public ResponseEntity<LibraryResponsePageDTO> getAllLibrariesByUserId(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                                           @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
                                                                           @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction,
-                                                                          JwtAuthenticationToken token) throws Exception {
+                                                                          JwtAuthenticationToken token) throws UserException {
 
         User user = authService.getUserByToken(token);
 
@@ -35,7 +40,7 @@ public class LibraryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LibraryResponseDTO> findLibraryById(@PathVariable Long id, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<LibraryResponseDTO> findLibraryById(@PathVariable Long id, JwtAuthenticationToken token) throws UserException, LibraryException {
 
         User user = authService.getUserByToken(token);
 
@@ -45,7 +50,7 @@ public class LibraryController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<LibraryResponseDTO> createNewLibrary(@RequestBody LibraryRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<LibraryResponseDTO> createNewLibrary(@RequestBody LibraryRequestDTO requestDTO, JwtAuthenticationToken token) throws UserException, LibraryException {
 
         User user = authService.getUserByToken(token);
 
@@ -55,7 +60,7 @@ public class LibraryController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<LibraryResponseDTO> updateLibraryById(@RequestBody LibraryRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<LibraryResponseDTO> updateLibraryById(@RequestBody LibraryRequestDTO requestDTO, JwtAuthenticationToken token) throws UserException, LibraryException {
 
         User user = authService.getUserByToken(token);
 
@@ -63,7 +68,7 @@ public class LibraryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLibraryById(@PathVariable Long id, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<Void> deleteLibraryById(@PathVariable Long id, JwtAuthenticationToken token) throws UserException, LibraryException {
 
         User user = authService.getUserByToken(token);
 
@@ -77,7 +82,7 @@ public class LibraryController {
 
         User user = authService.getUserByToken(token);
 
-        LibraryResponseDTO responseDTO = libraryService.createLibraryAndIndexBookFromPlan(id, user);
+        LibraryResponseDTO responseDTO = bookService.createLibraryAndIndexBookFromPlan(id, user);
 
         return ResponseEntity.ok(responseDTO);
     }

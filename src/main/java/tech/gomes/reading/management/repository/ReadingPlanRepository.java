@@ -18,6 +18,6 @@ public interface ReadingPlanRepository extends JpaRepository<ReadingPlan, Long>,
     Optional<ReadingPlan> findByIdAndUserId(long id, long userId);
 
     @Modifying
-    @Query("UPDATE TB_PLAN p SET p.copy_count = p.copy_count + 1 WHERE p.plan_id = :id")
+    @Query("UPDATE readingPlan p SET p.copyCount = p.copyCount + 1 WHERE p.id = :id")
     void increaseCopyCont(@Param("id") long id);
 }

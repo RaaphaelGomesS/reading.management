@@ -16,7 +16,7 @@ import java.util.Set;
 @Repository
 public interface BookTemplateRepository extends JpaRepository<BookTemplate, Long>, JpaSpecificationExecutor<BookTemplate> {
 
-    @Query("SELECT b FROM bookTemplate b WHERE (b.ISBN = :identifier OR b.titleAuthor = :identifier) AND b.status <> 'INACTIVE'")
+    @Query("SELECT b FROM bookTemplate b WHERE (b.isbn = :identifier OR b.titleAuthor = :identifier) AND b.status <> 'INACTIVE'")
     Optional<BookTemplate> findByIdentifierWhenNotIsInactive(@Param("identifier") String identifier);
 
     Page<BookTemplate> findByStatus(TemplateStatusIndicator status, Pageable pageable);

@@ -28,7 +28,7 @@ public class BookBuilder {
         return Book.builder()
                 .status(ReadingStatusIndicator.WANT_TO_READ)
                 .readPages(0)
-                .rating(0)
+                .rating(0.0)
                 .finishedAt(null)
                 .startedAt(null)
                 .bookTemplate(template)

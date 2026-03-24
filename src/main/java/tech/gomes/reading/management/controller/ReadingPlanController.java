@@ -8,11 +8,12 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.web.bind.annotation.*;
 import tech.gomes.reading.management.controller.filter.ReadingPlanFilter;
 import tech.gomes.reading.management.domain.User;
-import tech.gomes.reading.management.dto.library.LibraryResponseDTO;
 import tech.gomes.reading.management.dto.readingPlan.ReadingPlanPageDTO;
 import tech.gomes.reading.management.dto.readingPlan.request.PlanRequestDTO;
 import tech.gomes.reading.management.dto.readingPlan.request.PrivacyPlanDTO;
 import tech.gomes.reading.management.dto.readingPlan.response.PlanResponseDTO;
+import tech.gomes.reading.management.exception.ReadingPlanException;
+import tech.gomes.reading.management.exception.UserException;
 import tech.gomes.reading.management.service.AuthService;
 import tech.gomes.reading.management.service.ReadingPlanService;
 
@@ -27,7 +28,7 @@ public class ReadingPlanController {
 
     @GetMapping("/")
     public ResponseEntity<ReadingPlanPageDTO> getUserPlans(ReadingPlanFilter filter,
-                                                           JwtAuthenticationToken token) throws Exception {
+                                                           JwtAuthenticationToken token) throws UserException {
 
         User user = authService.getUserByToken(token);
 
@@ -55,7 +56,7 @@ public class ReadingPlanController {
     }
 
     @PostMapping("/privacy/update")
-    public ResponseEntity<PlanResponseDTO> updatePrivacyOfPlan(@RequestBody @Valid PrivacyPlanDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<PlanResponseDTO> updatePrivacyOfPlan(@RequestBody @Valid PrivacyPlanDTO requestDTO, JwtAuthenticationToken token) throws UserException, ReadingPlanException {
 
         User user = authService.getUserByToken(token);
 
@@ -75,7 +76,7 @@ public class ReadingPlanController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePlan(@PathVariable long id, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<Void> deletePlan(@PathVariable long id, JwtAuthenticationToken token) throws UserException, ReadingPlanException {
 
         User user = authService.getUserByToken(token);
 
@@ -85,7 +86,7 @@ public class ReadingPlanController {
     }
 
     @PostMapping("/clone/{id}")
-    ResponseEntity<PlanResponseDTO> duplicatePlan(@PathVariable long id, JwtAuthenticationToken token) throws Exception {
+    ResponseEntity<PlanResponseDTO> duplicatePlan(@PathVariable long id, JwtAuthenticationToken token) throws UserException, ReadingPlanException {
 
         User user = authService.getUserByToken(token);
 
