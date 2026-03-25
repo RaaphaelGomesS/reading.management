@@ -4,5 +4,5 @@ import lombok.Builder;
 
 @Builder
 public record BookStatusCountDTO(String status,
-                                 double count) {
+                                 int count) {
 }

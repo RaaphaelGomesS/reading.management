@@ -24,7 +24,7 @@ import tech.gomes.reading.management.service.BookService;
 @RestController
 @RequestMapping("/book")
 @RequiredArgsConstructor
-@Tag(name = "Livros", description = "Endpoints para consultar livros e fazer alterações ")
+@Tag(name = "Livros", description = "Endpoints para consultar e gerenciar livros do usuário.")
 public class BookController {
 
     private final BookService bookService;

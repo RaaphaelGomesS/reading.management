@@ -4,5 +4,5 @@ import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 
 public interface BookStatusCountProjection {
     ReadingStatusIndicator getStatus();
-    double getCount();
+    Integer getCount();
 }

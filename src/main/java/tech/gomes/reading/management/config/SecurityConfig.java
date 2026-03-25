@@ -51,6 +51,8 @@ public class SecurityConfig {
                     req.requestMatchers("/auth/login").permitAll();
                     req.requestMatchers("/auth/register").permitAll();
                     req.requestMatchers("/uploads/**").permitAll();
+                    req.requestMatchers("/v3/api-docs/**").permitAll();
+                    req.requestMatchers("/swagger-ui/**").permitAll();
                     req.anyRequest().authenticated();
                 })
                 .build();
