@@ -1,5 +1,7 @@
 package tech.gomes.reading.management.builder;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import tech.gomes.reading.management.domain.Book;
 import tech.gomes.reading.management.domain.Note;
 import tech.gomes.reading.management.domain.NoteCategory;
@@ -10,6 +12,7 @@ import tech.gomes.reading.management.indicator.NoteTypeIndicator;
 import java.time.Instant;
 import java.util.Set;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class NoteBuilder {
 
     public static Note toDefaultCreate(String title, User user) {

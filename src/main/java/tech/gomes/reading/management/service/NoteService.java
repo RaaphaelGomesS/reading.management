@@ -23,7 +23,7 @@ import tech.gomes.reading.management.dto.note.NoteResponseDTO;
 import tech.gomes.reading.management.dto.note.NoteResponsePageDTO;
 import tech.gomes.reading.management.exception.NoteException;
 import tech.gomes.reading.management.repository.NoteRepository;
-import tech.gomes.reading.management.repository.Specification.NoteSpecification;
+import tech.gomes.reading.management.repository.specification.NoteSpecification;
 import tech.gomes.reading.management.repository.projections.NoteProjection;
 import tech.gomes.reading.management.repository.projections.NoteSummaryProjection;
 
@@ -56,7 +56,7 @@ public class NoteService {
         return NoteResponseDTOBuilder.fromPage(notes);
     }
 
-    public NoteFullResponseDTO findNoteByIdWithSummaryLinkedNotes(long id, User user) throws Exception {
+    public NoteFullResponseDTO findNoteByIdWithSummaryLinkedNotes(long id, User user) throws NoteException {
 
         Note note = noteRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new NoteException("Não foi encontrado a anotação.", HttpStatus.NOT_FOUND));
@@ -80,7 +80,7 @@ public class NoteService {
         return NoteResponseDTOBuilder.from(responseDTOPage);
     }
 
-    public NoteResponsePageDTO findAllNotesThatAreCalledByTheCurrent(long id, User user, int page, int pageSize, String direction) throws Exception {
+    public NoteResponsePageDTO findAllNotesThatAreCalledByTheCurrent(long id, User user, int page, int pageSize, String direction) throws NoteException {
         Note note = findNoteById(id, user.getId());
 
         Sort sort = Sort.by(Sort.Direction.valueOf(direction), "title");
@@ -140,13 +140,13 @@ public class NoteService {
         return NoteResponseDTOBuilder.from(updatedNote);
     }
 
-    public void DeleteNoteById(long id, User user) throws Exception {
+    public void deleteNoteById(long id, User user) throws NoteException {
         Note note = findNoteById(id, user.getId());
 
         noteRepository.delete(note);
     }
 
-    private Note findNoteById(long id, long userId) throws Exception {
+    private Note findNoteById(long id, long userId) throws NoteException {
         return noteRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new NoteException("A anotação não foi encontrada.", HttpStatus.NOT_FOUND));
     }

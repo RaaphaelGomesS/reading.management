@@ -1,5 +1,6 @@
 package tech.gomes.reading.management.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import tech.gomes.reading.management.service.AuthService;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Autenticação", description = "Endpoints para cadastro e login dos usuários")
 public class AuthController {
 
     private final AuthService authService;

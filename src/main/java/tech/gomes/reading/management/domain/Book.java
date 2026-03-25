@@ -30,7 +30,7 @@ public class Book {
     private int readPages;
 
     @Column(name = "rating")
-    private double rating;
+    private Double rating;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

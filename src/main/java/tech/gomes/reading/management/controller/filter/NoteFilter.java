@@ -16,6 +16,7 @@ public class NoteFilter {
     private Long bookId;
     private Long userId;
     private String type;
+
     @Builder.Default
     private int page = 0;
     @Builder.Default

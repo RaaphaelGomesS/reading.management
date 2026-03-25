@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class UserException extends Exception {
 
-    private HttpStatus status;
+    private final HttpStatus status;
 
     public UserException(String message, HttpStatus status) {
         super(message);

@@ -1,16 +1,19 @@
 package tech.gomes.reading.management.builder;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import tech.gomes.reading.management.domain.BookTemplate;
 import tech.gomes.reading.management.domain.SuggestionTemplate;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.suggestion.request.SuggestionRequestDTO;
 import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SuggestionBuilder {
 
     public static SuggestionTemplate from(SuggestionRequestDTO requestDTO, User user, BookTemplate template, String coverImg) {
         return SuggestionTemplate.builder()
-                .suggestedISBN(requestDTO.suggestedISBN() != null ? requestDTO.suggestedISBN() : template.getISBN())
+                .suggestedISBN(requestDTO.suggestedISBN() != null ? requestDTO.suggestedISBN() : template.getIsbn())
                 .suggestedTitle(requestDTO.suggestedTitle() != null ? requestDTO.suggestedTitle() : template.getTitle())
                 .suggestedAuthor(requestDTO.suggestedAuthor() != null ? requestDTO.suggestedAuthor() : template.getAuthor())
                 .suggestedPublisher(requestDTO.suggestedPublisher() != null ? requestDTO.suggestedPublisher() : template.getPublisher())

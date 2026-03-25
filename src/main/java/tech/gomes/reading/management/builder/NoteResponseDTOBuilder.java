@@ -1,5 +1,7 @@
 package tech.gomes.reading.management.builder;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import tech.gomes.reading.management.domain.Note;
 import tech.gomes.reading.management.dto.note.*;
@@ -10,6 +12,7 @@ import tech.gomes.reading.management.utils.DateUtils;
 import java.util.Collections;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class NoteResponseDTOBuilder {
 
     public static NoteFullResponseDTO from(Note note, List<NoteSummaryProjection> linkedNotes) {

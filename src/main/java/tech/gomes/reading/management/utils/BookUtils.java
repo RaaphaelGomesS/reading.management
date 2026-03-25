@@ -1,11 +1,13 @@
 package tech.gomes.reading.management.utils;
 
+import lombok.experimental.UtilityClass;
 import tech.gomes.reading.management.domain.Book;
 import tech.gomes.reading.management.dto.book.request.BookRequestDTO;
 import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 
 import java.time.Instant;
 
+@UtilityClass
 public class BookUtils {
 
     private static final Instant NOW = Instant.now();
@@ -15,39 +17,42 @@ public class BookUtils {
 
         book.setStatus(status);
 
-        if (status == ReadingStatusIndicator.READ) {
-            if (book.getStartedAt() == null && requestDTO.startedDate() == null) {
-                book.setStartedAt(NOW);
-            } else {
-                book.setStartedAt(requestDTO.startedDate());
-            }
+        switch (status) {
+            case READ -> {
+                if (book.getStartedAt() == null && requestDTO.startedDate() == null) {
+                    book.setStartedAt(NOW);
+                } else {
+                    book.setStartedAt(requestDTO.startedDate());
+                }
 
-            if (book.getFinishedAt() == null && requestDTO.finishedDate() == null) {
-                book.setFinishedAt(NOW);
-            } else {
-                book.setFinishedAt(requestDTO.finishedDate());
+                if (book.getFinishedAt() == null && requestDTO.finishedDate() == null) {
+                    book.setFinishedAt(NOW);
+                } else {
+                    book.setFinishedAt(requestDTO.finishedDate());
+                }
+                book.setRating(requestDTO.rating());
+                book.setReadPages(book.getBookTemplate().getPages());
             }
-            book.setRating(requestDTO.rating());
-            book.setReadPages(book.getBookTemplate().getPages());
-        } else if (status == ReadingStatusIndicator.READING) {
-            BookUtils.finishBookWhenPagesIsTheSame(book, requestDTO);
+            case READING -> {
+                BookUtils.finishBookWhenPagesIsTheSame(book, requestDTO);
 
-            if (book.getStartedAt() == null && requestDTO.startedDate() == null) {
-                book.setStartedAt(NOW);
-            } else {
-                book.setStartedAt(requestDTO.startedDate());
+                if (book.getStartedAt() == null && requestDTO.startedDate() == null) {
+                    book.setStartedAt(NOW);
+                } else {
+                    book.setStartedAt(requestDTO.startedDate());
+                }
+
+                if (book.getFinishedAt() != null) {
+                    book.setFinishedAt(null);
+                }
+
+                book.setReadPages(requestDTO.pages());
             }
-
-            if (book.getFinishedAt() != null && book.getFinishedAt() != NOW) {
+            case WANT_TO_READ -> {
+                book.setStartedAt(null);
                 book.setFinishedAt(null);
             }
-
-            book.setReadPages(requestDTO.pages());
-        } else if (status == ReadingStatusIndicator.WANT_TO_READ) {
-            book.setStartedAt(null);
-            book.setFinishedAt(null);
-        } else {
-            book.setFinishedAt(null);
+            default -> book.setFinishedAt(null);
         }
     }
 

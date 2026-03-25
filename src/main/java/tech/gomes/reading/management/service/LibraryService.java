@@ -33,12 +33,12 @@ public class LibraryService {
         return LibraryResponseDTOBuilder.fromPage(libraryPage);
     }
 
-    public Library getLibraryById(Long id, User user) throws Exception {
+    public Library getLibraryById(Long id, User user) throws LibraryException {
         return libraryRepository.findByIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new LibraryException("A biblioteca não foi encontrada.", HttpStatus.NOT_FOUND));
     }
 
-    public LibraryResponseDTO createLibrary(LibraryRequestDTO requestDTO, User user) throws Exception {
+    public Library createLibrary(LibraryRequestDTO requestDTO, User user) throws LibraryException {
 
         verifyIfLibraryAlreadyExist(requestDTO, user);
 
@@ -49,12 +49,10 @@ public class LibraryService {
                 .user(user)
                 .build();
 
-        Library library = libraryRepository.save(newLibrary);
-
-        return LibraryResponseDTOBuilder.from(library);
+        return libraryRepository.save(newLibrary);
     }
 
-    public LibraryResponseDTO updateLibrary(LibraryRequestDTO requestDTO, User user) throws Exception {
+    public LibraryResponseDTO updateLibrary(LibraryRequestDTO requestDTO, User user) throws LibraryException {
 
         Library library = getLibraryById(requestDTO.id(), user);
 
@@ -71,13 +69,13 @@ public class LibraryService {
         return LibraryResponseDTOBuilder.from(updatedLibrary);
     }
 
-    public void deleteLibrary(Long id, User user) throws Exception {
+    public void deleteLibrary(Long id, User user) throws LibraryException {
         Library library = getLibraryById(id, user);
 
         libraryRepository.delete(library);
     }
 
-    private void verifyIfLibraryAlreadyExist(LibraryRequestDTO requestDTO, User user) throws Exception {
+    private void verifyIfLibraryAlreadyExist(LibraryRequestDTO requestDTO, User user) throws LibraryException {
         Optional<Library> optionalLibrary = libraryRepository.findByNameAndUserId(requestDTO.name(), user.getId());
 
         if (optionalLibrary.isPresent()) {

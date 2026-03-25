@@ -4,5 +4,5 @@ import lombok.Builder;
 
 @Builder
 public record CategoryFinishCountDTO(String categoryName,
-                                     double count) {
+                                     int count) {
 }
