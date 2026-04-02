@@ -1,12 +1,12 @@
 package tech.gomes.reading.management.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 import tech.gomes.reading.management.builder.UserResponseDTOBuilder;
+import tech.gomes.reading.management.controller.doc.UserControllerDoc;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.user.ChangePasswordRequestDTO;
 import tech.gomes.reading.management.dto.user.UserResponseDTO;
@@ -15,16 +15,14 @@ import tech.gomes.reading.management.service.AuthService;
 import tech.gomes.reading.management.service.UserService;
 
 @RestController
-@RequestMapping("/user")
 @RequiredArgsConstructor
-public class UserController {
+public class UserController implements UserControllerDoc {
 
     private final UserService userService;
 
     private final AuthService authService;
 
-    @GetMapping("/")
-    public ResponseEntity<UserResponseDTO> findUser(JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<UserResponseDTO> findUser(JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -33,16 +31,14 @@ public class UserController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @PutMapping("/")
-    public ResponseEntity<UserResponseDTO> updatedUser(@Valid @RequestBody UserUpdateRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<UserResponseDTO> updatedUser(UserUpdateRequestDTO requestDTO, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
         return ResponseEntity.ok(userService.updateUser(requestDTO, user));
     }
 
-    @PostMapping("/password")
-    public ResponseEntity<Void> updatePassword(@Valid @RequestBody ChangePasswordRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<Void> updatePassword(ChangePasswordRequestDTO requestDTO, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -51,8 +47,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<Void> deleteUser(Long id, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 

@@ -36,7 +36,7 @@ public class SuggestionService {
     private final UploadService uploadService;
 
     @Transactional
-    public void createUpdateSuggestion(SuggestionRequestDTO requestDTO, User user, MultipartFile file) throws Exception {
+    public void createUpdateSuggestion(SuggestionRequestDTO requestDTO, User user, MultipartFile file) {
 
         if (requestDTO.suggestedReason() == null) {
             throw new SuggestionException("Deve justificar a alteração.", HttpStatus.BAD_REQUEST);
@@ -66,16 +66,16 @@ public class SuggestionService {
         return SuggestionResponseDTOBuilder.fromPage(suggestionPage);
     }
 
-    public SuggestionUpdateResponseDTO findUpdateSuggestion(long suggestionId) throws SuggestionException {
+    public SuggestionUpdateResponseDTO findUpdateSuggestion(long suggestionId) {
 
         SuggestionTemplate suggestion = suggestionRepository.findByIdAndBookTemplateIsNotNull(suggestionId)
-                .orElseThrow(() -> new SuggestionException("Não foi encontrado nenhuma sugestão com esse id", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new SuggestionException("Não foi encontrado nenhuma sugestão com esse id.", HttpStatus.NOT_FOUND));
 
         return SuggestionResponseDTOBuilder.toUpdate(suggestion, suggestion.getBookTemplate());
     }
 
     @Transactional
-    public void approveSuggestion(long id) throws Exception {
+    public void approveSuggestion(long id) {
 
         SuggestionTemplate suggestion = suggestionRepository.findById(id)
                 .orElseThrow(() -> new SuggestionException("Não foi encontrado nenhuma sugestão com esse id", HttpStatus.NOT_FOUND));
@@ -93,7 +93,7 @@ public class SuggestionService {
     }
 
     @Transactional
-    public void declineSuggestion(DeclineRequestDTO requestDTO) throws SuggestionException {
+    public void declineSuggestion(DeclineRequestDTO requestDTO) {
         SuggestionTemplate suggestion = suggestionRepository.findById(requestDTO.id())
                 .orElseThrow(() -> new SuggestionException("Não foi encontrado nenhuma sugestão com esse id", HttpStatus.NOT_FOUND));
 

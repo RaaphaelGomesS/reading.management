@@ -2,10 +2,9 @@ package tech.gomes.reading.management.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import tech.gomes.reading.management.controller.doc.PlanCategoryControllerDoc;
 import tech.gomes.reading.management.domain.PlanCategory;
-import tech.gomes.reading.management.exception.ReadingPlanException;
 import tech.gomes.reading.management.service.PlanCategoryService;
 
 import java.util.List;
@@ -13,32 +12,24 @@ import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/plan/category")
-public class PlanCategoryController {
+public class PlanCategoryController implements PlanCategoryControllerDoc {
 
     private final PlanCategoryService service;
 
-    @GetMapping("/")
-    ResponseEntity<List<PlanCategory>> getAllCategories() {
+    public ResponseEntity<List<PlanCategory>> getAllCategories() {
         return ResponseEntity.ok(service.findAllCategories());
     }
 
-    @PostMapping("/")
-    @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
-    ResponseEntity<List<PlanCategory>> createNewCategories(Set<String> categories) throws ReadingPlanException {
+    public ResponseEntity<List<PlanCategory>> createNewCategories(Set<String> categories) {
         return ResponseEntity.ok(service.createNewCategories(categories));
     }
 
-    @PutMapping("/{id}")
-    @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
-    ResponseEntity<PlanCategory> updateCategory(@PathVariable long id, String categoryName) throws ReadingPlanException {
+    public ResponseEntity<PlanCategory> updateCategory(long id, String categoryName) {
 
         return ResponseEntity.ok(service.updateCategory(id, categoryName));
     }
 
-    @DeleteMapping("/{id}")
-    @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
-    ResponseEntity<Void> deleteCategory(@PathVariable long id) throws ReadingPlanException {
+    public ResponseEntity<Void> deleteCategory(long id) {
 
         service.deleteCategory(id);
 

@@ -1,46 +1,23 @@
-package tech.gomes.reading.management.exception;
+package tech.gomes.reading.management.handler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import java.util.HashMap;
-import java.util.Map;
+import tech.gomes.reading.management.exception.*;
 
 @Slf4j
 @RestControllerAdvice
 public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
 
-//    @Override
-//    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-//            MethodArgumentNotValidException ex,
-//            @Nullable HttpHeaders headers,
-//            @Nullable HttpStatusCode status,
-//            @Nullable WebRequest request) {
-//
-//        log.warn("Falha na validação: {}", ex.getMessage());
-//
-//        Map<String, String> fieldErrors = new HashMap<>();
-//        ex.getBindingResult().getFieldErrors().forEach(error -> {
-//            String fieldName = error.getField();
-//            String errorMessage = error.getDefaultMessage();
-//            fieldErrors.put(fieldName, errorMessage);
-//        });
-//
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("errors", fieldErrors);
-//
-//        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-//    }
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<String> handlerApplicationException(ApplicationException e) {
+
+        ApplicationException exception = new ApplicationException(e.getMessage(), e.getStatus());
+
+        return ResponseEntity.status(exception.getStatus()).body(exception.getMessage());
+    }
 
     @ExceptionHandler(UserException.class)
     public ResponseEntity<String> handlerUserException(UserException e) {
@@ -94,6 +71,14 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
     public ResponseEntity<String> handlerSuggestionException(SuggestionException e) {
 
         SuggestionException exception = new SuggestionException(e.getMessage(), e.getStatus());
+
+        return ResponseEntity.status(exception.getStatus()).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(FileException.class)
+    public ResponseEntity<String> handlerFileException(FileException e) {
+
+        FileException exception = new FileException(e.getMessage(), e.getStatus());
 
         return ResponseEntity.status(exception.getStatus()).body(exception.getMessage());
     }

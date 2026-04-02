@@ -4,9 +4,8 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class SuggestionException extends ApplicationException {
-
-    public SuggestionException(String message, HttpStatus status) {
+public class FileException extends ApplicationException {
+    public FileException(String message, HttpStatus status) {
         super(message, status);
     }
 }

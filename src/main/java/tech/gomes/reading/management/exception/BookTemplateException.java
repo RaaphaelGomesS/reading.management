@@ -4,12 +4,9 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class BookTemplateException extends Exception {
-
-    private final HttpStatus status;
+public class BookTemplateException extends ApplicationException {
 
     public BookTemplateException(String message, HttpStatus status) {
-        super(message);
-        this.status = status;
+        super(message, status);
     }
 }

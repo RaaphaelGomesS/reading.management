@@ -4,12 +4,9 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class UserException extends Exception {
-
-    private final HttpStatus status;
+public class UserException extends ApplicationException {
 
     public UserException(String message, HttpStatus status) {
-        super(message);
-        this.status = status;
+        super(message, status);
     }
 }

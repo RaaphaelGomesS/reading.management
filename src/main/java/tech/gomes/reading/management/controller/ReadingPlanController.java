@@ -1,34 +1,30 @@
 package tech.gomes.reading.management.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import tech.gomes.reading.management.controller.doc.ReadingPlanControllerDoc;
 import tech.gomes.reading.management.controller.filter.ReadingPlanFilter;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.readingPlan.ReadingPlanPageDTO;
 import tech.gomes.reading.management.dto.readingPlan.request.PlanRequestDTO;
 import tech.gomes.reading.management.dto.readingPlan.request.PrivacyPlanDTO;
 import tech.gomes.reading.management.dto.readingPlan.response.PlanResponseDTO;
-import tech.gomes.reading.management.exception.ReadingPlanException;
-import tech.gomes.reading.management.exception.UserException;
 import tech.gomes.reading.management.service.AuthService;
 import tech.gomes.reading.management.service.ReadingPlanService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/plan")
-public class ReadingPlanController {
+public class ReadingPlanController implements ReadingPlanControllerDoc {
 
     private final AuthService authService;
 
     private final ReadingPlanService planService;
 
-    @GetMapping("/")
     public ResponseEntity<ReadingPlanPageDTO> getUserPlans(ReadingPlanFilter filter,
-                                                           JwtAuthenticationToken token) throws UserException {
+                                                           JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -37,7 +33,6 @@ public class ReadingPlanController {
         return ResponseEntity.ok(pageDTO);
     }
 
-    @GetMapping("/public")
     public ResponseEntity<ReadingPlanPageDTO> getPublicPlans(ReadingPlanFilter filter) {
 
         ReadingPlanPageDTO pageDTO = planService.findAllPlans(null, filter);
@@ -45,8 +40,7 @@ public class ReadingPlanController {
         return ResponseEntity.ok(pageDTO);
     }
 
-    @PostMapping("/")
-    public ResponseEntity<PlanResponseDTO> createPlan(@RequestBody PlanRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<PlanResponseDTO> createPlan(PlanRequestDTO requestDTO, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -55,8 +49,7 @@ public class ReadingPlanController {
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
-    @PostMapping("/privacy/update")
-    public ResponseEntity<PlanResponseDTO> updatePrivacyOfPlan(@RequestBody @Valid PrivacyPlanDTO requestDTO, JwtAuthenticationToken token) throws UserException, ReadingPlanException {
+    public ResponseEntity<PlanResponseDTO> updatePrivacyOfPlan(PrivacyPlanDTO requestDTO, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -65,8 +58,7 @@ public class ReadingPlanController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<PlanResponseDTO> updatePlan(@PathVariable long id, @RequestBody PlanRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<PlanResponseDTO> updatePlan(long id, PlanRequestDTO requestDTO, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -75,8 +67,7 @@ public class ReadingPlanController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePlan(@PathVariable long id, JwtAuthenticationToken token) throws UserException, ReadingPlanException {
+    public ResponseEntity<Void> deletePlan(long id, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -85,8 +76,7 @@ public class ReadingPlanController {
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping("/clone/{id}")
-    ResponseEntity<PlanResponseDTO> duplicatePlan(@PathVariable long id, JwtAuthenticationToken token) throws UserException, ReadingPlanException {
+    public ResponseEntity<PlanResponseDTO> duplicatePlan(long id, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 

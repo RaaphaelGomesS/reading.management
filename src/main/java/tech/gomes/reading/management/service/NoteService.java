@@ -23,9 +23,9 @@ import tech.gomes.reading.management.dto.note.NoteResponseDTO;
 import tech.gomes.reading.management.dto.note.NoteResponsePageDTO;
 import tech.gomes.reading.management.exception.NoteException;
 import tech.gomes.reading.management.repository.NoteRepository;
-import tech.gomes.reading.management.repository.specification.NoteSpecification;
 import tech.gomes.reading.management.repository.projections.NoteProjection;
 import tech.gomes.reading.management.repository.projections.NoteSummaryProjection;
+import tech.gomes.reading.management.repository.specification.NoteSpecification;
 
 import java.util.HashSet;
 import java.util.List;
@@ -66,7 +66,7 @@ public class NoteService {
         return NoteResponseDTOBuilder.from(note, linkedSummaryNotes);
     }
 
-    public NoteResponsePageDTO findAllNotesThatCallTheCurrent(long id, User user, int page, int pageSize, String direction) throws Exception {
+    public NoteResponsePageDTO findAllNotesThatCallTheCurrent(long id, User user, int page, int pageSize, String direction) {
         Note note = findNoteById(id, user.getId());
 
         Sort sort = Sort.by(Sort.Direction.valueOf(direction), "title");
@@ -113,7 +113,7 @@ public class NoteService {
     }
 
     @Transactional
-    public NoteResponseDTO updateNoteAndLinks(NoteRequestDTO requestDTO, User user) throws Exception {
+    public NoteResponseDTO updateNoteAndLinks(NoteRequestDTO requestDTO, User user) {
 
         Note note = findNoteById(requestDTO.id(), user.getId());
 

@@ -22,10 +22,7 @@ import tech.gomes.reading.management.dto.book.response.BookTemplateResponseDTO;
 import tech.gomes.reading.management.dto.book.response.FullBookResponseDTO;
 import tech.gomes.reading.management.dto.library.LibraryRequestDTO;
 import tech.gomes.reading.management.dto.library.LibraryResponseDTO;
-import tech.gomes.reading.management.exception.BookException;
-import tech.gomes.reading.management.exception.BookTemplateException;
-import tech.gomes.reading.management.exception.LibraryException;
-import tech.gomes.reading.management.exception.ReadingPlanException;
+import tech.gomes.reading.management.exception.*;
 import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 import tech.gomes.reading.management.repository.BookRepository;
 import tech.gomes.reading.management.repository.BookTemplateRepository;
@@ -65,7 +62,7 @@ public class BookService {
     }
 
     @Transactional
-    public BookResponseDTO createBook(BookCreateRequestDTO requestDTO, User user, MultipartFile file) throws Exception {
+    public BookResponseDTO createBook(BookCreateRequestDTO requestDTO, User user, MultipartFile file) throws ApplicationException {
 
         if (requestDTO.template().templateId() != null) {
             verifyBookAlreadyRegister(requestDTO.template().templateId(), user.getId());
@@ -82,7 +79,7 @@ public class BookService {
         return BookResponseDTOBuilder.from(bookRepository.save(newBook));
     }
 
-    public BookResponseDTO updateBook(BookRequestDTO requestDTO, User user) throws Exception {
+    public BookResponseDTO updateBook(BookRequestDTO requestDTO, User user) throws ApplicationException {
         Book book = findBookById(requestDTO.id(), user.getId());
 
         log.info("Request data check: {}", requestDTO);

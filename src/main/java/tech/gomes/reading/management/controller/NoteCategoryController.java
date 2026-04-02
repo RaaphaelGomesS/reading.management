@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import tech.gomes.reading.management.controller.doc.NoteCategoryControllerDoc;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.category.CategoryRequestDTO;
 import tech.gomes.reading.management.dto.category.CategoryResponseDTO;
@@ -14,16 +15,14 @@ import tech.gomes.reading.management.service.NoteCategoryService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/category")
 @RequiredArgsConstructor
-public class NoteCategoryController {
+public class NoteCategoryController implements NoteCategoryControllerDoc {
 
     private final AuthService authService;
 
     private final NoteCategoryService categoryService;
 
-    @PostMapping("/")
-    public ResponseEntity<CategoryResponseDTO> createCategory(@RequestBody CategoryRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<CategoryResponseDTO> createCategory(CategoryRequestDTO requestDTO, JwtAuthenticationToken token) {
         User user = authService.getUserByToken(token);
 
         CategoryResponseDTO responseDTO = categoryService.createCategoryIfNotExists(requestDTO, user);
@@ -31,8 +30,7 @@ public class NoteCategoryController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<CategoryResponseDTO>> getAllCategoriesOfUser(JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<List<CategoryResponseDTO>> getAllCategoriesOfUser(JwtAuthenticationToken token) {
         User user = authService.getUserByToken(token);
 
         List<CategoryResponseDTO> categories = categoryService.getAllCategoriesFromUser(user);
@@ -40,8 +38,7 @@ public class NoteCategoryController {
         return ResponseEntity.ok(categories);
     }
 
-    @PutMapping("/")
-    public ResponseEntity<CategoryResponseDTO> updateCategory(@RequestBody CategoryRequestDTO requestDTO, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<CategoryResponseDTO> updateCategory(CategoryRequestDTO requestDTO, JwtAuthenticationToken token) {
         User user = authService.getUserByToken(token);
 
         CategoryResponseDTO responseDTO = categoryService.updateCategory(requestDTO, user);
@@ -49,8 +46,7 @@ public class NoteCategoryController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNoteById(@PathVariable long id, JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<Void> deleteNoteById(Long id, JwtAuthenticationToken token) {
         User user = authService.getUserByToken(token);
 
         categoryService.deleteCategory(id, user);

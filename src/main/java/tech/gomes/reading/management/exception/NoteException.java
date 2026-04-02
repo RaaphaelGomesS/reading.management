@@ -4,12 +4,9 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class NoteException extends Exception {
-
-    private final HttpStatus status;
+public class NoteException extends ApplicationException {
 
     public NoteException(String message, HttpStatus status) {
-        super(message);
-        this.status = status;
+        super(message, status);
     }
 }

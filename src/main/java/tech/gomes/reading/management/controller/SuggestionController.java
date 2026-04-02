@@ -3,10 +3,10 @@ package tech.gomes.reading.management.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import tech.gomes.reading.management.controller.doc.SuggestionControllerDoc;
 import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.suggestion.request.DeclineRequestDTO;
 import tech.gomes.reading.management.dto.suggestion.request.SuggestionRequestDTO;
@@ -17,17 +17,15 @@ import tech.gomes.reading.management.service.SuggestionService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/suggestion")
-public class SuggestionController {
+public class SuggestionController implements SuggestionControllerDoc {
 
     private final SuggestionService suggestionService;
 
     private final AuthService authService;
 
-    @PostMapping(value = "/", consumes = {"multipart/form-data"})
-    public ResponseEntity<Void> createUpdateSuggestion(@RequestPart("suggestion") SuggestionRequestDTO requestDTO,
-                                                       @RequestPart(value = "coverImg", required = false) MultipartFile file,
-                                                       JwtAuthenticationToken token) throws Exception {
+    public ResponseEntity<Void> createUpdateSuggestion(SuggestionRequestDTO requestDTO,
+                                                       MultipartFile file,
+                                                       JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -36,35 +34,27 @@ public class SuggestionController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/")
-    @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
-    public ResponseEntity<SuggestionResponsePageDTO> getAllSuggestion(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                                                      @RequestParam(value = "pageSize", required = false, defaultValue = "10") int pageSize,
-                                                                      @RequestParam(value = "direction", required = false, defaultValue = "DESC") String direction,
-                                                                      @RequestParam(value = "status", required = false, defaultValue = "IN_ANALYZE") String status) {
+    public ResponseEntity<SuggestionResponsePageDTO> getAllSuggestion(int page,
+                                                                      int pageSize,
+                                                                      String direction,
+                                                                      String status) {
 
         return ResponseEntity.ok(suggestionService.findAllUpdateSuggestion(page, pageSize, direction, status));
     }
 
-    @GetMapping("/{id}")
-    @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
-    public ResponseEntity<SuggestionUpdateResponseDTO> getUpdateSuggestionWithOriginalTemplate(@PathVariable long id) throws Exception {
+    public ResponseEntity<SuggestionUpdateResponseDTO> getUpdateSuggestionWithOriginalTemplate(long id) {
 
         return ResponseEntity.ok(suggestionService.findUpdateSuggestion(id));
     }
 
-    @PostMapping("/approve/{id}")
-    @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
-    public ResponseEntity<Void> approveSuggestion(@PathVariable long id) throws Exception {
+    public ResponseEntity<Void> approveSuggestion(long id) {
 
         suggestionService.approveSuggestion(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/decline/")
-    @PreAuthorize(value = "hasAuthority('SCOPE_ADMIN')")
-    public ResponseEntity<Void> declineSuggestion(@RequestBody DeclineRequestDTO requestDTO) throws Exception {
+    public ResponseEntity<Void> declineSuggestion(DeclineRequestDTO requestDTO) {
 
         suggestionService.declineSuggestion(requestDTO);
 
