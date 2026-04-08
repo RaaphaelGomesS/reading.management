@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import tech.gomes.reading.management.builder.BookTemplateResponseDTOBuilder;
 import tech.gomes.reading.management.controller.doc.BookTemplateControllerDoc;
 import tech.gomes.reading.management.controller.filter.BookTemplateFilter;
 import tech.gomes.reading.management.dto.book.request.BookTemplateRequestDTO;
@@ -33,9 +32,11 @@ public class BookTemplateController implements BookTemplateControllerDoc {
         return ResponseEntity.ok(templateService.findAllTemplatesByStatus(page, pageSize, direction, status));
     }
 
-    public ResponseEntity<BookTemplateResponseDTO> getTemplateToBeAnalyze(long id) throws ApplicationException {
+    public ResponseEntity<BookTemplateResponseDTO> getTemplateToBeAnalyze(long id) {
 
-        return ResponseEntity.ok(BookTemplateResponseDTOBuilder.from(templateService.findTemplateByIdWithAnyStatus(id)));
+        BookTemplateResponseDTO responseDTO = templateService.findTemplateToBeAnalyzeAndConvertToDTO(id);
+
+        return ResponseEntity.ok(responseDTO);
     }
 
     public ResponseEntity<BookTemplateResponseDTO> updateBookTemplate(BookTemplateRequestDTO requestDTO,
@@ -46,14 +47,14 @@ public class BookTemplateController implements BookTemplateControllerDoc {
         return ResponseEntity.ok(responseDTO);
     }
 
-    public ResponseEntity<Void> inactiveInvalidTemplate(long id) throws ApplicationException {
+    public ResponseEntity<Void> inactiveInvalidTemplate(long id) {
 
         templateService.inactiveInvalidTemplate(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> approveTemplate(long id) throws ApplicationException {
+    public ResponseEntity<Void> approveTemplate(long id) {
 
         templateService.approveTemplate(id);
 

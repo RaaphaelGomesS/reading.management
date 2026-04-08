@@ -151,9 +151,16 @@ public class BookTemplateService {
 
         Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.valueOf(direction), "createdAt");
 
-        Page<BookTemplate> bookTemplatePage = bookTemplateRepository.findByStatus(TemplateStatusIndicator.valueOf(status), pageable);
+        Page<BookTemplate> bookTemplatePage = bookTemplateRepository.findByStatus(TemplateStatusIndicator.getIndicatorFromString(status), pageable);
 
         return BookTemplateResponseDTOBuilder.fromPage(bookTemplatePage);
+    }
+
+    public BookTemplateResponseDTO findTemplateToBeAnalyzeAndConvertToDTO(long id) {
+
+        BookTemplate template = findTemplateByIdWithAnyStatus(id);
+
+        return BookTemplateResponseDTOBuilder.from(template);
     }
 
     public BookTemplate findTemplateById(long id) throws BookTemplateException {

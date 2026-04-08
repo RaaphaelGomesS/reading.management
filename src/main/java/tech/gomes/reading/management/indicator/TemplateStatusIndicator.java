@@ -8,12 +8,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public enum TemplateStatusIndicator {
-    IN_ANALYZE ("Analisando"),
-    VERIFIED ("Verificado"),
-    DECLINE ("Recusado"),
-    INACTIVE ("Desativado");
+    IN_ANALYZE("Analisando"),
+    VERIFIED("Verificado"),
+    DECLINE("Recusado"),
+    INACTIVE("Desativado");
 
     private String value;
 
+    public static TemplateStatusIndicator getIndicatorFromString(String value) {
 
+        if (!value.isEmpty()) {
+            for (TemplateStatusIndicator indicator : values()) {
+                if (indicator.value.equalsIgnoreCase(value)) {
+                    return indicator;
+                }
+            }
+        }
+        return TemplateStatusIndicator.IN_ANALYZE;
+    }
 }

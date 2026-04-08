@@ -12,7 +12,6 @@ import tech.gomes.reading.management.domain.User;
 import tech.gomes.reading.management.dto.library.LibraryRequestDTO;
 import tech.gomes.reading.management.dto.library.LibraryResponseDTO;
 import tech.gomes.reading.management.dto.library.LibraryResponsePageDTO;
-import tech.gomes.reading.management.exception.ApplicationException;
 import tech.gomes.reading.management.service.AuthService;
 import tech.gomes.reading.management.service.BookService;
 import tech.gomes.reading.management.service.LibraryService;
@@ -30,14 +29,14 @@ public class LibraryController implements LibraryControllerDoc {
     public ResponseEntity<LibraryResponsePageDTO> getAllLibrariesByUserId(int page,
                                                                           int pageSize,
                                                                           String direction,
-                                                                          JwtAuthenticationToken token) throws ApplicationException {
+                                                                          JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
         return ResponseEntity.ok(libraryService.getALlLibraries(user, page, pageSize, direction));
     }
 
-    public ResponseEntity<LibraryResponseDTO> findLibraryById(Long id, JwtAuthenticationToken token) throws ApplicationException {
+    public ResponseEntity<LibraryResponseDTO> findLibraryById(Long id, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -46,7 +45,7 @@ public class LibraryController implements LibraryControllerDoc {
         return ResponseEntity.ok(LibraryResponseDTOBuilder.from(library));
     }
 
-    public ResponseEntity<LibraryResponseDTO> createNewLibrary(LibraryRequestDTO requestDTO, JwtAuthenticationToken token) throws ApplicationException {
+    public ResponseEntity<LibraryResponseDTO> createNewLibrary(LibraryRequestDTO requestDTO, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -55,14 +54,14 @@ public class LibraryController implements LibraryControllerDoc {
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<LibraryResponseDTO> updateLibraryById(LibraryRequestDTO requestDTO, JwtAuthenticationToken token) throws ApplicationException {
+    public ResponseEntity<LibraryResponseDTO> updateLibraryById(LibraryRequestDTO requestDTO, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
         return ResponseEntity.ok(libraryService.updateLibrary(requestDTO, user));
     }
 
-    public ResponseEntity<Void> deleteLibraryById(Long id, JwtAuthenticationToken token) throws ApplicationException {
+    public ResponseEntity<Void> deleteLibraryById(Long id, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -71,7 +70,7 @@ public class LibraryController implements LibraryControllerDoc {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public ResponseEntity<LibraryResponseDTO> createLibraryByPlan(Long id, JwtAuthenticationToken token) throws ApplicationException {
+    public ResponseEntity<LibraryResponseDTO> createLibraryByPlan(Long id, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
