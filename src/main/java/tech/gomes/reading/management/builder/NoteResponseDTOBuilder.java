@@ -4,7 +4,10 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import tech.gomes.reading.management.domain.Note;
-import tech.gomes.reading.management.dto.note.*;
+import tech.gomes.reading.management.dto.note.NoteFullResponseDTO;
+import tech.gomes.reading.management.dto.note.NoteResponseDTO;
+import tech.gomes.reading.management.dto.note.NoteResponsePageDTO;
+import tech.gomes.reading.management.dto.note.NoteSummaryDTO;
 import tech.gomes.reading.management.repository.projections.NoteProjection;
 import tech.gomes.reading.management.repository.projections.NoteSummaryProjection;
 import tech.gomes.reading.management.utils.DateUtils;
@@ -24,7 +27,6 @@ public class NoteResponseDTOBuilder {
                 .title(note.getTitle())
                 .type(note.getType() == null ? null : note.getType().getValue())
                 .category(note.getCategory() == null ? null : note.getCategory().getName())
-                .bookReference(note.getBook() == null ? null : note.getBook().getId())
                 .content(note.getContent())
                 .createdDate(DateUtils.formatInstantToDateTime(note.getCreatedAt()))
                 .linkedNotes(linkedNotesSummary)
@@ -35,7 +37,6 @@ public class NoteResponseDTOBuilder {
         return NoteResponseDTO.builder()
                 .id(note.getId())
                 .title(note.getTitle())
-                .bookReference(note.getBook() == null ? null : note.getBook().getId())
                 .category(note.getCategory() == null ? null : note.getCategory().getName())
                 .type(note.getType() == null ? null : note.getType().getValue())
                 .createdDate(DateUtils.formatInstantToDateTime(note.getCreatedAt()))
@@ -47,7 +48,6 @@ public class NoteResponseDTOBuilder {
         return NoteResponseDTO.builder()
                 .id(note.getId())
                 .title(note.getTitle())
-                .bookReference(note.getBookReference())
                 .category(note.getCategory())
                 .type(note.getType().name())
                 .createdDate(DateUtils.formatInstantToDateTime(note.getCreatedDate()))

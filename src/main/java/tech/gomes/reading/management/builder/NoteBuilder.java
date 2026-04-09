@@ -2,7 +2,6 @@ package tech.gomes.reading.management.builder;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import tech.gomes.reading.management.domain.Book;
 import tech.gomes.reading.management.domain.Note;
 import tech.gomes.reading.management.domain.NoteCategory;
 import tech.gomes.reading.management.domain.User;
@@ -22,13 +21,11 @@ public class NoteBuilder {
                 .content("Use [[título]] para criar um link de uma outra nota à esta.")
                 .type(NoteTypeIndicator.QUICK)
                 .category(null)
-                .book(null)
                 .createdAt(Instant.now())
                 .build();
     }
 
-    public static void from(Note note, NoteRequestDTO requestDTO, Book book, NoteCategory category, Set<Note> linkedNotes) {
-        note.setBook(book);
+    public static void from(Note note, NoteRequestDTO requestDTO, NoteCategory category, Set<Note> linkedNotes) {
         note.setCategory(category);
         note.setTitle(requestDTO.title());
         note.setContent(requestDTO.content());

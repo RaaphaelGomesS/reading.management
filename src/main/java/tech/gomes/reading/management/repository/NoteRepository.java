@@ -27,9 +27,9 @@ public interface NoteRepository extends JpaRepository<Note, Long>, JpaSpecificat
     @Query("SELECT target.id AS id, target.title AS title FROM note source JOIN source.linkedNotes target WHERE source.id = :sourceNoteId")
     List<NoteSummaryProjection> findAllSummaryTargetNotes(@Param("sourceNoteId") long id);
 
-    @Query("SELECT target.id AS id, target.title AS title, target.category.name AS category, target.type AS type, target.book.id AS bookReference, target.createdAt AS createdDate, target.updatedAt AS updatedDate FROM note source JOIN source.linkedNotes target WHERE source.id = :sourceNoteId")
+    @Query("SELECT target.id AS id, target.title AS title, target.category.name AS category, target.type AS type, target.createdAt AS createdDate, target.updatedAt AS updatedDate FROM note source JOIN source.linkedNotes target WHERE source.id = :sourceNoteId")
     Page<NoteProjection> findAllLinkedNotesByNoteId(@Param("sourceNoteId") long id, Pageable pageable);
 
-    @Query("SELECT source.id AS id, source.title AS title, source.category.name AS category, source.type AS type, source.book.id AS bookReference, source.createdAt AS createdDate, source.updatedAt AS updatedDate FROM note target JOIN target.invertedNoteLinks source WHERE target.id = :targetNoteId")
+    @Query("SELECT source.id AS id, source.title AS title, source.category.name AS category, source.type AS type, source.createdAt AS createdDate, source.updatedAt AS updatedDate FROM note target JOIN target.invertedNoteLinks source WHERE target.id = :targetNoteId")
     Page<NoteProjection> findAllNotesLinkingToNoteId(@Param("targetNoteId") long id, Pageable pageable);
 }

@@ -9,7 +9,6 @@ public interface NoteProjection {
     String getTitle();
     String getCategory();
     NoteTypeIndicator getType();
-    Long getBookReference();
     Instant getCreatedDate();
     Instant getUpdatedDate();
 }

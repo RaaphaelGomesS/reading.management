@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import tech.gomes.reading.management.builder.NoteBuilder;
 import tech.gomes.reading.management.builder.NoteResponseDTOBuilder;
 import tech.gomes.reading.management.controller.filter.NoteFilter;
-import tech.gomes.reading.management.domain.Book;
 import tech.gomes.reading.management.domain.Note;
 import tech.gomes.reading.management.domain.NoteCategory;
 import tech.gomes.reading.management.domain.User;
@@ -41,8 +40,6 @@ public class NoteService {
 
     private final NoteRepository noteRepository;
 
-    private final BookService bookService;
-
     private final NoteCategoryService categoryService;
 
     public NoteResponsePageDTO findAllNotesByFilter(NoteFilter filter) {
@@ -58,8 +55,7 @@ public class NoteService {
 
     public NoteFullResponseDTO findNoteByIdWithSummaryLinkedNotes(long id, User user) throws NoteException {
 
-        Note note = noteRepository.findByIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new NoteException("Não foi encontrado a anotação.", HttpStatus.NOT_FOUND));
+        Note note = findNoteById(id, user.getId());
 
         List<NoteSummaryProjection> linkedSummaryNotes = noteRepository.findAllSummaryTargetNotes(id);
 
@@ -129,11 +125,9 @@ public class NoteService {
 
         Set<Note> linkedNotes = noteRepository.findAllByTitleInAndUserId(linksTitles, user.getId());
 
-        Book book = requestDTO.reference() == null ? null : bookService.findBookById(requestDTO.reference(), user.getId());
-
         NoteCategory category = categoryService.takeCategoryOrCreateIfNotExists(requestDTO.category(), user);
 
-        NoteBuilder.from(note, requestDTO, book, category, linkedNotes);
+        NoteBuilder.from(note, requestDTO, category, linkedNotes);
 
         Note updatedNote = noteRepository.save(note);
 

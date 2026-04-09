@@ -22,10 +22,6 @@ public class NoteSpecification {
         return (root, query, cb) -> type == null ? null : cb.equal(root.get("type"), type);
     }
 
-    private static Specification<Note> byBookId(Long bookId) {
-        return (root, query, cb) -> bookId == null ? null : cb.equal(root.get("book").get("id"), bookId);
-    }
-
     private static Specification<Note> byTitle(String title) {
         return (root, query, cb) ->
                 (title == null || title.isBlank()) ? null : cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%");
@@ -39,7 +35,6 @@ public class NoteSpecification {
                 byUserId(filter.getUserId()),
                 byTitle(filter.getTitle()),
                 byType(type),
-                byBookId(filter.getBookId()),
                 byCategoryId(filter.getCategoryId())
         );
     }

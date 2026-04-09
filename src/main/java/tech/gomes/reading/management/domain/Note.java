@@ -42,10 +42,6 @@ public class Note {
     private Instant updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private Book book;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "note_category_id")
     private NoteCategory category;
 
