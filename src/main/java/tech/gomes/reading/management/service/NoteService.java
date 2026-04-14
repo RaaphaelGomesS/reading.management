@@ -53,7 +53,7 @@ public class NoteService {
         return NoteResponseDTOBuilder.fromPage(notes);
     }
 
-    public NoteFullResponseDTO findNoteByIdWithSummaryLinkedNotes(long id, User user) throws NoteException {
+    public NoteFullResponseDTO findNoteByIdWithSummaryLinkedNotes(long id, User user) {
 
         Note note = findNoteById(id, user.getId());
 
@@ -76,7 +76,7 @@ public class NoteService {
         return NoteResponseDTOBuilder.from(responseDTOPage);
     }
 
-    public NoteResponsePageDTO findAllNotesThatAreCalledByTheCurrent(long id, User user, int page, int pageSize, String direction) throws NoteException {
+    public NoteResponsePageDTO findAllNotesThatAreCalledByTheCurrent(long id, User user, int page, int pageSize, String direction) {
         Note note = findNoteById(id, user.getId());
 
         Sort sort = Sort.by(Sort.Direction.valueOf(direction), "title");
@@ -134,13 +134,13 @@ public class NoteService {
         return NoteResponseDTOBuilder.from(updatedNote);
     }
 
-    public void deleteNoteById(long id, User user) throws NoteException {
+    public void deleteNoteById(long id, User user) {
         Note note = findNoteById(id, user.getId());
 
         noteRepository.delete(note);
     }
 
-    private Note findNoteById(long id, long userId) throws NoteException {
+    private Note findNoteById(long id, long userId) {
         return noteRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new NoteException("A anotação não foi encontrada.", HttpStatus.NOT_FOUND));
     }

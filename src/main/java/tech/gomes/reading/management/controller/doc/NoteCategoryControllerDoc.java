@@ -13,7 +13,7 @@ import tech.gomes.reading.management.dto.category.CategoryResponseDTO;
 import java.util.List;
 
 @RequestMapping("/category")
-@Tag(name = "Categorias de anotações.", description = "Endpoints para gerenciar categorias do usuário para suas anotações.")
+@Tag(name = "Categorias de anotações", description = "Endpoints para gerenciar categorias do usuário para suas anotações.")
 public interface NoteCategoryControllerDoc {
 
     @PostMapping("/")

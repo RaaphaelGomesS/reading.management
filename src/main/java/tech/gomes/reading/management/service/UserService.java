@@ -22,7 +22,7 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public UserResponseDTO updateUser(UserUpdateRequestDTO requestDTO, User userUpdated) throws UserException {
+    public UserResponseDTO updateUser(UserUpdateRequestDTO requestDTO, User userUpdated) {
 
         String identifier = requestDTO.email() != null ? requestDTO.email() : requestDTO.username();
 
@@ -45,7 +45,7 @@ public class UserService {
         return UserResponseDTOBuilder.from(user);
     }
 
-    public void updatePassword(ChangePasswordRequestDTO passwordRequestDTO, User user) throws UserException {
+    public void updatePassword(ChangePasswordRequestDTO passwordRequestDTO, User user) {
 
         if (!passwordEncoder.matches(passwordRequestDTO.currentPassword(), user.getPassword())) {
             throw new UserException("A senha está incorreta.", HttpStatus.BAD_REQUEST);
@@ -60,7 +60,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void deleteUser(User user, Long userId) throws UserException {
+    public void deleteUser(User user, Long userId) {
 
         User userToDelete = userRepository.findById(userId).orElseThrow(() -> new UserException("O usuário não foi encontrado.", HttpStatus.NOT_FOUND));
 

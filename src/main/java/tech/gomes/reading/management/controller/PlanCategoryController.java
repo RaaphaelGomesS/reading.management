@@ -17,16 +17,24 @@ public class PlanCategoryController implements PlanCategoryControllerDoc {
     private final PlanCategoryService service;
 
     public ResponseEntity<List<PlanCategory>> getAllCategories() {
-        return ResponseEntity.ok(service.findAllCategories());
+
+        List<PlanCategory> categories = service.findAllCategories();
+
+        return ResponseEntity.ok(categories);
     }
 
-    public ResponseEntity<List<PlanCategory>> createNewCategories(Set<String> categories) {
-        return ResponseEntity.ok(service.createNewCategories(categories));
+    public ResponseEntity<List<PlanCategory>> createNewCategories(Set<String> categoriesNames) {
+
+        List<PlanCategory> categories = service.createNewCategories(categoriesNames);
+
+        return ResponseEntity.ok(categories);
     }
 
     public ResponseEntity<PlanCategory> updateCategory(long id, String categoryName) {
 
-        return ResponseEntity.ok(service.updateCategory(id, categoryName));
+        PlanCategory category = service.updateCategory(id, categoryName);
+
+        return ResponseEntity.ok(category);
     }
 
     public ResponseEntity<Void> deleteCategory(long id) {

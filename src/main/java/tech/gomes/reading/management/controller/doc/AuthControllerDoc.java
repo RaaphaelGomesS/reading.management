@@ -12,7 +12,7 @@ import tech.gomes.reading.management.dto.user.UserRequestDTO;
 import tech.gomes.reading.management.dto.user.UserResponseDTO;
 
 @RequestMapping("/auth")
-@Tag(name = "Autenticação", description = "Endpoints para cadastro e login dos usuários")
+@Tag(name = "Autenticação", description = "Endpoints para cadastro e login dos usuários.")
 public interface AuthControllerDoc {
 
     @PostMapping("/login")

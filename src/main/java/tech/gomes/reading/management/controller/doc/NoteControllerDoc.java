@@ -45,7 +45,7 @@ public interface NoteControllerDoc {
     @GetMapping("/{id}")
     @Operation(summary = "Busca anotação.", description = "Busca anotação com o corpo de texto e a lista de todos as anotações linkadas de forma resumida.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Anotação completa."),
+            @ApiResponse(responseCode = "200", description = "Anotação encontrada."),
             @ApiResponse(responseCode = "404", description = "A anotação não foi encontrada.")
     })
     ResponseEntity<NoteFullResponseDTO> getNoteById(@PathVariable long id, JwtAuthenticationToken token);
@@ -58,7 +58,7 @@ public interface NoteControllerDoc {
     @PutMapping("/")
     @Operation(summary = "Atualiza a anotação e os links para outras anotações.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Anotação completa."),
+            @ApiResponse(responseCode = "200", description = "Anotação atualizada com sucesso."),
             @ApiResponse(responseCode = "404", description = "A anotação não foi encontrada."),
             @ApiResponse(responseCode = "400", description = "Já existe uma anotação com esse título.")
     })
@@ -67,7 +67,7 @@ public interface NoteControllerDoc {
     @DeleteMapping("/{id}")
     @Operation(summary = "Deleta a anotação.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Anotação completa."),
+            @ApiResponse(responseCode = "200", description = "Anotação deletada com sucesso."),
             @ApiResponse(responseCode = "404", description = "A anotação não foi encontrada.")
     })
     ResponseEntity<Void> deleteNote(@PathVariable long id, JwtAuthenticationToken token);

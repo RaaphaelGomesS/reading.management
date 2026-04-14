@@ -12,7 +12,7 @@ import tech.gomes.reading.management.dto.book.request.*;
 import tech.gomes.reading.management.dto.book.response.BookResponseDTO;
 import tech.gomes.reading.management.dto.book.response.BookResponsePageDTO;
 import tech.gomes.reading.management.dto.book.response.FullBookResponseDTO;
-import tech.gomes.reading.management.exception.ApplicationException;
+import tech.gomes.reading.management.exception.FileException;
 import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 import tech.gomes.reading.management.service.AuthService;
 import tech.gomes.reading.management.service.BookService;
@@ -30,7 +30,7 @@ public class BookController implements BookControllerDoc {
                                                                          int pageSize,
                                                                          String direction,
                                                                          String status,
-                                                                         JwtAuthenticationToken token) throws ApplicationException {
+                                                                         JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -41,7 +41,7 @@ public class BookController implements BookControllerDoc {
 
     public ResponseEntity<BookResponseDTO> registerBookInLibrary(BookCreateRequestDTO requestDTO,
                                                                  MultipartFile file,
-                                                                 JwtAuthenticationToken token) throws ApplicationException {
+                                                                 JwtAuthenticationToken token) throws FileException {
 
         User user = authService.getUserByToken(token);
 
@@ -50,7 +50,7 @@ public class BookController implements BookControllerDoc {
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<BookResponseDTO> updateBook(BookRequestDTO requestDTO, JwtAuthenticationToken token) throws ApplicationException {
+    public ResponseEntity<BookResponseDTO> updateBook(BookRequestDTO requestDTO, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -59,7 +59,7 @@ public class BookController implements BookControllerDoc {
         return ResponseEntity.ok(responseDTO);
     }
 
-    public ResponseEntity<BookResponseDTO> updatePagesReadInBook(PagesUpdateRequestDTO requestDTO, JwtAuthenticationToken token) throws ApplicationException {
+    public ResponseEntity<BookResponseDTO> updatePagesReadInBook(PagesUpdateRequestDTO requestDTO, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -68,7 +68,7 @@ public class BookController implements BookControllerDoc {
         return ResponseEntity.ok(responseDTO);
     }
 
-    public ResponseEntity<BookResponseDTO> finishBook(FinishBookRequestDTO requestDTO, JwtAuthenticationToken token) throws ApplicationException {
+    public ResponseEntity<BookResponseDTO> finishBook(FinishBookRequestDTO requestDTO, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -77,7 +77,7 @@ public class BookController implements BookControllerDoc {
         return ResponseEntity.ok(responseDTO);
     }
 
-    public ResponseEntity<FullBookResponseDTO> getBookInformation(long id, JwtAuthenticationToken token) throws ApplicationException {
+    public ResponseEntity<FullBookResponseDTO> getBookInformation(long id, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -86,7 +86,7 @@ public class BookController implements BookControllerDoc {
         return ResponseEntity.ok(responseDTO);
     }
 
-    public ResponseEntity<BookResponseDTO> changeBookFromLibrary(ChangeLibRequestDTO requestDTO, JwtAuthenticationToken token) throws ApplicationException {
+    public ResponseEntity<BookResponseDTO> changeBookFromLibrary(ChangeLibRequestDTO requestDTO, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 
@@ -95,7 +95,7 @@ public class BookController implements BookControllerDoc {
         return ResponseEntity.ok(responseDTO);
     }
 
-    public ResponseEntity<Void> deleteBook(long id, JwtAuthenticationToken token) throws ApplicationException {
+    public ResponseEntity<Void> deleteBook(long id, JwtAuthenticationToken token) {
 
         User user = authService.getUserByToken(token);
 

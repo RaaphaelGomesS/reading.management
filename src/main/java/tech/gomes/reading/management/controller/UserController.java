@@ -35,7 +35,9 @@ public class UserController implements UserControllerDoc {
 
         User user = authService.getUserByToken(token);
 
-        return ResponseEntity.ok(userService.updateUser(requestDTO, user));
+        UserResponseDTO responseDTO = userService.updateUser(requestDTO, user);
+
+        return ResponseEntity.ok(responseDTO);
     }
 
     public ResponseEntity<Void> updatePassword(ChangePasswordRequestDTO requestDTO, JwtAuthenticationToken token) {

@@ -18,6 +18,7 @@ import tech.gomes.reading.management.dto.suggestion.request.DeclineRequestDTO;
 import tech.gomes.reading.management.dto.suggestion.request.SuggestionRequestDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponsePageDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionUpdateResponseDTO;
+import tech.gomes.reading.management.exception.FileException;
 import tech.gomes.reading.management.exception.SuggestionException;
 import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
 import tech.gomes.reading.management.repository.SuggestionRepository;
@@ -35,8 +36,7 @@ public class SuggestionService {
 
     private final UploadService uploadService;
 
-    @Transactional
-    public void createUpdateSuggestion(SuggestionRequestDTO requestDTO, User user, MultipartFile file) {
+    public void createUpdateSuggestion(SuggestionRequestDTO requestDTO, User user, MultipartFile file) throws FileException {
 
         if (requestDTO.suggestedReason() == null) {
             throw new SuggestionException("Deve justificar a alteração.", HttpStatus.BAD_REQUEST);
@@ -47,7 +47,7 @@ public class SuggestionService {
         Optional<SuggestionTemplate> existentSuggestion = suggestionRepository.findBySuggestedISBNAndStatus(requestDTO.suggestedISBN(), TemplateStatusIndicator.IN_ANALYZE);
 
         if (existentSuggestion.isPresent()) {
-            throw new SuggestionException("Já existe sugestão de alteração para esse template em análise", HttpStatus.BAD_REQUEST);
+            throw new SuggestionException("Já existe sugestão de alteração para esse template em análise.", HttpStatus.BAD_REQUEST);
         }
 
         String coverImg = uploadService.uploadCoverImg(file);
@@ -61,7 +61,7 @@ public class SuggestionService {
 
         Pageable pageable = PageRequest.of(page, pageSize, Sort.Direction.valueOf(direction), "createdAt");
 
-        Page<SuggestionTemplate> suggestionPage = suggestionRepository.findByStatusAndBookTemplateIsNotNull(TemplateStatusIndicator.valueOf(status), pageable);
+        Page<SuggestionTemplate> suggestionPage = suggestionRepository.findByStatusAndBookTemplateIsNotNull(TemplateStatusIndicator.getIndicatorFromString(status), pageable);
 
         return SuggestionResponseDTOBuilder.fromPage(suggestionPage);
     }
@@ -78,10 +78,10 @@ public class SuggestionService {
     public void approveSuggestion(long id) {
 
         SuggestionTemplate suggestion = suggestionRepository.findById(id)
-                .orElseThrow(() -> new SuggestionException("Não foi encontrado nenhuma sugestão com esse id", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new SuggestionException("Não foi encontrado nenhuma sugestão com esse id.", HttpStatus.NOT_FOUND));
 
         if (suggestion.getBookTemplate() == null) {
-            throw new SuggestionException("A sugestão de atualização precisa estar vinculada a um template", HttpStatus.BAD_REQUEST);
+            throw new SuggestionException("A sugestão de atualização precisa estar vinculada a um template.", HttpStatus.BAD_REQUEST);
         }
 
         bookTemplateService.updateBookTemplateBySuggestion(suggestion);
@@ -92,10 +92,9 @@ public class SuggestionService {
         suggestionRepository.save(suggestion);
     }
 
-    @Transactional
     public void declineSuggestion(DeclineRequestDTO requestDTO) {
         SuggestionTemplate suggestion = suggestionRepository.findById(requestDTO.id())
-                .orElseThrow(() -> new SuggestionException("Não foi encontrado nenhuma sugestão com esse id", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new SuggestionException("Não foi encontrado nenhuma sugestão com esse id.", HttpStatus.NOT_FOUND));
 
         suggestion.setJustification(requestDTO.justification());
         suggestion.setStatus(TemplateStatusIndicator.DECLINE);

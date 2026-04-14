@@ -20,7 +20,6 @@ import tech.gomes.reading.management.domain.SuggestionTemplate;
 import tech.gomes.reading.management.dto.book.request.BookTemplateRequestDTO;
 import tech.gomes.reading.management.dto.book.response.BookTemplateResponseDTO;
 import tech.gomes.reading.management.dto.book.response.BookTemplateResponsePageDTO;
-import tech.gomes.reading.management.exception.ApplicationException;
 import tech.gomes.reading.management.exception.BookTemplateException;
 import tech.gomes.reading.management.exception.FileException;
 import tech.gomes.reading.management.indicator.TemplateStatusIndicator;
@@ -60,7 +59,7 @@ public class BookTemplateService {
     }
 
     @Transactional
-    public BookTemplate getOrCreateBookTemplate(BookTemplateRequestDTO requestDTO, MultipartFile file) throws ApplicationException {
+    public BookTemplate getOrCreateBookTemplate(BookTemplateRequestDTO requestDTO, MultipartFile file) throws FileException {
 
         if (requestDTO.templateId() != null) {
             return findTemplateById(requestDTO.templateId());

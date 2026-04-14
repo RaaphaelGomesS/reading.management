@@ -24,12 +24,16 @@ public class StatisticsController implements StatisticsControllerDoc {
     public ResponseEntity<StatisticsResponseDTO> getUserStatistics(JwtAuthenticationToken token) {
         User user = authService.getUserByToken(token);
 
-        return ResponseEntity.ok(statisticsService.getStatisticsForUser(user));
+        StatisticsResponseDTO responseDTO = statisticsService.getStatisticsForUser(user);
+
+        return ResponseEntity.ok(responseDTO);
     }
 
     public ResponseEntity<List<BookTemplateResponseDTO>> getReadRecommendation(JwtAuthenticationToken token) {
         User user = authService.getUserByToken(token);
 
-        return ResponseEntity.ok(statisticsService.findReadRecommendationForUser(user));
+        List<BookTemplateResponseDTO> responseDTOS = statisticsService.findReadRecommendationForUser(user);
+
+        return ResponseEntity.ok(responseDTOS);
     }
 }

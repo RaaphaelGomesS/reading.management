@@ -12,6 +12,7 @@ import tech.gomes.reading.management.dto.book.request.*;
 import tech.gomes.reading.management.dto.book.response.BookResponseDTO;
 import tech.gomes.reading.management.dto.book.response.BookResponsePageDTO;
 import tech.gomes.reading.management.dto.book.response.FullBookResponseDTO;
+import tech.gomes.reading.management.exception.FileException;
 
 @RequestMapping("/book")
 @Tag(name = "Livros", description = "Endpoints para consultar e gerenciar livros do usuário.")
@@ -38,7 +39,7 @@ public interface BookControllerDoc {
     @PostMapping(value = "/", consumes = {"multipart/form-data"})
     public ResponseEntity<BookResponseDTO> registerBookInLibrary(@RequestPart("book") BookCreateRequestDTO requestDTO,
                                                                  @RequestPart(value = "coverImg", required = false) MultipartFile file,
-                                                                 JwtAuthenticationToken token);
+                                                                 JwtAuthenticationToken token) throws FileException;
 
     @Operation(summary = "Atualizar informações do livro", description = "Retorna as informações do livro atualizado.")
     @ApiResponses(value = {

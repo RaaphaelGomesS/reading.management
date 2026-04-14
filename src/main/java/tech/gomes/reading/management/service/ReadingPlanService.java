@@ -50,18 +50,14 @@ public class ReadingPlanService {
     }
 
     @Transactional
-    public PlanResponseDTO createReadingPlan(PlanRequestDTO requestDTO, User user) throws ReadingPlanException {
+    public PlanResponseDTO createReadingPlan(PlanRequestDTO requestDTO, User user) {
         if (repository.existsByTitleAndUserId(requestDTO.title(), user.getId())) {
             throw new ReadingPlanException("Já existe um plano com esse título.", HttpStatus.BAD_REQUEST);
         }
 
         Set<JoinPlanTemplate> joinPlans = createJoinPlanTemplates(requestDTO);
 
-        Set<PlanCategory> categories = planCategoryRepository.findAllByIdIn(requestDTO.categories());
-
-        if (categories.isEmpty()) {
-            throw new ReadingPlanException("Nenhuma categoria foi encontrada.", HttpStatus.NOT_FOUND);
-        }
+        Set<PlanCategory> categories = findPlanCategoriesByIds(requestDTO.categories());
 
         ReadingPlan newPlan = ReadingPlanBuilder.fromRequestDTO(requestDTO, user, joinPlans, categories);
 
@@ -71,7 +67,7 @@ public class ReadingPlanService {
     }
 
     @Transactional
-    public PlanResponseDTO updateReadingPlan(long id, PlanRequestDTO requestDTO, User user) throws ReadingPlanException {
+    public PlanResponseDTO updateReadingPlan(long id, PlanRequestDTO requestDTO, User user) {
 
         ReadingPlan readingPlan = findByIdForUser(id, user.getId());
 
@@ -81,11 +77,7 @@ public class ReadingPlanService {
 
         Set<JoinPlanTemplate> joinPlans = createJoinPlanTemplates(requestDTO);
 
-        Set<PlanCategory> categories = planCategoryRepository.findAllByIdIn(requestDTO.categories());
-
-        if (categories.isEmpty()) {
-            throw new ReadingPlanException("Nenhuma categoria foi encontrada.", HttpStatus.NOT_FOUND);
-        }
+        Set<PlanCategory> categories = findPlanCategoriesByIds(requestDTO.categories());
 
         ReadingPlanBuilder.updateFromReadingPlan(requestDTO, readingPlan, joinPlans, categories);
 
@@ -95,7 +87,7 @@ public class ReadingPlanService {
     }
 
     @Transactional
-    public PlanResponseDTO updatePrivacyFromPlan(PrivacyPlanDTO requestDTO, User user) throws ReadingPlanException {
+    public PlanResponseDTO updatePrivacyFromPlan(PrivacyPlanDTO requestDTO, User user) {
         ReadingPlan plan = findByIdForUser(requestDTO.id(), user.getId());
 
         if (requestDTO.privacyStatus() != Boolean.TRUE.equals(plan.getIsPublic())) {
@@ -106,14 +98,14 @@ public class ReadingPlanService {
         return ReadingPlanResponseDTOBuilder.fromReadingPlan(plan);
     }
 
-    public void deletePlan(long id, User user) throws ReadingPlanException {
+    public void deletePlan(long id, User user) {
         ReadingPlan plan = findByIdForUser(id, user.getId());
 
         repository.delete(plan);
     }
 
     @Transactional
-    public PlanResponseDTO duplicatePlanToUser(long id, User user) throws ReadingPlanException {
+    public PlanResponseDTO duplicatePlanToUser(long id, User user) {
 
         ReadingPlan plan = repository.findById(id).orElseThrow(() ->
                 new ReadingPlanException("Nenhuma plano foi encontrado.", HttpStatus.NOT_FOUND));
@@ -127,12 +119,26 @@ public class ReadingPlanService {
         return ReadingPlanResponseDTOBuilder.fromReadingPlan(savedPlan);
     }
 
-    public ReadingPlan findByIdForUser(long id, long userId) throws ReadingPlanException {
+    public ReadingPlan findByIdForUser(long id, long userId) {
         return repository.findByIdAndUserId(id, userId).orElseThrow(() ->
-                new ReadingPlanException("Nenhuma plano foi encontrado", HttpStatus.NOT_FOUND));
+                new ReadingPlanException("Nenhuma plano foi encontrado.", HttpStatus.NOT_FOUND));
     }
 
-    private Set<JoinPlanTemplate> createJoinPlanTemplates(PlanRequestDTO requestDTO) throws ReadingPlanException {
+    private Set<PlanCategory> findPlanCategoriesByIds(Set<Long> categoriesIds) {
+
+        Set<PlanCategory> categories = new HashSet<>();
+
+        if (!categoriesIds.isEmpty()) {
+            categories = planCategoryRepository.findAllByIdIn(categoriesIds);
+
+            if (categories.isEmpty()) {
+                throw new ReadingPlanException("Categorias não foram encontradas.", HttpStatus.NOT_FOUND);
+            }
+        }
+        return categories;
+    }
+
+    private Set<JoinPlanTemplate> createJoinPlanTemplates(PlanRequestDTO requestDTO) {
 
         Set<JoinPlanTemplate> joinPlans = new HashSet<>();
 
@@ -152,7 +158,7 @@ public class ReadingPlanService {
         return joinPlans;
     }
 
-    private void validatePositionFromTemplates(Set<BookTemplatePlanDTO> requestDTOS) throws ReadingPlanException {
+    private void validatePositionFromTemplates(Set<BookTemplatePlanDTO> requestDTOS) {
         Set<Integer> positions = new HashSet<>();
         Set<Integer> duplicatedPositions = new HashSet<>();
 

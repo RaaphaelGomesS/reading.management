@@ -35,7 +35,7 @@ public class AuthService {
 
     private final UserBuilder userBuilder;
 
-    public LoginResponseDTO authenticateUser(LoginRequestDTO requestDTO) throws UserException {
+    public LoginResponseDTO authenticateUser(LoginRequestDTO requestDTO) {
 
         if (requestDTO.identifier() == null || requestDTO.identifier().isBlank()) {
             throw new UserException("O identificador não pode estar em branco", HttpStatus.BAD_REQUEST);
@@ -62,7 +62,7 @@ public class AuthService {
         return new LoginResponseDTO(token, getExpirationDate());
     }
 
-    public UserResponseDTO registerUser(UserRequestDTO requestDTO) throws UserException {
+    public UserResponseDTO registerUser(UserRequestDTO requestDTO) {
 
         String identifier = requestDTO.email() != null ? requestDTO.email() : requestDTO.username();
 
@@ -77,9 +77,9 @@ public class AuthService {
         return UserResponseDTOBuilder.from(user);
     }
 
-    public User getUserByToken(JwtAuthenticationToken token) throws UserException {
+    public User getUserByToken(JwtAuthenticationToken token) {
         return userRepository.findById(Long.valueOf(token.getName()))
-                .orElseThrow(() -> new UserException("O usuário não foi encontrado.", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new UserException("Token inválido.", HttpStatus.UNAUTHORIZED));
     }
 
     private Instant getExpirationDate() {

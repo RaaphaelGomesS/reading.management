@@ -42,12 +42,8 @@ public class UploadService {
                     throw new FileException("O nome do arquivo contém uma sequência de caminho inválida.", HttpStatus.BAD_REQUEST);
                 }
 
-                String fileExtension;
-                try {
-                    fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-                } catch (Exception e) {
-                    fileExtension = "";
-                }
+                String fileExtension = getFileExtension(originalFileName);
+
                 String generatedFileName = UUID.randomUUID() + fileExtension;
 
                 Path targetLocation = this.fileStorageLocation.resolve(generatedFileName);
@@ -63,5 +59,14 @@ public class UploadService {
             }
         }
         return null;
+    }
+
+    private String getFileExtension(String originalFileName) {
+
+        try {
+            return originalFileName.substring(originalFileName.lastIndexOf("."));
+        } catch (Exception e) {
+            return "";
+        }
     }
 }

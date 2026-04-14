@@ -12,6 +12,7 @@ import tech.gomes.reading.management.dto.suggestion.request.DeclineRequestDTO;
 import tech.gomes.reading.management.dto.suggestion.request.SuggestionRequestDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionResponsePageDTO;
 import tech.gomes.reading.management.dto.suggestion.response.SuggestionUpdateResponseDTO;
+import tech.gomes.reading.management.exception.FileException;
 import tech.gomes.reading.management.service.AuthService;
 import tech.gomes.reading.management.service.SuggestionService;
 
@@ -25,7 +26,7 @@ public class SuggestionController implements SuggestionControllerDoc {
 
     public ResponseEntity<Void> createUpdateSuggestion(SuggestionRequestDTO requestDTO,
                                                        MultipartFile file,
-                                                       JwtAuthenticationToken token) {
+                                                       JwtAuthenticationToken token) throws FileException {
 
         User user = authService.getUserByToken(token);
 
@@ -39,7 +40,9 @@ public class SuggestionController implements SuggestionControllerDoc {
                                                                       String direction,
                                                                       String status) {
 
-        return ResponseEntity.ok(suggestionService.findAllUpdateSuggestion(page, pageSize, direction, status));
+        SuggestionResponsePageDTO pageDTO = suggestionService.findAllUpdateSuggestion(page, pageSize, direction, status);
+
+        return ResponseEntity.ok(pageDTO);
     }
 
     public ResponseEntity<SuggestionUpdateResponseDTO> getUpdateSuggestionWithOriginalTemplate(long id) {

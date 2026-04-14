@@ -22,7 +22,9 @@ import tech.gomes.reading.management.dto.book.response.BookTemplateResponseDTO;
 import tech.gomes.reading.management.dto.book.response.FullBookResponseDTO;
 import tech.gomes.reading.management.dto.library.LibraryRequestDTO;
 import tech.gomes.reading.management.dto.library.LibraryResponseDTO;
-import tech.gomes.reading.management.exception.*;
+import tech.gomes.reading.management.exception.BookException;
+import tech.gomes.reading.management.exception.BookTemplateException;
+import tech.gomes.reading.management.exception.FileException;
 import tech.gomes.reading.management.indicator.ReadingStatusIndicator;
 import tech.gomes.reading.management.repository.BookRepository;
 import tech.gomes.reading.management.repository.BookTemplateRepository;
@@ -48,7 +50,7 @@ public class BookService {
 
     private final ReadingPlanService planService;
 
-    public BookResponsePageDTO getAllBooksByStatusInLibrary(long id, User user, ReadingStatusIndicator status, int page, int pageSize, String direction) throws LibraryException {
+    public BookResponsePageDTO getAllBooksByStatusInLibrary(long id, User user, ReadingStatusIndicator status, int page, int pageSize, String direction) {
 
         Library library = libraryService.getLibraryById(id, user);
 
@@ -62,7 +64,7 @@ public class BookService {
     }
 
     @Transactional
-    public BookResponseDTO createBook(BookCreateRequestDTO requestDTO, User user, MultipartFile file) throws ApplicationException {
+    public BookResponseDTO createBook(BookCreateRequestDTO requestDTO, User user, MultipartFile file) throws FileException {
 
         if (requestDTO.template().templateId() != null) {
             verifyBookAlreadyRegister(requestDTO.template().templateId(), user.getId());
@@ -79,7 +81,7 @@ public class BookService {
         return BookResponseDTOBuilder.from(bookRepository.save(newBook));
     }
 
-    public BookResponseDTO updateBook(BookRequestDTO requestDTO, User user) throws ApplicationException {
+    public BookResponseDTO updateBook(BookRequestDTO requestDTO, User user) {
         Book book = findBookById(requestDTO.id(), user.getId());
 
         log.info("Request data check: {}", requestDTO);
@@ -96,7 +98,7 @@ public class BookService {
         return BookResponseDTOBuilder.from(updatedBook);
     }
 
-    public BookResponseDTO updateReadPages(PagesUpdateRequestDTO requestDTO, User user) throws BookException {
+    public BookResponseDTO updateReadPages(PagesUpdateRequestDTO requestDTO, User user) {
 
         Book book = findBookById(requestDTO.bookId(), user.getId());
 
@@ -114,7 +116,7 @@ public class BookService {
         return BookResponseDTOBuilder.from(updatedBook);
     }
 
-    public BookResponseDTO finishBook(FinishBookRequestDTO requestDTO, User user) throws BookException {
+    public BookResponseDTO finishBook(FinishBookRequestDTO requestDTO, User user) {
 
         Book book = findBookById(requestDTO.bookId(), user.getId());
 
@@ -128,7 +130,7 @@ public class BookService {
         return BookResponseDTOBuilder.from(updatedBook);
     }
 
-    public FullBookResponseDTO getFullBookById(long id, User user) throws BookException {
+    public FullBookResponseDTO getFullBookById(long id, User user) {
         Book book = findBookById(id, user.getId());
 
         BookResponseDTO bookResponse = BookResponseDTOBuilder.from(book);
@@ -140,7 +142,7 @@ public class BookService {
                 .build();
     }
 
-    public BookResponseDTO changeBookFromLibrary(ChangeLibRequestDTO requestDTO, User user) throws LibraryException, BookException {
+    public BookResponseDTO changeBookFromLibrary(ChangeLibRequestDTO requestDTO, User user) {
 
         Library library = libraryService.getLibraryById(requestDTO.libraryId(), user);
 
@@ -157,19 +159,19 @@ public class BookService {
         return BookResponseDTOBuilder.from(updatedBook);
     }
 
-    public void deleteBook(long id, User user) throws BookException {
+    public void deleteBook(long id, User user) {
         Book book = findBookById(id, user.getId());
 
         bookRepository.delete(book);
     }
 
-    public Book findBookById(long id, long userId) throws BookException {
+    public Book findBookById(long id, long userId) {
         return bookRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new BookException("Não foi encontrado o livro.", HttpStatus.NOT_FOUND));
     }
 
     @Transactional
-    public LibraryResponseDTO createLibraryAndIndexBookFromPlan(long id, User user) throws ReadingPlanException, LibraryException {
+    public LibraryResponseDTO createLibraryAndIndexBookFromPlan(long id, User user) {
 
         ReadingPlan plan = planService.findByIdForUser(id, user.getId());
 
@@ -193,7 +195,7 @@ public class BookService {
         bookRepository.saveAll(books);
     }
 
-    private void verifyBookAlreadyRegister(Long templateId, Long userId) throws BookTemplateException {
+    private void verifyBookAlreadyRegister(Long templateId, Long userId) {
 
         Optional<Book> book = bookRepository.findByBookTemplateIdAndUserId(templateId, userId);
 
